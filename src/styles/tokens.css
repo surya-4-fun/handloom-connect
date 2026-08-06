@@ -1,0 +1,61 @@
+:root {
+  color-scheme: dark;
+  --brand: #D4AF37;           /* High Champagne Gold */
+  --brand-deep: #9A7B23;      /* Deep Gold */
+  --brand-light: #F3E5AB;     /* Pearl Gold Hover */
+  
+  --gold: #D4AF37;
+  --gold-hover: #F3E5AB;
+  --gold-deep: #9A7B23;
+  --cyan: #50C7D1;
+  --cyan-bright: #78E0EB;
+
+  --canvas: #0A0908;          /* Deep Velvet Ebony */
+  --canvas-secondary: #141210; /* Dark Obsidian Surface */
+  
+  --surface: #1B1815;         /* Luxury Surface */
+  --surface-soft: #141210;    /* Soft Surface */
+  
+  --ink: #FBF9F5;             /* Warm Pearl White */
+  --muted: #A89F91;           /* Muted Antique Sand */
+  
+  --border: rgba(212, 175, 55, 0.22); /* Subtle Gold Border */
+  --border-strong: rgba(212, 175, 55, 0.45);
+  --success: #2E8B57;
+  
+  --header-text: #FBF9F5;
+  --shadow: 0 12px 40px rgba(0, 0, 0, 0.65), 0 0 0 1px rgba(212, 175, 55, 0.2);
+  --shadow-gold: 0 0 25px rgba(212, 175, 55, 0.15);
+  
+  --font-display: 'Cormorant Garamond', 'Playfair Display', Georgia, serif;
+  --font-ui: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  --container: 1440px;
+  --gutter: clamp(20px, 5vw, 80px);
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 14px;
+  --radius-xl: 24px;
+  --ease: cubic-bezier(.22, 1, .36, 1);
+}
+
+:root[data-theme='dark'] {
+  color-scheme: dark;
+  --brand: #D4AF37;
+  --brand-deep: #9A7B23;
+  --brand-light: #F3E5AB;
+  --gold: #D4AF37;
+  --gold-hover: #F3E5AB;
+  --gold-deep: #9A7B23;
+  --canvas: #0A0908;
+  --canvas-secondary: #141210;
+  --surface: #1B1815;
+  --surface-soft: #141210;
+  --ink: #FBF9F5;
+  --muted: #A89F91;
+  --border: rgba(212, 175, 55, 0.22);
+  --border-strong: rgba(212, 175, 55, 0.45);
+  --success: #2E8B57;
+  --header-text: #FBF9F5;
+  --shadow: 0 12px 40px rgba(0, 0, 0, 0.65), 0 0 0 1px rgba(212, 175, 55, 0.2);
+}
+
