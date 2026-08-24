@@ -63,7 +63,7 @@
 .cursor-detail {
   font-size: 10.5px;
   font-weight: 500;
-  color: rgba(255, 255, 255, 0.5);
+  color: var(--muted);
   text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
 }
 

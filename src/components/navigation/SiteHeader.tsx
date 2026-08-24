@@ -1,7 +1,10 @@
 import { useEffect, useRef, useState } from 'react'
-import { Link, NavLink, useLocation } from 'react-router-dom'
+import { Link, NavLink, useLocation, useNavigate } from 'react-router-dom'
 import { Icon } from '../primitives/Icon'
 import { ButtonLink } from '../primitives/Button'
+import { useAuth } from '../../contexts/AuthContext'
+import { useCart } from '../../hooks/useCart'
+import handloomEmblem from '../../assets/images/handloom-logo-emblem.png'
 
 const groups = [
   { title: 'By product', links: ['Sarees', 'Stoles & Dupattas', 'Home Textiles', 'Apparel'] },
@@ -10,11 +13,7 @@ const groups = [
 ]
 
 const sections = [
-  { id: 'home', label: 'Home' },
-  { id: 'about', label: 'About' },
-  { id: 'services', label: 'Services' },
-  { id: 'gallery', label: 'Gallery' },
-  { id: 'contact', label: 'Contact' }
+  { id: 'home', label: 'Home' }
 ]
 
 function UtilityLink({ to, label, icon, count }: { to: string; label: string; icon: 'heart' | 'bag' | 'user'; count?: number }) {
@@ -26,15 +25,32 @@ export function SiteHeader() {
   const [menuOpen, setMenuOpen] = useState(false)
   const [megaOpen, setMegaOpen] = useState(false)
   const [searchOpen, setSearchOpen] = useState(false)
-  const [dark, setDark] = useState(() => localStorage.getItem('hc-theme') === 'dark')
+  const [dark, setDark] = useState(() => localStorage.getItem('hc-theme') !== 'light')
   const [activeSection, setActiveSection] = useState('home')
   const location = useLocation()
+  const navigate = useNavigate()
   const searchRef = useRef<HTMLInputElement>(null)
+  
+  const { user, isAuthenticated } = useAuth()
+  const { cartCount } = useCart()
+  const [searchQuery, setSearchQuery] = useState('')
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 48)
-    onScroll(); window.addEventListener('scroll', onScroll, { passive: true })
+    window.addEventListener('scroll', onScroll, { passive: true })
     return () => window.removeEventListener('scroll', onScroll)
+  }, [])
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        setSearchOpen(false)
+        setMenuOpen(false)
+        setMegaOpen(false)
+      }
+    }
+    window.addEventListener('keydown', handleKeyDown)
+    return () => window.removeEventListener('keydown', handleKeyDown)
   }, [])
 
   useEffect(() => { setMenuOpen(false); setMegaOpen(false); setSearchOpen(false) }, [location.pathname])
@@ -98,7 +114,7 @@ export function SiteHeader() {
     <header className={`site-header ${(scrolled || !isHome) ? 'site-header--solid' : ''}`}>
       <div className="announcement"><span>Direct from verified makers</span><i aria-hidden="true"/><span>Complimentary delivery above ₹2,500</span></div>
       <div className="nav-shell">
-        <Link to="/" className="brand" aria-label="Handloom Connect home"><span className="brand-mark" aria-hidden="true">HC</span><span className="brand-copy"><strong>Handloom</strong><small>Connect</small></span></Link>
+        <Link to="/" className="brand" aria-label="Handloom Connect home"><img src={handloomEmblem} alt="Handloom Connect emblem" className="brand-mark-img" /><span className="brand-copy"><strong>Handloom</strong><small>Connect</small></span></Link>
         <nav className="desktop-nav" aria-label="Primary">
           <button className={`nav-link nav-link--button ${location.pathname === '/marketplace' ? 'active' : ''}`} aria-expanded={megaOpen} onClick={() => setMegaOpen(v => !v)}>Shop <span aria-hidden="true">⌄</span></button>
           
@@ -116,6 +132,9 @@ export function SiteHeader() {
             )
           })}
 
+          <NavLink to="/about" className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}>About</NavLink>
+          <NavLink to="/contact" className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}>Contact</NavLink>
+          <NavLink to="/artisans" className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}>Artisans</NavLink>
           <NavLink to="/materials" className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}>Materials</NavLink>
           <NavLink to="/origin-map" className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}>Craft Map</NavLink>
           <NavLink to="/ar-studio" className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}>AR Studio</NavLink>
@@ -125,8 +144,25 @@ export function SiteHeader() {
         <div className="nav-utilities">
           <button className="icon-button" aria-label="Search" onClick={() => setSearchOpen(true)}><Icon name="search"/></button>
           <UtilityLink to="/wishlist" label="Wishlist" icon="heart"/>
-          <UtilityLink to="/cart" label="Cart, 2 items" icon="bag" count={2}/>
-          <UtilityLink to="/account" label="Account" icon="user"/>
+          <UtilityLink to="/cart" label={`Cart, ${cartCount} items`} icon="bag" count={cartCount}/>
+          
+          {isAuthenticated && user ? (
+            <button 
+              className="icon-button" 
+              onClick={() => navigate('/profile')} 
+              aria-label="Profile"
+              style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', width: '32px', height: '32px', borderRadius: '50%', background: 'var(--canvas-secondary)', border: '1px solid var(--border)', fontSize: '0.8rem', fontWeight: 600, overflow: 'hidden', padding: 0 }}
+            >
+              {user.avatarUrl ? (
+                <img src={user.avatarUrl} alt={user.fullName} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+              ) : (
+                user.fullName.charAt(0).toUpperCase()
+              )}
+            </button>
+          ) : (
+            <UtilityLink to="/login" label="Sign in" icon="user"/>
+          )}
+          
           <button className="icon-button theme-toggle" aria-label={`Use ${dark ? 'light' : 'dark'} theme`} onClick={() => setDark(v => !v)}><Icon name={dark ? 'sun' : 'moon'}/></button>
           <button className="icon-button mobile-menu-button" aria-label="Open menu" aria-expanded={menuOpen} onClick={() => setMenuOpen(true)}><Icon name="menu"/></button>
         </div>
@@ -141,11 +177,37 @@ export function SiteHeader() {
 
       {searchOpen && <div className="search-overlay" role="dialog" aria-modal="true" aria-label="Search Handloom Connect">
         <button className="icon-button search-close" onClick={() => setSearchOpen(false)} aria-label="Close search"><Icon name="close"/></button>
-        <div className="search-panel"><p className="eyebrow">Discover by craft, maker or place</p><label className="search-field"><Icon name="search" size={28}/><input ref={searchRef} placeholder="Try “indigo ikat”" aria-label="Search products"/></label><div className="search-suggestions"><span>Popular now</span>{['Chanderi sarees', 'Natural dyes', 'Gifts under ₹3,000', 'Kutch weaving'].map(x => <Link key={x} to="/marketplace">{x}</Link>)}</div></div>
+        <div className="search-panel">
+          <p className="eyebrow">Discover by craft, maker or place</p>
+          <form onSubmit={(e) => {
+            e.preventDefault()
+            if (searchQuery.trim()) {
+              navigate(`/marketplace?search=${encodeURIComponent(searchQuery.trim())}`)
+              setSearchOpen(false)
+            }
+          }}>
+            <label className="search-field">
+              <Icon name="search" size={28}/>
+              <input
+                ref={searchRef}
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Try “indigo ikat” or “Kanchipuram”"
+                aria-label="Search products"
+              />
+            </label>
+          </form>
+          <div className="search-suggestions">
+            <span>Popular now</span>
+            {['Chanderi sarees', 'Natural dyes', 'Gifts under ₹3,000', 'Kutch weaving'].map(x => (
+              <Link key={x} to={`/marketplace?search=${encodeURIComponent(x)}`} onClick={() => setSearchOpen(false)}>{x}</Link>
+            ))}
+          </div>
+        </div>
       </div>}
 
       <div className={`mobile-drawer ${menuOpen ? 'is-open' : ''}`} aria-hidden={!menuOpen}>
-        <div className="mobile-drawer__top"><span className="brand-copy"><strong>Handloom</strong><small>Connect</small></span><button className="icon-button" onClick={() => setMenuOpen(false)} aria-label="Close menu"><Icon name="close"/></button></div>
+        <div className="mobile-drawer__top"><Link to="/" onClick={() => setMenuOpen(false)} className="brand"><img src={handloomEmblem} alt="Handloom Connect emblem" className="brand-mark-img" /><span className="brand-copy"><strong>Handloom</strong><small>Connect</small></span></Link><button className="icon-button" onClick={() => setMenuOpen(false)} aria-label="Close menu"><Icon name="close"/></button></div>
         <nav aria-label="Mobile">
           {sections.map(sec => (
             <Link 
@@ -158,11 +220,22 @@ export function SiteHeader() {
           ))}
           <div style={{ height: '1px', background: 'rgba(255,255,255,0.08)', margin: '15px 0' }} />
           <NavLink to="/marketplace">Shop the collection</NavLink>
-          <NavLink to="/materials">Raw materials</NavLink>
+          <NavLink to="/artisans">Master Artisans</NavLink>
+          <NavLink to="/materials">Materials & Craft Science</NavLink>
+          <NavLink to="/raw-materials">Raw Material Marketplace (B2B)</NavLink>
+          <NavLink to="/about">About us</NavLink>
+          <NavLink to="/contact">Contact us</NavLink>
           <NavLink to="/ai-fashion-assistant">AI Fashion Assistant</NavLink>
           <NavLink to="/ai-material-guide">AI Material Guide</NavLink>
         </nav>
-        <div className="mobile-drawer__footer"><Link to="/account">Sign in</Link><Link to="/contact">Contact</Link></div>
+        <div className="mobile-drawer__footer">
+          {isAuthenticated ? (
+            <Link to="/profile">Profile</Link>
+          ) : (
+            <Link to="/login">Sign in</Link>
+          )}
+          <Link to="/contact">Contact</Link>
+        </div>
       </div>
       {menuOpen && <button className="drawer-backdrop" aria-label="Close menu" onClick={() => setMenuOpen(false)}/>} 
     </header>

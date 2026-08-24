@@ -1,3 +1,5 @@
+import { Link } from 'react-router-dom'
+
 interface Material {
   id: string
   name: string
@@ -47,9 +49,27 @@ export function MaterialsPage() {
           <h1 style={{ fontFamily: 'var(--font-display)', fontSize: 'clamp(2.8rem, 6vw, 4.5rem)', fontWeight: 400, letterSpacing: '-0.02em', marginBottom: '1.2rem' }}>
             Pure Fibres & Natural Botanicals
           </h1>
-          <p style={{ color: 'var(--muted)', fontSize: '1.1rem', lineHeight: '1.6' }}>
+          <p style={{ color: 'var(--muted)', fontSize: '1.1rem', lineHeight: '1.6', marginBottom: '2rem' }}>
             We work exclusively with unadulterated natural silk, hand-spun high-altitude wool, and plant dyes. Texture tells the truth of human hands and organic earth.
           </p>
+
+          {/* B2B Artisan Procurement Banner Callout */}
+          <div style={{ background: 'var(--canvas-secondary)', border: '1px solid var(--gold)', borderRadius: 'var(--radius-lg)', padding: '24px 30px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '20px', flexWrap: 'wrap', boxShadow: '0 8px 30px rgba(0,0,0,0.06)' }}>
+            <div style={{ textAlign: 'left', flex: '1 1 340px' }}>
+              <span style={{ color: 'var(--gold)', fontSize: '0.78rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.14em', display: 'block', marginBottom: '4px' }}>
+                🧵 B2B Raw Material Supply Engine
+              </span>
+              <strong style={{ fontSize: '1.15rem', color: 'var(--ink)', display: 'block', marginBottom: '4px', fontFamily: 'var(--font-display)', fontWeight: 400 }}>
+                Looking to source yarn, dyes, zari, or weaving tools?
+              </strong>
+              <span style={{ fontSize: '0.9rem', color: 'var(--muted)', lineHeight: '1.5', display: 'block' }}>
+                Procure Grade AAA Mulberry Silk hanks, Kala organic cotton, fermented indigo, and gold zari spools directly from verified supplier guilds.
+              </span>
+            </div>
+            <Link to="/raw-materials" className="button button--gold" style={{ whiteSpace: 'nowrap', padding: '12px 24px' }}>
+              Visit B2B Raw Material Marketplace →
+            </Link>
+          </div>
         </div>
 
         <div style={{ display: 'grid', gap: '30px' }}>

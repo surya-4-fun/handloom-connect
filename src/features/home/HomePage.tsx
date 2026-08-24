@@ -1,8 +1,5 @@
 import { useEffect } from 'react'
 import { SpiralHero } from '../../components/motion/SpiralHero'
-import { AboutSection } from '../../components/sections/AboutSection'
-import { PinnedProductStory } from '../../components/motion/PinnedProductStory'
-import { SequentialGallery } from '../../components/motion/SequentialGallery'
 import { ContactSection } from '../../components/sections/ContactSection'
 
 export function HomePage() {
@@ -48,13 +45,6 @@ export function HomePage() {
         }}
       >
         <SpiralHero />
-      </div>
-      <AboutSection />
-      <div id="services">
-        <PinnedProductStory />
-      </div>
-      <div id="gallery">
-        <SequentialGallery />
       </div>
       <ContactSection />
     </>

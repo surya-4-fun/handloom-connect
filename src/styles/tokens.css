@@ -59,3 +59,25 @@
   --shadow: 0 12px 40px rgba(0, 0, 0, 0.65), 0 0 0 1px rgba(212, 175, 55, 0.2);
 }
 
+:root[data-theme='light'] {
+  color-scheme: light;
+  --brand: #9A7B23;
+  --brand-deep: #705814;
+  --brand-light: #C5A059;
+  --gold: #9A7B23;
+  --gold-hover: #C5A059;
+  --gold-deep: #705814;
+  --canvas: #FBF9F5;             /* Premium Pearl Parchment */
+  --canvas-secondary: #F3ECE1;   /* Soft Warm Surface */
+  --surface: #FFFFFF;            /* Clean Card & Modal Surface */
+  --surface-soft: #EFE8DA;       /* Soft Surface Accent */
+  --ink: #181614;                /* Deep Charcoal Ebony Text */
+  --muted: #575046;              /* Legible Antique Muted Text */
+  --border: rgba(154, 123, 35, 0.28); /* Gold Accent Border */
+  --border-strong: rgba(154, 123, 35, 0.55);
+  --success: #2E8B57;
+  --header-text: #181614;
+  --shadow: 0 12px 36px rgba(0, 0, 0, 0.08), 0 0 0 1px rgba(154, 123, 35, 0.18);
+  --shadow-gold: 0 4px 20px rgba(154, 123, 35, 0.12);
+}
+

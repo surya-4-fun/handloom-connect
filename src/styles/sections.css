@@ -199,7 +199,7 @@
   font-weight: 600;
   display: inline-block;
   align-self: flex-start;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  border-bottom: 1px solid var(--border);
   padding-bottom: 2px;
   transition: border-color 0.3s ease, color 0.3s ease;
 }
@@ -229,11 +229,11 @@
 
 /* Contact Form */
 .contact-form-container {
-  background: rgba(255, 255, 255, 0.01);
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  background: var(--surface);
+  border: 1px solid var(--border);
   padding: 40px;
   border-radius: 16px;
-  box-shadow: 0 30px 70px rgba(0, 0, 0, 0.25);
+  box-shadow: var(--shadow, 0 30px 70px rgba(0, 0, 0, 0.15));
   min-height: 420px;
   display: flex;
   flex-direction: column;
@@ -257,7 +257,7 @@
   padding: 12px 0;
   background: transparent;
   border: none;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+  border-bottom: 1px solid var(--border-strong, var(--border));
   color: var(--ink);
   font-size: 14.5px;
   transition: border-color 0.3s ease;
@@ -272,7 +272,7 @@
   position: absolute;
   left: 0;
   top: 12px;
-  color: rgba(255, 255, 255, 0.35);
+  color: var(--muted);
   font-size: 14.5px;
   pointer-events: none;
   transition: transform 0.3s ease, color 0.3s ease, font-size 0.3s ease;

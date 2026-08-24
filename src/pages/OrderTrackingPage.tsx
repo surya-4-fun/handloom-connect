@@ -1,5 +1,7 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { useSearchParams } from 'react-router-dom'
 import { Button } from '../components/primitives/Button'
+import { getOrderById } from '../services/orderService'
 
 interface OrderDetails {
   id: string
@@ -60,15 +62,81 @@ const STAGES = [
 ]
 
 export function OrderTrackingPage() {
-  const [searchId, setSearchId] = useState('HC-2026-8942')
-  const [activeOrder, setActiveOrder] = useState<OrderDetails>(DEMO_ORDERS['HC-2026-8942'])
+  const [searchParams] = useSearchParams()
+  const queryId = searchParams.get('id') || 'HC-2026-8942'
+
+  const [searchId, setSearchId] = useState(queryId)
+  const [activeOrder, setActiveOrder] = useState<OrderDetails>(() => {
+    const found = getOrderById(queryId)
+    if (found) {
+      return {
+        id: found.id,
+        itemName: found.items[0]?.name || 'Handloom Textile Piece',
+        itemImage: found.items[0]?.image || 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?q=80&w=1200&auto=format&fit=crop',
+        price: `₹${found.totalAmount.toLocaleString()}`,
+        artisan: found.items[0]?.artisanName || 'Master Weaver Collective',
+        cluster: found.items[0]?.cluster || 'Kanchipuram Cluster, Tamil Nadu',
+        commissionDate: new Date(found.createdAt).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }),
+        estimatedDelivery: found.estimatedDelivery,
+        currentStage: found.currentStage,
+        totalHours: found.totalHours,
+        completedHours: found.completedHours,
+        silkMarkNo: found.silkMarkNo,
+        giTagNo: found.giTagNo,
+      }
+    }
+    return DEMO_ORDERS['HC-2026-8942']
+  })
   const [showCertModal, setShowCertModal] = useState(false)
   const [errorMsg, setErrorMsg] = useState('')
+
+  useEffect(() => {
+    if (queryId) {
+      setSearchId(queryId)
+      const found = getOrderById(queryId)
+      if (found) {
+        setActiveOrder({
+          id: found.id,
+          itemName: found.items[0]?.name || 'Handloom Textile Piece',
+          itemImage: found.items[0]?.image || 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?q=80&w=1200&auto=format&fit=crop',
+          price: `₹${found.totalAmount.toLocaleString()}`,
+          artisan: found.items[0]?.artisanName || 'Master Weaver Collective',
+          cluster: found.items[0]?.cluster || 'Kanchipuram Cluster, Tamil Nadu',
+          commissionDate: new Date(found.createdAt).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }),
+          estimatedDelivery: found.estimatedDelivery,
+          currentStage: found.currentStage,
+          totalHours: found.totalHours,
+          completedHours: found.completedHours,
+          silkMarkNo: found.silkMarkNo,
+          giTagNo: found.giTagNo,
+        })
+        setErrorMsg('')
+      }
+    }
+  }, [queryId])
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault()
     const cleanId = searchId.trim().toUpperCase()
-    if (DEMO_ORDERS[cleanId]) {
+    const found = getOrderById(cleanId)
+    if (found) {
+      setActiveOrder({
+        id: found.id,
+        itemName: found.items[0]?.name || 'Handloom Textile Piece',
+        itemImage: found.items[0]?.image || 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?q=80&w=1200&auto=format&fit=crop',
+        price: `₹${found.totalAmount.toLocaleString()}`,
+        artisan: found.items[0]?.artisanName || 'Master Weaver Collective',
+        cluster: found.items[0]?.cluster || 'Kanchipuram Cluster, Tamil Nadu',
+        commissionDate: new Date(found.createdAt).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }),
+        estimatedDelivery: found.estimatedDelivery,
+        currentStage: found.currentStage,
+        totalHours: found.totalHours,
+        completedHours: found.completedHours,
+        silkMarkNo: found.silkMarkNo,
+        giTagNo: found.giTagNo,
+      })
+      setErrorMsg('')
+    } else if (DEMO_ORDERS[cleanId]) {
       setActiveOrder(DEMO_ORDERS[cleanId])
       setErrorMsg('')
     } else {

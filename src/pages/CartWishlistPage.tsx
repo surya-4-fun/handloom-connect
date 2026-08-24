@@ -1,6 +1,8 @@
 import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 
 export function CartWishlistPage({ type }: { type: 'cart' | 'wishlist' }) {
+  const navigate = useNavigate()
   const [items, setItems] = useState([
     {
       id: '1',
@@ -78,7 +80,7 @@ export function CartWishlistPage({ type }: { type: 'cart' | 'wishlist' }) {
                 <span style={{ color: 'var(--gold)', fontFamily: 'var(--font-display)', fontSize: '1.6rem' }}>₹{total.toLocaleString()}</span>
               </div>
 
-              <button className="button button--primary" style={{ width: '100%' }} onClick={() => alert('Proceeding to Atelier Checkout')}>
+              <button className="button button--primary" style={{ width: '100%' }} onClick={() => navigate('/checkout')}>
                 Proceed to Secure Checkout
               </button>
             </div>

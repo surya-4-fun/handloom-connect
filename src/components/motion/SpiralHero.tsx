@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { makeBadgeTexture } from '../../lib/webgl/make-badge';
+import handloomLogoEmblem from '../../assets/images/handloom-logo-emblem.png';
 import {
   Renderer,
   Camera,
@@ -30,10 +30,10 @@ interface CardData {
 const CARDS_DATA: CardData[] = [
   {
     id: 'indigo-throw',
-    title: 'Indigo Reversible Throw',
-    detail: 'Product Design · Nila Collective · Kutch',
-    src: 'https://images.unsplash.com/photo-1606744888344-493238951221?q=80&w=1200&auto=format&fit=crop',
-    lg: 'https://images.unsplash.com/photo-1606744888344-493238951221?q=80&w=1200&auto=format&fit=crop',
+    title: 'Heritage Kanchipuram Silk',
+    detail: 'Artisan Craft · Leela Raman · Tamil Nadu',
+    src: 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?q=80&w=1200&auto=format&fit=crop',
+    lg: 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?q=80&w=1200&auto=format&fit=crop',
     to: '/marketplace',
     accent: [0.784, 0.635, 0.298],
     w: 1200,
@@ -41,7 +41,7 @@ const CARDS_DATA: CardData[] = [
   },
   {
     id: 'tussar-stole',
-    title: 'Tussar Silk Stole',
+    title: 'Handspun Tussar Silk Stole',
     detail: 'Branding & Craft · Meera Devi · Bhagalpur',
     src: 'https://images.unsplash.com/photo-1584917865442-de89df76afd3?q=80&w=1200&auto=format&fit=crop',
     lg: 'https://images.unsplash.com/photo-1584917865442-de89df76afd3?q=80&w=1200&auto=format&fit=crop',
@@ -52,54 +52,54 @@ const CARDS_DATA: CardData[] = [
   },
   {
     id: 'table-linen',
-    title: 'Handspun Table Linen',
-    detail: 'Product Design · Sutradhar Studio · Bengal',
-    src: 'https://images.unsplash.com/photo-1528458876861-544fd1761a91?q=80&w=1200&auto=format&fit=crop',
-    lg: 'https://images.unsplash.com/photo-1528458876861-544fd1761a91?q=80&w=1200&auto=format&fit=crop',
-    to: '/marketplace',
+    title: 'Master Weaver at Loom',
+    detail: 'Loom Craftsmanship · Sutradhar Collective · Bengal',
+    src: 'https://images.unsplash.com/photo-1605000797499-95a51c5269ae?q=80&w=1200&auto=format&fit=crop',
+    lg: 'https://images.unsplash.com/photo-1605000797499-95a51c5269ae?q=80&w=1200&auto=format&fit=crop',
+    to: '/artisans',
     accent: [0.484, 0.635, 0.598],
     w: 1200,
     h: 800
   },
   {
     id: 'kanchipuram',
-    title: 'Kanchipuram Heritage',
-    detail: 'Artisan Story · Leela Raman · Tamil Nadu',
-    src: 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?q=80&w=1200&auto=format&fit=crop',
-    lg: 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?q=80&w=1200&auto=format&fit=crop',
-    to: '/artisans',
+    title: 'Banarasi Zari Heirloom',
+    detail: 'Royal Brocade · Varanasi Weavers · UP',
+    src: 'https://images.unsplash.com/photo-1617627143750-d86bc21e42bb?q=80&w=1200&auto=format&fit=crop',
+    lg: 'https://images.unsplash.com/photo-1617627143750-d86bc21e42bb?q=80&w=1200&auto=format&fit=crop',
+    to: '/marketplace',
     accent: [0.854, 0.435, 0.398],
     w: 1200,
     h: 800
   },
   {
     id: 'natural-dyes',
-    title: 'Natural Indigo v3',
-    detail: 'Branding & Development · Nila Workshop · Gujarat',
-    src: 'https://images.unsplash.com/photo-1579783902614-a3fb3927b675?q=80&w=1200&auto=format&fit=crop',
-    lg: 'https://images.unsplash.com/photo-1579783902614-a3fb3927b675?q=80&w=1200&auto=format&fit=crop',
-    to: '/ai-material-guide',
+    title: 'Natural Indigo Vat Dyeing',
+    detail: 'Organic Craft · Nila Workshop · Gujarat',
+    src: 'https://images.unsplash.com/photo-1598300042247-d088f8ab3a91?q=80&w=1200&auto=format&fit=crop',
+    lg: 'https://images.unsplash.com/photo-1598300042247-d088f8ab3a91?q=80&w=1200&auto=format&fit=crop',
+    to: '/materials',
     accent: [0.384, 0.635, 0.798],
     w: 1200,
     h: 800
   },
   {
     id: 'wool-carpet',
-    title: 'Bhadohi Wool Carpet',
-    detail: 'Development · Bhadohi Weavers · UP',
-    src: 'https://images.unsplash.com/photo-1600121848594-d8644e57abab?q=80&w=1200&auto=format&fit=crop',
-    lg: 'https://images.unsplash.com/photo-1600121848594-d8644e57abab?q=80&w=1200&auto=format&fit=crop',
-    to: '/marketplace',
+    title: 'Pure Kashmiri Pashmina',
+    detail: 'Hand-spun Weave · Srinagar Artisans · Kashmir',
+    src: 'https://images.unsplash.com/photo-1544441893-675973e31985?q=80&w=1200&auto=format&fit=crop',
+    lg: 'https://images.unsplash.com/photo-1544441893-675973e31985?q=80&w=1200&auto=format&fit=crop',
+    to: '/artisans',
     accent: [0.684, 0.535, 0.498],
     w: 1200,
     h: 800
   },
   {
     id: 'jamdani-saree',
-    title: 'Fine Jamdani Saree',
-    detail: 'Product Design · Phulia Weaves · Bengal',
-    src: 'https://images.unsplash.com/photo-1596755094514-f87e34085b2c?q=80&w=1200&auto=format&fit=crop',
-    lg: 'https://images.unsplash.com/photo-1596755094514-f87e34085b2c?q=80&w=1200&auto=format&fit=crop',
+    title: 'Fine Bengal Jamdani',
+    detail: 'Muslin Craft · Phulia Weavers · Bengal',
+    src: 'https://images.unsplash.com/photo-1612817288484-6f916006741a?q=80&w=1200&auto=format&fit=crop',
+    lg: 'https://images.unsplash.com/photo-1612817288484-6f916006741a?q=80&w=1200&auto=format&fit=crop',
     to: '/marketplace',
     accent: [0.784, 0.635, 0.298],
     w: 1200,
@@ -107,11 +107,11 @@ const CARDS_DATA: CardData[] = [
   },
   {
     id: 'pashmina-shawl',
-    title: 'Pure Pashmina Shawl',
-    detail: 'Artisan Story · Kashmiri Artisans · Srinagar',
-    src: 'https://images.unsplash.com/photo-1544441893-675973e31985?q=80&w=1200&auto=format&fit=crop',
-    lg: 'https://images.unsplash.com/photo-1544441893-675973e31985?q=80&w=1200&auto=format&fit=crop',
-    to: '/artisans',
+    title: 'Chanderi Gold Textile',
+    detail: 'Sheer Zari Weave · Chanderi Atelier · MP',
+    src: 'https://images.unsplash.com/photo-1601244005535-a48d21d951ac?q=80&w=1200&auto=format&fit=crop',
+    lg: 'https://images.unsplash.com/photo-1601244005535-a48d21d951ac?q=80&w=1200&auto=format&fit=crop',
+    to: '/marketplace',
     accent: [0.984, 0.735, 0.498],
     w: 1200,
     h: 800
@@ -306,7 +306,7 @@ const backgroundGridFragmentShader = `
     vec2 q = abs(fract(g) - 0.5);
     float line = smoothstep(0.48, 0.5, max(q.x, q.y));
     float vign = 1.0 - smoothstep(0.3, 1.3, length(st));
-    gl_FragColor = vec4(vec3(line * 0.032 * vign), 1.0);
+    gl_FragColor = vec4(vec3(line * 0.1 * vign), line * 0.12 * vign);
   }
 `;
 
@@ -391,7 +391,7 @@ class SpiralEngine {
     this.renderer = new Renderer({
       canvas,
       dpr: Math.min(window.devicePixelRatio || 1, 2),
-      alpha: false,
+      alpha: true,
       antialias: true
     });
     this.gl = this.renderer.gl;
@@ -490,12 +490,23 @@ class SpiralEngine {
     this.logoMesh.visible = false;
     this.logoMesh.setParent(this.scene);
 
-    // Draw the metallic HC logo badge texture onto logoTex
-    const logoCanvas = makeBadgeTexture();
-    logoTex.image = logoCanvas;
-    logoTex.needsUpdate = true;
-    this.logoMesh.scale.set(2.4, 2.4 * (logoCanvas.height / logoCanvas.width), 1);
-    this.logoReady = true;
+    // Load the circular Handloom Connect emblem texture onto logoTex
+    const emblemImg = new Image();
+    emblemImg.src = handloomLogoEmblem;
+    emblemImg.onload = () => {
+      if (this.disposed) return;
+      logoTex.image = emblemImg;
+      logoTex.needsUpdate = true;
+      const aspect = emblemImg.height / emblemImg.width || 1;
+      this.logoMesh.scale.set(2.6, 2.6 * aspect, 1);
+      this.logoReady = true;
+    };
+    if (emblemImg.complete && emblemImg.width > 0) {
+      logoTex.image = emblemImg;
+      logoTex.needsUpdate = true;
+      this.logoMesh.scale.set(2.6, 2.6 * (emblemImg.height / emblemImg.width), 1);
+      this.logoReady = true;
+    }
 
     // Post processing meshes
     const triangleGeo = new Triangle(this.gl);
@@ -509,9 +520,11 @@ class SpiralEngine {
           uniform sampler2D tMap;
           varying vec2 vUv;
           void main() {
-            gl_FragColor = vec4(texture2D(tMap, vUv).rgb, 1.0);
+            vec4 tex = texture2D(tMap, vUv);
+            gl_FragColor = vec4(tex.rgb, tex.a);
           }
         `,
+        transparent: true,
         uniforms: { tMap: { value: logoTex } }
       })
     });
