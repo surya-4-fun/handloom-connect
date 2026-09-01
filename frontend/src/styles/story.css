@@ -1,0 +1,108 @@
+/* ─── Product Authenticity & QR Story Experience ───────────────────── */
+
+.product-story-page {
+  padding-top: 120px;
+  padding-bottom: var(--spacing-xxl);
+  min-height: 100vh;
+  background: var(--canvas);
+  color: var(--ink);
+}
+
+.authenticity-card {
+  background: var(--canvas-secondary);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  padding: var(--spacing-xl);
+  margin-top: var(--spacing-xl);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04);
+}
+
+.authenticity-badges-row {
+  display: flex;
+  gap: var(--spacing-sm);
+  flex-wrap: wrap;
+  margin-block: var(--spacing-md);
+}
+
+.authenticity-badge-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  background: var(--canvas);
+  border: 1px solid var(--border);
+  border-radius: 100px;
+  font-size: 0.82rem;
+  color: var(--ink);
+  font-weight: 600;
+}
+
+.authenticity-badge-item.certified {
+  border-color: var(--gold);
+  color: var(--gold);
+  background: rgba(212, 175, 55, 0.08);
+}
+
+/* QR Code Card Wrapper */
+.qr-card-container {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-lg);
+  background: var(--canvas);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-lg);
+  margin-top: var(--spacing-lg);
+}
+
+@media (max-width: 600px) {
+  .qr-card-container {
+    flex-direction: column;
+    text-align: center;
+  }
+}
+
+/* Story Page Hero */
+.story-hero-grid {
+  display: grid;
+  grid-template-columns: 1.1fr 1fr;
+  gap: var(--spacing-xxl);
+  align-items: center;
+  margin-bottom: var(--spacing-xxl);
+}
+
+@media (max-width: 860px) {
+  .story-hero-grid {
+    grid-template-columns: 1fr;
+    gap: var(--spacing-xl);
+  }
+}
+
+.story-journey-timeline {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+  position: relative;
+  margin-block: var(--spacing-xl);
+}
+
+.story-journey-step {
+  display: grid;
+  grid-template-columns: 48px 1fr;
+  gap: var(--spacing-md);
+  align-items: start;
+}
+
+.story-step-circle {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: var(--canvas-secondary);
+  border: 1px solid var(--border);
+  color: var(--gold);
+  display: grid;
+  place-items: center;
+  font-family: var(--font-display);
+  font-size: 1.2rem;
+  font-weight: 600;
+}

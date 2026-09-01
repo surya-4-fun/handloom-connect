@@ -1,0 +1,376 @@
+/* Immersive Dark Theme variables and styles for 3D Spiral Home Screen */
+
+.spiral-hero {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  background-color: var(--canvas); /* matte black background */
+  color: var(--ink);
+  user-select: none;
+  font-family: var(--font-ui);
+}
+
+.spiral-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  touch-action: none;
+  display: block;
+}
+
+/* Floating custom pointer glass refraction lens */
+.spiral-cursor-lens {
+  position: fixed;
+  left: 0;
+  top: 0;
+  pointer-events: none;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 20px 10px 14px;
+  border-radius: 100px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  background: linear-gradient(135deg, rgba(255,255,255,0.12) 0%, rgba(255,255,255,0.02) 60%, rgba(255,255,255,0.08) 100%);
+  box-shadow: 
+    0 12px 35px rgba(0, 0, 0, 0.4), 
+    inset 0 1px 0 rgba(255, 255, 255, 0.22),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.04);
+  /* The SVG distortion filter! */
+  backdrop-filter: url(#agd-pill-lens) blur(4px) brightness(0.85) saturate(1.45);
+  -webkit-backdrop-filter: url(#agd-pill-lens) blur(4px) brightness(0.85) saturate(1.45);
+  transform-origin: center center;
+  will-change: transform, opacity;
+}
+
+.cursor-lens-label {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.25;
+}
+
+.cursor-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink);
+  letter-spacing: 0.5px;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+}
+
+.cursor-detail {
+  font-size: 10.5px;
+  font-weight: 500;
+  color: var(--muted);
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+/* Bottom HUD elements */
+.spiral-overlay-left {
+  position: absolute;
+  bottom: 40px;
+  left: 40px;
+  max-width: 340px;
+  z-index: 5;
+  pointer-events: none;
+}
+
+.spiral-overlay-left h2 {
+  font-family: var(--font-ui);
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 1.35;
+  margin-bottom: 12px;
+  display: flex;
+  flex-direction: column;
+  letter-spacing: -0.2px;
+}
+
+.spiral-overlay-left h2 span:first-child {
+  color: var(--ink);
+}
+
+.spiral-overlay-left h2 span:last-child {
+  color: var(--muted); /* muted sand */
+}
+
+.spiral-overlay-left p {
+  font-size: 13.5px;
+  line-height: 1.5;
+  color: var(--muted);
+}
+
+/* Center paginated dot slider HUD */
+.spiral-overlay-center {
+  position: absolute;
+  bottom: 40px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  z-index: 5;
+  font-family: var(--font-ui);
+  font-weight: 700;
+  font-size: 12px;
+  letter-spacing: 1px;
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.slide-counter-num {
+  color: var(--ink);
+}
+
+.slide-counter-bar {
+  position: relative;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  width: 140px;
+  height: 4px;
+}
+
+.slide-counter-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  transition: background 0.3s ease, transform 0.3s ease;
+}
+
+.slide-counter-dot.is-active {
+  transform: scale(1.4);
+}
+
+.slide-counter-progress {
+  position: absolute;
+  top: 1px;
+  height: 2px;
+  width: 20px;
+  border-radius: 2px;
+  transform: translateX(-50%);
+  transition: background 0.4s ease;
+  will-change: left;
+}
+
+.slide-counter-total {
+  color: rgba(255, 255, 255, 0.22);
+}
+
+/* Right Navigation list HUD */
+.spiral-overlay-right {
+  position: absolute;
+  bottom: 40px;
+  right: 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 12px;
+  z-index: 5;
+}
+
+.spiral-overlay-link {
+  background: none;
+  border: none;
+  color: rgba(255, 255, 255, 0.45);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  cursor: pointer;
+  padding: 4px 0;
+  transition: color 0.3s ease, transform 0.3s ease;
+}
+
+.spiral-overlay-link span {
+  display: inline-block;
+  transform: translateX(0);
+  transition: transform 0.3s ease;
+}
+
+.spiral-overlay-link:hover {
+  color: var(--ink);
+}
+
+.spiral-overlay-link:hover span {
+  transform: translateX(4px);
+}
+
+/* Fullscreen Detail Popup Modal */
+.project-popup-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(6, 5, 5, 0.88);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  will-change: opacity;
+}
+
+.project-popup-content-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  align-items: center;
+  width: 780px;
+  max-width: 90vw;
+}
+
+.project-popup-card {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1.6 / 1.05;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 
+    0 35px 90px rgba(0, 0, 0, 0.85),
+    0 0 1px rgba(255, 255, 255, 0.15);
+  background: var(--canvas-secondary);
+  outline: none;
+  will-change: transform, opacity;
+}
+
+.project-popup-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  filter: brightness(0.9) contrast(1.02);
+  transition: opacity 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.project-popup-image.is-loaded {
+  opacity: 1;
+}
+
+.project-popup-close-btn {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background: rgba(0, 0, 0, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: var(--ink);
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  cursor: pointer;
+  z-index: 10;
+  transition: background 0.3s ease, border-color 0.3s ease;
+}
+
+.project-popup-close-btn:hover {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+.project-popup-text-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  padding-top: 20px;
+  will-change: transform, opacity;
+}
+
+.project-popup-title {
+  font-family: var(--font-display);
+  font-size: 26px;
+  font-weight: 500;
+  color: var(--ink);
+}
+
+.project-popup-detail {
+  font-family: var(--font-ui);
+  font-size: 13.5px;
+  color: var(--muted);
+  letter-spacing: 0.3px;
+}
+
+/* Floating Dial progress dial following mouse */
+.project-popup-dial {
+  position: fixed;
+  pointer-events: none;
+  z-index: 1200;
+  width: 110px;
+  height: 110px;
+  transition: opacity 0.25s cubic-bezier(0.25, 1, 0.5, 1);
+  will-change: transform;
+}
+
+.project-popup-dial-svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.project-popup-dial-center {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0,0,0,0.3);
+  border-radius: 50%;
+  margin: 10px;
+}
+
+.project-popup-dial-letters {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.project-popup-dial-char {
+  position: absolute;
+  left: 55px; /* half of dial width */
+  top: 12px;
+  font-family: var(--font-ui);
+  font-size: 7.5px;
+  font-weight: 800;
+  text-transform: uppercase;
+  transform-origin: 0 43px; /* centers layout offset */
+  letter-spacing: 0.5px;
+}
+
+/* Mobile optimizations */
+@media (max-width: 900px) {
+  .spiral-overlay-left {
+    bottom: 24px;
+    left: 20px;
+    right: 20px;
+    max-width: none;
+  }
+  .spiral-overlay-center {
+    display: none; /* Hide dots on mobile viewport to save space */
+  }
+  .spiral-overlay-right {
+    position: absolute;
+    top: 24px;
+    right: 20px;
+    bottom: auto;
+    flex-direction: row;
+    gap: 16px;
+  }
+  .project-popup-card {
+    border-radius: 8px;
+  }
+  .project-popup-text-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  .project-popup-title {
+    font-size: 20px;
+  }
+}

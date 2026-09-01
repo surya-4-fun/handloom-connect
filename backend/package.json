@@ -1,0 +1,38 @@
+{
+  "name": "handloom-connect-backend",
+  "version": "1.0.0",
+  "description": "REST API Backend for Handloom Connect powered by Node.js, Express, and MySQL",
+  "main": "src/server.js",
+  "type": "module",
+  "scripts": {
+    "dev": "nodemon src/server.js",
+    "start": "node src/server.js",
+    "db:init": "node database/initDb.js",
+    "test:api": "node test/api-test.js",
+    "test:audit": "node test/full-audit-test.js"
+  },
+  "keywords": [
+    "handloom",
+    "artisan",
+    "ecommerce",
+    "express",
+    "mysql",
+    "rest-api"
+  ],
+  "author": "Handloom Connect",
+  "license": "MIT",
+  "dependencies": {
+    "bcryptjs": "^3.0.2",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "express-validator": "^7.2.1",
+    "helmet": "^8.0.0",
+    "jsonwebtoken": "^9.0.2",
+    "morgan": "^1.10.0",
+    "mysql2": "^3.12.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.9"
+  }
+}
