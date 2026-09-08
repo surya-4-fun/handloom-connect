@@ -8,7 +8,7 @@ import { QuickViewModal } from '../components/shop/QuickViewModal'
 import { RegionDiscovery } from '../components/shop/RegionDiscovery'
 import { useShopState } from '../hooks/useShopState'
 import { useCart } from '../hooks/useCart'
-import { fetchCategories } from '../services/productService'
+import { fetchCategories, fetchFacets, type ProductFacets } from '../services/productService'
 import type { ShopProduct, ShopCategory } from '../types/shopTypes'
 
 export function MarketplacePage() {
@@ -19,6 +19,8 @@ export function MarketplacePage() {
   const [mobileFilterOpen, setMobileFilterOpen] = useState(false)
   const [quickViewProduct, setQuickViewProduct] = useState<ShopProduct | null>(null)
   const [categories, setCategories] = useState<ShopCategory[]>([])
+  const [facets, setFacets] = useState<ProductFacets | undefined>(undefined)
+  const [isLoadingFacets, setIsLoadingFacets] = useState<boolean>(true)
 
   const productsSectionRef = useRef<HTMLDivElement>(null)
 
@@ -35,6 +37,23 @@ export function MarketplacePage() {
       }
     }
     loadCategories()
+    return () => { isMounted = false }
+  }, [])
+
+  useEffect(() => {
+    let isMounted = true
+    fetchFacets()
+      .then(data => {
+        if (isMounted && data) {
+          setFacets(data)
+        }
+      })
+      .catch(err => {
+        console.warn('[MarketplacePage] Failed to fetch facets from API:', err)
+      })
+      .finally(() => {
+        if (isMounted) setIsLoadingFacets(false)
+      })
     return () => { isMounted = false }
   }, [])
 
@@ -129,6 +148,8 @@ export function MarketplacePage() {
               toggleArrayFilter={toggleArrayFilter}
               resetFilters={resetFilters}
               activeFilterCount={activeFilterCount}
+              facets={facets}
+              isLoadingFacets={isLoadingFacets}
             />
 
             {/* Product Grid */}
@@ -159,6 +180,8 @@ export function MarketplacePage() {
         toggleArrayFilter={toggleArrayFilter}
         resetFilters={resetFilters}
         activeFilterCount={activeFilterCount}
+        facets={facets}
+        isLoadingFacets={isLoadingFacets}
       />
 
       {/* Quick View Modal */}

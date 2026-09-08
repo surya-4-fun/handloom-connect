@@ -7,6 +7,12 @@ export interface ArtisanDetailResult {
   isFollowing: boolean
 }
 
+export interface ArtisanStoryResult {
+  artisan: ShopArtisan
+  products: ShopProduct[]
+  verifiedAt: string
+}
+
 export async function fetchArtisans(params: { search?: string; region?: string; tab?: 'all' | 'masters' | 'collectives' } = {}): Promise<ShopArtisan[]> {
   const searchParams = new URLSearchParams()
   if (params.search) searchParams.append('search', params.search)
@@ -21,6 +27,16 @@ export async function fetchArtisans(params: { search?: string; region?: string; 
 export async function fetchArtisanDetail(id: string): Promise<ArtisanDetailResult | null> {
   const res = await api.get<ArtisanDetailResult>(`/artisans/${id}`)
   return res.data
+}
+
+export async function fetchArtisanStory(id: string): Promise<ArtisanStoryResult | null> {
+  try {
+    const res = await api.get<ArtisanStoryResult>(`/artisans/${id}/story`)
+    return res.data
+  } catch (err: any) {
+    console.warn(`[Artisan Service] Failed to fetch artisan story for ${id}:`, err?.message)
+    return null
+  }
 }
 
 export async function toggleFollowArtisan(id: string): Promise<{ following: boolean }> {

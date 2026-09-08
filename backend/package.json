@@ -9,7 +9,11 @@
     "start": "node src/server.js",
     "db:init": "node database/initDb.js",
     "test:api": "node test/api-test.js",
-    "test:audit": "node test/full-audit-test.js"
+    "test:audit": "node test/full-audit-test.js",
+    "test:ar": "node test/ar-preview-test.js",
+    "test:order": "node test/order-regression-test.js",
+    "test:security": "node test/security-hardening-test.js",
+    "test:consistency": "node test/data-consistency-test.js"
   },
   "keywords": [
     "handloom",
@@ -22,6 +26,7 @@
   "author": "Handloom Connect",
   "license": "MIT",
   "dependencies": {
+    "axios": "^1.20.0",
     "bcryptjs": "^3.0.2",
     "cors": "^2.8.5",
     "dotenv": "^16.4.7",

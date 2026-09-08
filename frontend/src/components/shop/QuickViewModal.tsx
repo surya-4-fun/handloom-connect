@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom'
 import { Icon } from '../primitives/Icon'
 import { Button } from '../primitives/Button'
 import type { ShopProduct } from '../../types/shopTypes'
-import { getArtisanById } from '../../utils/mocks/shopData'
 
 interface QuickViewModalProps {
   product: ShopProduct | null
@@ -37,7 +36,7 @@ export function QuickViewModal({ product, onClose, onAddToCart, isInCart }: Quic
 
   if (!product) return null
 
-  const artisan = getArtisanById(product.artisanId)
+  const artisanName = product.artisanName || product.artisan?.name
 
   const handleAdd = () => {
     onAddToCart(product.id, quantity)
@@ -65,10 +64,10 @@ export function QuickViewModal({ product, onClose, onAddToCart, isInCart }: Quic
               <span className="quick-view__detail-label">Material</span>
               <span className="quick-view__detail-value">{product.material}</span>
             </div>
-            {artisan && (
+            {artisanName && (
               <div className="quick-view__detail">
                 <span className="quick-view__detail-label">Artisan</span>
-                <span className="quick-view__detail-value">{artisan.name}</span>
+                <span className="quick-view__detail-value">{artisanName}</span>
               </div>
             )}
           </div>

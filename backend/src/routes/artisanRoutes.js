@@ -6,6 +6,7 @@ const router = Router()
 
 router.get('/', artisanController.getArtisans)
 router.get('/user/followed', requireAuth, artisanController.getFollowed)
+router.get('/:id/story', artisanController.getArtisanStory)
 router.get('/:id', optionalAuth, artisanController.getArtisanDetail)
 router.post('/:id/follow', requireAuth, artisanController.toggleFollow)
 router.post('/:id/support', optionalAuth, artisanController.supportArtisan)

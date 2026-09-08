@@ -65,6 +65,6 @@ export async function fetchCategories(): Promise<ShopCategory[]> {
 }
 
 export async function fetchFacets(): Promise<ProductFacets> {
-  const res = await api.get<ProductFacets>('/products/meta/facets')
+  const res = await api.get<ProductFacets>('/products/facets')
   return res.data
 }

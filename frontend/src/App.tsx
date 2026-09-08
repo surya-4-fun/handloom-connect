@@ -23,6 +23,7 @@ const ProfilePage = lazy(() => import('./pages/ProfilePage').then(m => ({ defaul
 const CheckoutPage = lazy(() => import('./pages/CheckoutPage').then(m => ({ default: m.CheckoutPage })))
 const OrderConfirmationPage = lazy(() => import('./pages/OrderConfirmationPage').then(m => ({ default: m.OrderConfirmationPage })))
 const ArtisanDetailPage = lazy(() => import('./pages/ArtisanDetailPage').then(m => ({ default: m.ArtisanDetailPage })))
+const ArtisanStoryPage = lazy(() => import('./pages/ArtisanStoryPage').then(m => ({ default: m.ArtisanStoryPage })))
 const RawMaterialsPage = lazy(() => import('./pages/RawMaterialsPage').then(m => ({ default: m.RawMaterialsPage })))
 const ProductStoryPage = lazy(() => import('./pages/ProductStoryPage').then(m => ({ default: m.ProductStoryPage })))
 const ContactPage = lazy(() => import('./pages/ContactPage').then(m => ({ default: m.ContactPage })))
@@ -43,6 +44,7 @@ export function App() {
           <Route path="/story/:productId" element={<ProductStoryPage />} />
           <Route path="/artisans" element={<ArtisansPage />} />
           <Route path="/artisans/:artisanId" element={<ArtisanDetailPage />} />
+          <Route path="/artisan-story/:artisanId" element={<ArtisanStoryPage />} />
           <Route path="/materials" element={<MaterialsPage />} />
           <Route path="/raw-materials" element={<RawMaterialsPage />} />
           <Route path="/ai-material-guide" element={<MaterialsPage />} />

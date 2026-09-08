@@ -146,5 +146,25 @@ export const productController = {
     } catch (err) {
       next(err)
     }
+  },
+
+  async getProductPassport(req, res, next) {
+    try {
+      const { idOrSlug } = req.params
+      const product = await productModel.getByIdOrSlug(idOrSlug)
+
+      if (!product) {
+        return sendError(res, 'Product not found', 404, 'PRODUCT_NOT_FOUND')
+      }
+
+      const passport = await productModel.getPassportByProductId(product.id)
+      if (!passport) {
+        return sendSuccess(res, null, 'Authenticity passport not available for this product')
+      }
+
+      return sendSuccess(res, passport, 'Authenticity passport retrieved')
+    } catch (err) {
+      next(err)
+    }
   }
 }

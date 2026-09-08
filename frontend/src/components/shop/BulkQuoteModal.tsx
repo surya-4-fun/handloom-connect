@@ -67,7 +67,7 @@ export function BulkQuoteModal({ material, onClose }: BulkQuoteModalProps) {
               Your bulk supply inquiry for <strong>{requestedQty} {material.quantityUnit}</strong> of <strong>{material.name}</strong> has been routed directly to <strong>{material.supplier.name}</strong>.
             </p>
             <div style={{ background: 'var(--canvas)', border: '1px solid var(--border)', borderRadius: 'var(--radius-md)', padding: '12px', marginTop: '16px', fontSize: '0.82rem', color: 'var(--ink)' }}>
-              Direct supplier quote reference: <code>{referenceNo || `B2B-${Math.floor(100000 + Math.random() * 900000)}`}</code>
+              Direct supplier quote reference: <code>{referenceNo || 'B2B-PENDING'}</code>
             </div>
           </div>
         ) : (

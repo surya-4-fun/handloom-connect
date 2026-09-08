@@ -1,10 +1,76 @@
+import { useState, useEffect } from 'react'
+import QRCode from 'qrcode'
+
 interface QRCodeViewProps {
   value: string
   size?: number
   className?: string
+  alt?: string
 }
 
-export function QRCodeView({ size = 160, className = '' }: QRCodeViewProps) {
+export function QRCodeView({ value, size = 160, className = '', alt = 'Handloom Connect Story QR Code' }: QRCodeViewProps) {
+  const [dataUrl, setDataUrl] = useState<string>('')
+  const [hasError, setHasError] = useState<boolean>(false)
+
+  useEffect(() => {
+    let isMounted = true
+    if (!value || typeof value !== 'string') {
+      setDataUrl('')
+      setHasError(true)
+      return
+    }
+
+    setHasError(false)
+    QRCode.toDataURL(value, {
+      errorCorrectionLevel: 'M',
+      margin: 1,
+      width: Math.max(128, size * 2), // High resolution for mobile scanning
+      color: {
+        dark: '#0A0908',
+        light: '#FFFFFF'
+      }
+    })
+      .then(url => {
+        if (isMounted) {
+          setDataUrl(url)
+        }
+      })
+      .catch(err => {
+        console.warn('[QRCodeView] Failed to generate QR code:', err)
+        if (isMounted) {
+          setHasError(true)
+        }
+      })
+
+    return () => {
+      isMounted = false
+    }
+  }, [value, size])
+
+  if (hasError || !value) {
+    return (
+      <div
+        className={`qr-code-view qr-code-view--fallback ${className}`}
+        style={{
+          width: `${size}px`,
+          height: `${size}px`,
+          background: '#ffffff',
+          padding: '8px',
+          borderRadius: '12px',
+          border: '1px solid var(--border)',
+          display: 'grid',
+          placeItems: 'center',
+          textAlign: 'center',
+          color: 'var(--muted)',
+          fontSize: '0.72rem'
+        }}
+        aria-label="QR Code unavailable"
+      >
+        <span>⚠️ QR Unavailable</span>
+      </div>
+    )
+  }
+
   return (
     <div
       className={`qr-code-view ${className}`}
@@ -12,64 +78,40 @@ export function QRCodeView({ size = 160, className = '' }: QRCodeViewProps) {
         width: `${size}px`,
         height: `${size}px`,
         background: '#ffffff',
-        padding: '12px',
+        padding: '8px',
         borderRadius: '12px',
-        boxShadow: '0 8px 24px rgba(0, 0, 0, 0.12)',
+        boxShadow: '0 8px 24px rgba(0, 0, 0, 0.18)',
+        border: '1px solid rgba(212, 175, 55, 0.4)',
         display: 'grid',
         placeItems: 'center',
-        position: 'relative'
+        position: 'relative',
+        overflow: 'hidden'
       }}
     >
-      <svg
-        width="100%"
-        height="100%"
-        viewBox="0 0 100 100"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        {/* Background */}
-        <rect width="100" height="100" fill="#FFFFFF" rx="4" />
-        
-        {/* Finder Pattern Top-Left */}
-        <rect x="6" y="6" width="28" height="28" fill="#0A0908" rx="4" />
-        <rect x="12" y="12" width="16" height="16" fill="#FFFFFF" rx="2" />
-        <rect x="16" y="16" width="8" height="8" fill="#D4AF37" rx="1" />
-
-        {/* Finder Pattern Top-Right */}
-        <rect x="66" y="6" width="28" height="28" fill="#0A0908" rx="4" />
-        <rect x="72" y="12" width="16" height="16" fill="#FFFFFF" rx="2" />
-        <rect x="76" y="16" width="8" height="8" fill="#D4AF37" rx="1" />
-
-        {/* Finder Pattern Bottom-Left */}
-        <rect x="6" y="66" width="28" height="28" fill="#0A0908" rx="4" />
-        <rect x="12" y="72" width="16" height="16" fill="#FFFFFF" rx="2" />
-        <rect x="16" y="76" width="8" height="8" fill="#D4AF37" rx="1" />
-
-        {/* Simulated QR Data Matrix Modules */}
-        <rect x="40" y="8" width="6" height="6" fill="#0A0908" rx="1" />
-        <rect x="52" y="8" width="6" height="6" fill="#0A0908" rx="1" />
-        <rect x="40" y="20" width="18" height="6" fill="#0A0908" rx="1" />
-        <rect x="46" y="30" width="6" height="12" fill="#0A0908" rx="1" />
-        
-        <rect x="8" y="40" width="6" height="18" fill="#0A0908" rx="1" />
-        <rect x="20" y="46" width="12" height="6" fill="#0A0908" rx="1" />
-        
-        <rect x="66" y="40" width="12" height="6" fill="#0A0908" rx="1" />
-        <rect x="82" y="40" width="6" height="18" fill="#0A0908" rx="1" />
-        <rect x="72" y="52" width="16" height="6" fill="#0A0908" rx="1" />
-
-        <rect x="40" y="66" width="6" height="12" fill="#0A0908" rx="1" />
-        <rect x="52" y="72" width="12" height="6" fill="#0A0908" rx="1" />
-        <rect x="40" y="84" width="18" height="6" fill="#0A0908" rx="1" />
-        
-        <rect x="66" y="66" width="12" height="12" fill="#0A0908" rx="2" />
-        <rect x="84" y="66" width="6" height="6" fill="#D4AF37" rx="1" />
-        <rect x="72" y="84" width="18" height="6" fill="#0A0908" rx="1" />
-
-        {/* Center Brand Badge Overlay */}
-        <rect x="38" y="38" width="24" height="24" fill="#0A0908" rx="4" stroke="#D4AF37" strokeWidth="2" />
-        <text x="50" y="53" fill="#D4AF37" fontSize="10" fontWeight="900" textAnchor="middle" fontFamily="sans-serif">HC</text>
-      </svg>
+      {dataUrl ? (
+        <img
+          src={dataUrl}
+          alt={alt}
+          style={{
+            width: '100%',
+            height: '100%',
+            objectFit: 'contain',
+            display: 'block'
+          }}
+        />
+      ) : (
+        <div
+          style={{
+            width: '24px',
+            height: '24px',
+            borderRadius: '50%',
+            border: '2px solid rgba(212,175,55,0.3)',
+            borderTopColor: 'var(--gold)',
+            animation: 'spin 1s linear infinite'
+          }}
+          aria-label="Generating QR code"
+        />
+      )}
     </div>
   )
 }

@@ -29,7 +29,8 @@ export interface GroupedSearchResults {
   command?: SearchResultItem
 }
 
-// Static Features Index
+// Category B: Intentional Static Navigation Features Index
+// Curated navigational shortcuts to application features. Not database product records.
 const STATIC_FEATURES: Array<{
   id: string
   title: string

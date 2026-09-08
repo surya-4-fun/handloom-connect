@@ -2,14 +2,16 @@ import { useState } from 'react'
 import { Icon } from '../primitives/Icon'
 import type { ShopFilters, SortOption } from '../../types/shopTypes'
 import { SORT_LABELS } from '../../types/shopTypes'
-import { ALL_MATERIALS, ALL_REGIONS, ALL_TECHNIQUES } from '../../utils/mocks/shopData'
+import type { ProductFacets } from '../../services/productService'
 
-interface ShopFiltersProps {
+export interface ShopFiltersProps {
   filters: ShopFilters
   updateFilter: <K extends keyof ShopFilters>(key: K, value: ShopFilters[K]) => void
   toggleArrayFilter: <K extends 'materials' | 'regions' | 'techniques' | 'artisanIds'>(key: K, value: string) => void
   resetFilters: () => void
   activeFilterCount: number
+  facets?: ProductFacets
+  isLoadingFacets?: boolean
 }
 
 function FilterCheckbox({ label, checked, onChange }: { label: string; checked: boolean; onChange: () => void }) {
@@ -23,7 +25,11 @@ function FilterCheckbox({ label, checked, onChange }: { label: string; checked: 
   )
 }
 
-function FilterPanel({ filters, updateFilter, toggleArrayFilter, resetFilters, activeFilterCount }: ShopFiltersProps) {
+function FilterPanel({ filters, updateFilter, toggleArrayFilter, resetFilters, activeFilterCount, facets, isLoadingFacets }: ShopFiltersProps) {
+  const materials = facets?.materials || []
+  const regions = facets?.regions || []
+  const techniques = facets?.techniques || []
+
   return (
     <>
       <div className="shop-filters__header">
@@ -40,7 +46,13 @@ function FilterPanel({ filters, updateFilter, toggleArrayFilter, resetFilters, a
 
       <div className="filter-group">
         <span className="filter-group__label">Material</span>
-        {ALL_MATERIALS.slice(0, 8).map(mat => (
+        {isLoadingFacets && materials.length === 0 && (
+          <span style={{ fontSize: '0.78rem', color: 'var(--muted)' }}>Loading materials...</span>
+        )}
+        {!isLoadingFacets && materials.length === 0 && (
+          <span style={{ fontSize: '0.78rem', color: 'var(--muted)', fontStyle: 'italic' }}>No materials available</span>
+        )}
+        {materials.slice(0, 10).map(mat => (
           <FilterCheckbox
             key={mat}
             label={mat}
@@ -52,7 +64,13 @@ function FilterPanel({ filters, updateFilter, toggleArrayFilter, resetFilters, a
 
       <div className="filter-group">
         <span className="filter-group__label">Region</span>
-        {ALL_REGIONS.slice(0, 8).map(reg => (
+        {isLoadingFacets && regions.length === 0 && (
+          <span style={{ fontSize: '0.78rem', color: 'var(--muted)' }}>Loading regions...</span>
+        )}
+        {!isLoadingFacets && regions.length === 0 && (
+          <span style={{ fontSize: '0.78rem', color: 'var(--muted)', fontStyle: 'italic' }}>No regions available</span>
+        )}
+        {regions.slice(0, 10).map(reg => (
           <FilterCheckbox
             key={reg}
             label={reg}
@@ -64,7 +82,13 @@ function FilterPanel({ filters, updateFilter, toggleArrayFilter, resetFilters, a
 
       <div className="filter-group">
         <span className="filter-group__label">Technique</span>
-        {ALL_TECHNIQUES.slice(0, 8).map(tech => (
+        {isLoadingFacets && techniques.length === 0 && (
+          <span style={{ fontSize: '0.78rem', color: 'var(--muted)' }}>Loading techniques...</span>
+        )}
+        {!isLoadingFacets && techniques.length === 0 && (
+          <span style={{ fontSize: '0.78rem', color: 'var(--muted)', fontStyle: 'italic' }}>No techniques available</span>
+        )}
+        {techniques.slice(0, 10).map(tech => (
           <FilterCheckbox
             key={tech}
             label={tech}

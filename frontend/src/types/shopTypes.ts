@@ -42,6 +42,8 @@ export interface ShopProduct {
   region: string
   technique: string
   artisanId: string
+  artisanName?: string
+  artisan?: Partial<ShopArtisan>
   description: string
   dimensions?: string
   care?: string

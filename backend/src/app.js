@@ -15,6 +15,7 @@ import wishlistRoutes from './routes/wishlistRoutes.js'
 import orderRoutes from './routes/orderRoutes.js'
 import contactRoutes from './routes/contactRoutes.js'
 import aiPreviewRoutes from './routes/aiPreviewRoutes.js'
+import aiChatRoutes from './routes/aiChatRoutes.js'
 import { errorHandler, notFoundHandler } from './middleware/errorHandler.js'
 import { sendSuccess } from './utils/response.js'
 
@@ -28,27 +29,44 @@ app.use(helmet({
 }))
 
 // 2. CORS Configuration
-const allowedOrigins = (process.env.FRONTEND_URL || 'http://localhost:5173,https://handloom-market.vercel.app')
+const isProduction = process.env.NODE_ENV === 'production'
+
+// Support origins configured via CORS_ORIGINS or FRONTEND_URL (comma-separated)
+const envOriginsRaw = process.env.CORS_ORIGINS || process.env.FRONTEND_URL || ''
+const configuredOrigins = envOriginsRaw
   .split(',')
-  .map(o => o.trim())
+  .map(o => o.trim().replace(/\/+$/, ''))
   .filter(Boolean)
+
+// Safe local development origins required by the project
+const defaultDevOrigins = [
+  'http://localhost:5173',
+  'http://localhost:4173',
+  'http://localhost:3000',
+  'http://127.0.0.1:5173',
+  'http://127.0.0.1:4173',
+  'http://127.0.0.1:3000'
+]
+
+// In production: strictly adhere to explicitly configured origins.
+// In development: merge configured origins with default development ports.
+const allowedOrigins = isProduction
+  ? configuredOrigins
+  : Array.from(new Set([...configuredOrigins, ...defaultDevOrigins]))
 
 app.use(cors({
   origin: (origin, callback) => {
-    // Allow requests with no origin (e.g. mobile apps, curl, server-to-server)
+    // Allow non-browser requests with no origin (e.g. mobile apps, curl, server-to-server, test scripts)
     if (!origin) return callback(null, true)
-    
-    // Check if origin is allowed or is localhost
-    const isAllowed = allowedOrigins.some(ao => origin.startsWith(ao)) || 
-                      origin.includes('localhost') || 
-                      origin.includes('127.0.0.1') ||
-                      origin.endsWith('.vercel.app')
 
-    if (isAllowed) {
-      callback(null, true)
-    } else {
-      callback(null, true) // Lenient in dev to prevent unexpected CORS blocks
+    const normalizedOrigin = origin.trim().replace(/\/+$/, '')
+
+    if (allowedOrigins.includes(normalizedOrigin)) {
+      return callback(null, true)
     }
+
+    // In both production and development, reject unknown origins (do not allow arbitrary origins)
+    return callback(null, false)
   },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
@@ -86,6 +104,8 @@ app.use('/api/wishlist', wishlistRoutes)
 app.use('/api/orders', orderRoutes)
 app.use('/api/contact', contactRoutes)
 app.use('/api/ai', aiPreviewRoutes)
+app.use('/api/ai', aiChatRoutes)
+
 
 // 6. Error & Not Found Handling
 app.use(notFoundHandler)

@@ -4,7 +4,9 @@ import { productController } from '../controllers/productController.js'
 const router = Router()
 
 router.get('/', productController.getProducts)
+router.get('/facets', productController.getFacets)
 router.get('/meta/facets', productController.getFacets)
+router.get('/:idOrSlug/passport', productController.getProductPassport)
 router.get('/:idOrSlug/360', productController.getProduct360)
 router.get('/:idOrSlug', productController.getProductDetail)
 

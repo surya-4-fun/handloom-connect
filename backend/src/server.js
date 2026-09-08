@@ -1,9 +1,13 @@
 import app from './app.js'
 import { checkConnection } from './config/db.js'
+import { validateJwtConfig } from './config/jwt.js'
 
 const PORT = parseInt(process.env.PORT || '5000', 10)
 
 async function startServer() {
+  // Validate critical security environment configuration
+  validateJwtConfig()
+
   // Check MySQL database connection
   await checkConnection()
 

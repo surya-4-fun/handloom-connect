@@ -1,18 +1,24 @@
 import { useState } from 'react'
-
-interface Message {
-  id: string
-  sender: 'ai' | 'user'
-  text: string
-  recommendations?: { title: string; craft: string; price: string }[]
-}
+import { Link, useSearchParams } from 'react-router-dom'
+import { aiChatService, ChatMessage } from '../services/aiChatService'
 
 export function AIAssistantPage() {
-  const [messages, setMessages] = useState<Message[]>([
+  const [searchParams] = useSearchParams()
+  const productId = searchParams.get('productId') || searchParams.get('product') || undefined
+  const artisanId = searchParams.get('artisanId') || searchParams.get('artisan') || undefined
+  const rawMaterialId = searchParams.get('materialId') || searchParams.get('rawMaterialId') || undefined
+
+  const [messages, setMessages] = useState<ChatMessage[]>([
     {
       id: '1',
       sender: 'ai',
-      text: 'Greetings. I am your Handloom Connect AI Curator & Stylist. Tell me about the occasion, textile drape preference, or region you wish to explore today.',
+      text: productId 
+        ? `Greetings. I am your Handloom Connect AI Curator & Stylist. I see you are consulting regarding item "${productId}". Ask me about its weave, authenticity, artisan lineage, or occasion pairing.`
+        : artisanId
+        ? `Greetings. I am your Handloom Connect AI Curator. You are viewing artisan profile "${artisanId}". Inquire about their heritage lineage, master techniques, or regional craft.`
+        : rawMaterialId
+        ? `Greetings. I am your Handloom Connect AI Assistant. You are inspecting material reference "${rawMaterialId}". Ask me about fiber origin, sustainability, or technical specifications.`
+        : 'Greetings. I am your Handloom Connect AI Curator & Stylist. Tell me about the occasion, textile drape preference, or region you wish to explore today.',
       recommendations: [
         { title: 'Banarasi Real Zari Katan Silk Saree', craft: 'Varanasi Weave', price: '₹48,500' },
         { title: 'Kashmiri Hand-Embroidered Pashmina', craft: 'Sozni Needlework', price: '₹62,000' }
@@ -20,38 +26,56 @@ export function AIAssistantPage() {
     }
   ])
   const [input, setInput] = useState('')
+  const [isLoading, setIsLoading] = useState(false)
 
-  const handleSend = (e: React.FormEvent) => {
+  const handleSend = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (!input.trim()) return
+    if (!input.trim() || isLoading) return
 
-    const userMsg: Message = { id: Date.now().toString(), sender: 'user', text: input }
+    const userText = input.trim()
+    const userMsg: ChatMessage = { id: Date.now().toString(), sender: 'user', text: userText }
     setMessages(prev => [...prev, userMsg])
-    const prompt = input.toLowerCase()
     setInput('')
+    setIsLoading(true)
 
-    setTimeout(() => {
-      let aiText = "Thank you for sharing your preference. Based on heirloom weaving techniques and textile draping characteristics, I recommend examining our authentic Mulberry Silk or Tussar collection."
-      let recs = [
-        { title: 'Kanchipuram Temple Border Korvai Silk', craft: 'Korvai Weave', price: '₹39,200' },
-        { title: 'Dhakai Jamdani Fine Muslin Saree', craft: 'Phulia Weave', price: '₹28,400' }
-      ]
+    try {
+      // Format history for the API (exclude the current message)
+      const historyForApi = messages.map(msg => ({
+        sender: msg.sender,
+        text: msg.text
+      }))
 
-      if (prompt.includes('wedding') || prompt.includes('bridal') || prompt.includes('heavy')) {
-        aiText = "For wedding celebrations and formal occasions, nothing matches the weight and gold luster of Real Zari Banarasi Katan or Kanchipuram Korvai silk."
-        recs = [
-          { title: 'Banarasi Real Zari Katan Silk Saree', craft: 'Banarasi Brocade', price: '₹48,500' },
-          { title: 'Kanchipuram Temple Border Korvai Silk', craft: 'Kanchipuram Silk', price: '₹39,200' }
-        ]
-      } else if (prompt.includes('winter') || prompt.includes('shawl') || prompt.includes('warm')) {
-        aiText = "For cold weather elegance, hand-spun Ladakhi Pashmina with fine Sozni needlework offers featherweight insulation and timeless refinement."
-        recs = [
-          { title: 'Kashmiri Hand-Embroidered Pashmina Shawl', craft: 'Sozni Needlework', price: '₹62,000' }
-        ]
+      const response = await aiChatService.sendMessage({
+        message: userText,
+        history: historyForApi,
+        context: {
+          currentPage: productId ? 'product_detail' : artisanId ? 'artisan_detail' : rawMaterialId ? 'raw_materials' : 'assistant',
+          productId,
+          artisanId,
+          rawMaterialId
+        }
+      })
+
+      const aiMsg: ChatMessage = {
+        id: (Date.now() + 1).toString(),
+        sender: 'ai',
+        text: response.data.reply,
+        recommendations: response.data.suggestions,
+        materialSuggestions: response.data.materialSuggestions
       }
-
-      setMessages(prev => [...prev, { id: (Date.now() + 1).toString(), sender: 'ai', text: aiText, recommendations: recs }])
-    }, 600)
+      
+      setMessages(prev => [...prev, aiMsg])
+    } catch (error: any) {
+      console.error('Error fetching AI response:', error)
+      const errorMsg: ChatMessage = {
+        id: (Date.now() + 1).toString(),
+        sender: 'ai',
+        text: error.message || 'I apologize, but I am having trouble connecting to my knowledge base right now. Please try again in a moment.'
+      }
+      setMessages(prev => [...prev, errorMsg])
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   return (
@@ -68,6 +92,28 @@ export function AIAssistantPage() {
         </div>
 
         <div style={{ background: 'var(--canvas-secondary)', border: '1px solid var(--border)', borderRadius: 'var(--radius-lg)', padding: '24px', minHeight: '480px', display: 'flex', flexDirection: 'column' }}>
+          
+          {(productId || artisanId || rawMaterialId) && (
+            <div style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px',
+              marginBottom: '16px',
+              fontSize: '0.8rem',
+              color: 'var(--gold)',
+              background: 'rgba(212, 175, 55, 0.08)',
+              border: '1px solid rgba(212, 175, 55, 0.25)',
+              padding: '6px 14px',
+              borderRadius: '100px',
+              width: 'fit-content'
+            }}>
+              <span>✦</span>
+              <span>
+                Active Context: {productId ? `Product (${productId})` : artisanId ? `Artisan (${artisanId})` : `Material (${rawMaterialId})`}
+              </span>
+            </div>
+          )}
+
           <div style={{ flexGrow: 1, display: 'flex', flexDirection: 'column', gap: '20px', overflowY: 'auto', marginBottom: '20px' }}>
             {messages.map(msg => (
               <div key={msg.id} style={{ alignSelf: msg.sender === 'user' ? 'flex-end' : 'flex-start', maxWidth: '80%' }}>
@@ -83,19 +129,91 @@ export function AIAssistantPage() {
                   {msg.text}
                 </div>
 
-                {msg.recommendations && (
-                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '12px', marginTop: '12px' }}>
-                    {msg.recommendations.map(rec => (
-                      <div key={rec.title} style={{ padding: '12px', background: 'var(--canvas)', border: '1px solid var(--border)', borderRadius: 'var(--radius-md)' }}>
-                        <span style={{ color: 'var(--gold)', fontSize: '0.65rem', letterSpacing: '0.1em', textTransform: 'uppercase' }}>{rec.craft}</span>
-                        <h4 style={{ fontFamily: 'var(--font-display)', fontSize: '1.05rem', color: 'var(--ink)', margin: '4px 0 8px' }}>{rec.title}</h4>
-                        <strong style={{ color: 'var(--gold)', fontSize: '0.9rem' }}>{rec.price}</strong>
+                {msg.recommendations && msg.recommendations.length > 0 && (
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '12px', marginTop: '12px' }}>
+                    {msg.recommendations.map((rec, idx) => (
+                      <div key={`${rec.title}-${idx}`} style={{ padding: '14px', background: 'var(--canvas)', border: '1px solid var(--border)', borderRadius: 'var(--radius-md)', display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                        <span style={{ color: 'var(--gold)', fontSize: '0.7rem', letterSpacing: '0.1em', textTransform: 'uppercase' }}>{rec.craft}</span>
+                        <h4 style={{ fontFamily: 'var(--font-display)', fontSize: '1.05rem', color: 'var(--ink)', margin: '0' }}>{rec.title}</h4>
+                        <strong style={{ color: 'var(--gold)', fontSize: '0.95rem' }}>{rec.price}</strong>
+                        {rec.reason && (
+                          <p style={{ fontSize: '0.8rem', color: 'var(--muted)', margin: '4px 0 0', lineHeight: 1.4 }}>
+                            {rec.reason}
+                          </p>
+                        )}
+                        {(rec.id || rec.productId) && (
+                          <Link 
+                            to={`/marketplace/${rec.id || rec.productId}`}
+                            style={{
+                              marginTop: '8px',
+                              display: 'inline-flex',
+                              alignItems: 'center',
+                              gap: '4px',
+                              fontSize: '0.8rem',
+                              fontWeight: 500,
+                              color: 'var(--gold)',
+                              textDecoration: 'none'
+                            }}
+                          >
+                            View Product →
+                          </Link>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                {msg.materialSuggestions && msg.materialSuggestions.length > 0 && (
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '12px', marginTop: '12px' }}>
+                    {msg.materialSuggestions.map((mat, idx) => (
+                      <div key={`${mat.name}-${idx}`} style={{ padding: '14px', background: 'var(--canvas)', border: '1px solid var(--border)', borderRadius: 'var(--radius-md)', display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                        <span style={{ color: 'var(--gold)', fontSize: '0.7rem', letterSpacing: '0.1em', textTransform: 'uppercase' }}>{mat.category || 'Raw Material'}</span>
+                        <h4 style={{ fontFamily: 'var(--font-display)', fontSize: '1.05rem', color: 'var(--ink)', margin: '0' }}>{mat.name}</h4>
+                        <strong style={{ color: 'var(--gold)', fontSize: '0.95rem' }}>{mat.price} {mat.unit ? `(${mat.unit})` : ''}</strong>
+                        {mat.origin && (
+                          <span style={{ fontSize: '0.75rem', color: 'var(--muted)' }}>Origin: {mat.origin}</span>
+                        )}
+                        {mat.reason && (
+                          <p style={{ fontSize: '0.8rem', color: 'var(--muted)', margin: '4px 0 0', lineHeight: 1.4 }}>
+                            {mat.reason}
+                          </p>
+                        )}
+                        <Link 
+                          to="/raw-materials"
+                          style={{
+                            marginTop: '8px',
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                            gap: '4px',
+                            fontSize: '0.8rem',
+                            fontWeight: 500,
+                            color: 'var(--gold)',
+                            textDecoration: 'none'
+                          }}
+                        >
+                          View in Catalog →
+                        </Link>
                       </div>
                     ))}
                   </div>
                 )}
               </div>
             ))}
+            {isLoading && (
+              <div style={{ alignSelf: 'flex-start', maxWidth: '80%' }}>
+                 <div style={{
+                  padding: '16px 20px',
+                  borderRadius: '20px 20px 20px 4px',
+                  background: 'var(--surface)',
+                  border: '1px solid var(--border)',
+                  color: 'var(--muted)',
+                  fontSize: '0.95rem',
+                  fontStyle: 'italic'
+                }}>
+                  Consulting weaving archives...
+                </div>
+              </div>
+            )}
           </div>
 
           <form onSubmit={handleSend} style={{ display: 'flex', gap: '12px' }}>
@@ -103,6 +221,7 @@ export function AIAssistantPage() {
               type="text"
               value={input}
               onChange={e => setInput(e.target.value)}
+              disabled={isLoading}
               placeholder="Ask about sarees for a wedding, winter shawls, or indigo textiles..."
               style={{
                 flexGrow: 1,
@@ -112,11 +231,12 @@ export function AIAssistantPage() {
                 border: '1px solid var(--border)',
                 color: 'var(--ink)',
                 fontSize: '0.95rem',
-                outline: 'none'
+                outline: 'none',
+                opacity: isLoading ? 0.7 : 1
               }}
             />
-            <button type="submit" className="button button--primary" style={{ borderRadius: '100px', padding: '0 28px' }}>
-              Consult
+            <button type="submit" disabled={isLoading} className="button button--primary" style={{ borderRadius: '100px', padding: '0 28px', opacity: isLoading ? 0.7 : 1 }}>
+              {isLoading ? 'Thinking...' : 'Consult'}
             </button>
           </form>
         </div>

@@ -1,3 +1,11 @@
+/* ─── Shop Data Mocks & Static UI Definitions ───────────────────────
+   AUDIT CLASSIFICATION (Batch 11):
+   - SHOP_REGIONS: Category B (Intentional static UI navigation content for RegionDiscovery.tsx)
+   - SHOP_PRODUCTS, SHOP_ARTISANS, ALL_MATERIALS, ALL_REGIONS, ALL_TECHNIQUES, getArtisanById:
+     Category C (Legacy mock data, unreferenced by active production components.
+     Production data is authoritatively served by Express/MySQL).
+──────────────────────────────────────────────────────────────────── */
+
 import type { ShopProduct, ShopArtisan, ShopCategory, ShopRegion } from '../../types/shopTypes'
 
 /* ─── Artisans ───────────────────────────────────────────────────── */

@@ -15,6 +15,14 @@ function formatProduct(row) {
     region: row.region,
     technique: row.technique,
     artisanId: row.artisan_id || row.artisanId,
+    artisanName: row.artisan_name || undefined,
+    artisan: row.artisan_name ? {
+      id: row.artisan_id || row.artisanId,
+      name: row.artisan_name,
+      craft: row.artisan_craft,
+      region: row.artisan_region,
+      avatarUrl: row.artisan_image
+    } : undefined,
     description: row.description,
     dimensions: row.dimensions,
     care: row.care,
@@ -47,15 +55,15 @@ function formatPassport(row) {
 
 export const productModel = {
   async getAll(filters = {}) {
-    let sql = 'SELECT * FROM products WHERE 1=1'
-    let countSql = 'SELECT COUNT(*) as total FROM products WHERE 1=1'
+    let sql = 'SELECT p.*, a.name as artisan_name, a.craft as artisan_craft, a.region as artisan_region, a.image as artisan_image FROM products p LEFT JOIN artisans a ON p.artisan_id = a.id WHERE 1=1'
+    let countSql = 'SELECT COUNT(*) as total FROM products p LEFT JOIN artisans a ON p.artisan_id = a.id WHERE 1=1'
     const params = []
     const countParams = []
 
     // Category
     if (filters.category && filters.category !== 'all') {
-      sql += ' AND category_id = ?'
-      countSql += ' AND category_id = ?'
+      sql += ' AND p.category_id = ?'
+      countSql += ' AND p.category_id = ?'
       params.push(filters.category)
       countParams.push(filters.category)
     }
@@ -63,36 +71,36 @@ export const productModel = {
     // Search
     if (filters.search && filters.search.trim()) {
       const term = `%${filters.search.trim()}%`
-      const searchClause = ' AND (name LIKE ? OR description LIKE ? OR material LIKE ? OR region LIKE ? OR technique LIKE ?)'
+      const searchClause = ' AND (p.name LIKE ? OR p.description LIKE ? OR p.material LIKE ? OR p.region LIKE ? OR p.technique LIKE ? OR a.name LIKE ?)'
       sql += searchClause
       countSql += searchClause
-      params.push(term, term, term, term, term)
-      countParams.push(term, term, term, term, term)
+      params.push(term, term, term, term, term, term)
+      countParams.push(term, term, term, term, term, term)
     }
 
     // Price range
     if (filters.minPrice !== undefined && filters.minPrice !== null) {
-      sql += ' AND price >= ?'
-      countSql += ' AND price >= ?'
+      sql += ' AND p.price >= ?'
+      countSql += ' AND p.price >= ?'
       params.push(Number(filters.minPrice))
       countParams.push(Number(filters.minPrice))
     }
     if (filters.maxPrice !== undefined && filters.maxPrice !== null) {
-      sql += ' AND price <= ?'
-      countSql += ' AND price <= ?'
+      sql += ' AND p.price <= ?'
+      countSql += ' AND p.price <= ?'
       params.push(Number(filters.maxPrice))
       countParams.push(Number(filters.maxPrice))
     }
 
     // In stock
     if (filters.inStockOnly) {
-      sql += ' AND in_stock = 1'
-      countSql += ' AND in_stock = 1'
+      sql += ' AND p.in_stock = 1'
+      countSql += ' AND p.in_stock = 1'
     }
 
     // Materials array
     if (Array.isArray(filters.materials) && filters.materials.length > 0) {
-      const matClauses = filters.materials.map(() => 'material LIKE ?').join(' OR ')
+      const matClauses = filters.materials.map(() => 'p.material LIKE ?').join(' OR ')
       sql += ` AND (${matClauses})`
       countSql += ` AND (${matClauses})`
       filters.materials.forEach(m => {
@@ -103,7 +111,7 @@ export const productModel = {
 
     // Regions array
     if (Array.isArray(filters.regions) && filters.regions.length > 0) {
-      const regClauses = filters.regions.map(() => 'region LIKE ?').join(' OR ')
+      const regClauses = filters.regions.map(() => 'p.region LIKE ?').join(' OR ')
       sql += ` AND (${regClauses})`
       countSql += ` AND (${regClauses})`
       filters.regions.forEach(r => {
@@ -114,7 +122,7 @@ export const productModel = {
 
     // Techniques array
     if (Array.isArray(filters.techniques) && filters.techniques.length > 0) {
-      const techClauses = filters.techniques.map(() => 'technique LIKE ?').join(' OR ')
+      const techClauses = filters.techniques.map(() => 'p.technique LIKE ?').join(' OR ')
       sql += ` AND (${techClauses})`
       countSql += ` AND (${techClauses})`
       filters.techniques.forEach(t => {
@@ -126,8 +134,8 @@ export const productModel = {
     // Artisan IDs array
     if (Array.isArray(filters.artisanIds) && filters.artisanIds.length > 0) {
       const artPlaceholders = filters.artisanIds.map(() => '?').join(', ')
-      sql += ` AND artisan_id IN (${artPlaceholders})`
-      countSql += ` AND artisan_id IN (${artPlaceholders})`
+      sql += ` AND p.artisan_id IN (${artPlaceholders})`
+      countSql += ` AND p.artisan_id IN (${artPlaceholders})`
       filters.artisanIds.forEach(id => {
         params.push(id)
         countParams.push(id)
@@ -137,20 +145,20 @@ export const productModel = {
     // Sort
     switch (filters.sort) {
       case 'price-asc':
-        sql += ' ORDER BY price ASC'
+        sql += ' ORDER BY p.price ASC'
         break
       case 'price-desc':
-        sql += ' ORDER BY price DESC'
+        sql += ' ORDER BY p.price DESC'
         break
       case 'newest':
-        sql += ' ORDER BY created_at DESC'
+        sql += ' ORDER BY p.created_at DESC'
         break
       case 'popular':
-        sql += ' ORDER BY badge = "Bestseller" DESC, price DESC'
+        sql += ' ORDER BY p.badge = "Bestseller" DESC, p.price DESC'
         break
       case 'featured':
       default:
-        sql += ' ORDER BY badge = "Bestseller" DESC, badge = "Handwoven" DESC, created_at DESC'
+        sql += ' ORDER BY p.badge = "Bestseller" DESC, p.badge = "Handwoven" DESC, p.created_at DESC'
         break
     }
 
@@ -175,26 +183,32 @@ export const productModel = {
   },
 
   async getByIdOrSlug(idOrSlug) {
-    const rows = await query('SELECT * FROM products WHERE id = ? OR slug = ? LIMIT 1', [idOrSlug, idOrSlug])
+    const rows = await query(
+      'SELECT p.*, a.name as artisan_name, a.craft as artisan_craft, a.region as artisan_region, a.image as artisan_image FROM products p LEFT JOIN artisans a ON p.artisan_id = a.id WHERE p.id = ? OR p.slug = ? LIMIT 1',
+      [idOrSlug, idOrSlug]
+    )
     return formatProduct(rows[0])
   },
 
   async getPassportByProductId(productId) {
     const rows = await query(
-      'SELECT ap.*, p.name as product_name FROM authenticity_passports ap JOIN products p ON ap.product_id = p.id WHERE ap.product_id = ? LIMIT 1',
-      [productId]
+      'SELECT ap.*, p.name as product_name FROM authenticity_passports ap JOIN products p ON ap.product_id = p.id WHERE ap.product_id = ? OR p.slug = ? LIMIT 1',
+      [productId, productId]
     )
     return formatPassport(rows[0])
   },
 
   async getProductsByArtisanId(artisanId) {
-    const rows = await query('SELECT * FROM products WHERE artisan_id = ? ORDER BY created_at DESC', [artisanId])
+    const rows = await query(
+      'SELECT p.*, a.name as artisan_name, a.craft as artisan_craft, a.region as artisan_region, a.image as artisan_image FROM products p LEFT JOIN artisans a ON p.artisan_id = a.id WHERE p.artisan_id = ? ORDER BY p.created_at DESC',
+      [artisanId]
+    )
     return rows.map(formatProduct)
   },
 
   async getRelated(productId, categoryId, region, limit = 4) {
     const rows = await query(
-      'SELECT * FROM products WHERE id != ? AND (category_id = ? OR region LIKE ?) LIMIT ?',
+      'SELECT p.*, a.name as artisan_name, a.craft as artisan_craft, a.region as artisan_region, a.image as artisan_image FROM products p LEFT JOIN artisans a ON p.artisan_id = a.id WHERE p.id != ? AND (p.category_id = ? OR p.region LIKE ?) LIMIT ?',
       [productId, categoryId, `%${region.split(',')[0]}%`, limit]
     )
     return rows.map(formatProduct)

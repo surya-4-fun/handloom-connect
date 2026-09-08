@@ -1,7 +1,6 @@
 import jwt from 'jsonwebtoken'
+import { getJwtSecret } from '../config/jwt.js'
 import { sendError } from '../utils/response.js'
-
-const JWT_SECRET = process.env.JWT_SECRET || 'handloom_connect_dev_secret_jwt_2026_secure_key'
 
 /**
  * Middleware to require authenticated user via JWT Bearer token.
@@ -13,10 +12,17 @@ export function requireAuth(req, res, next) {
     return sendError(res, 'Authentication required. Missing Bearer token.', 401, 'UNAUTHORIZED')
   }
 
+  let secret
+  try {
+    secret = getJwtSecret()
+  } catch {
+    return sendError(res, 'Authentication service misconfigured: missing JWT configuration.', 500, 'AUTH_CONFIG_ERROR')
+  }
+
   const token = authHeader.split(' ')[1]
 
   try {
-    const decoded = jwt.verify(token, JWT_SECRET)
+    const decoded = jwt.verify(token, secret)
     req.user = decoded
     next()
   } catch (err) {
@@ -36,7 +42,8 @@ export function optionalAuth(req, res, next) {
   if (authHeader && authHeader.startsWith('Bearer ')) {
     const token = authHeader.split(' ')[1]
     try {
-      const decoded = jwt.verify(token, JWT_SECRET)
+      const secret = getJwtSecret()
+      const decoded = jwt.verify(token, secret)
       req.user = decoded
     } catch {
       // Ignore error for optional auth

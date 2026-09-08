@@ -253,13 +253,16 @@ export function RawMaterialsPage() {
                   </div>
                 </div>
 
-                <div style={{ display: 'flex', gap: '10px' }}>
+                <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
                   <Button variant="secondary" onClick={() => setInspectMaterial(mat)} style={{ flex: 1, textAlign: 'center', fontSize: '0.75rem', padding: '8px' }}>
                     Inspect Specs
                   </Button>
                   <Button variant="gold" onClick={() => setBulkMaterial(mat)} style={{ flex: 1, textAlign: 'center', fontSize: '0.75rem', padding: '8px' }}>
                     Request Bulk
                   </Button>
+                  <Link to={`/ai-fashion-assistant?materialId=${mat.id}`} className="button button--secondary" style={{ width: '100%', textAlign: 'center', fontSize: '0.75rem', padding: '6px 8px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '6px' }}>
+                    <span>✨</span> Consult AI on Material
+                  </Link>
                 </div>
               </div>
             </div>

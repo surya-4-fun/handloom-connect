@@ -1,7 +1,6 @@
 import { Link } from 'react-router-dom'
 import { Icon } from '../primitives/Icon'
 import type { ShopProduct } from '../../types/shopTypes'
-import { getArtisanById } from '../../utils/mocks/shopData'
 
 interface ProductCardProps {
   product: ShopProduct
@@ -20,7 +19,7 @@ const BADGE_CLASS: Record<string, string> = {
 }
 
 export function ProductCard({ product, isWishlisted, isInCart, onToggleWishlist, onAddToCart, onQuickView }: ProductCardProps) {
-  const artisan = getArtisanById(product.artisanId)
+  const artisanName = product.artisanName || product.artisan?.name
 
   return (
     <article className="product-card">
@@ -78,7 +77,7 @@ export function ProductCard({ product, isWishlisted, isInCart, onToggleWishlist,
         <span className="product-card__meta">{product.material}</span>
         <div className="product-card__footer">
           <span className="product-card__price">{product.displayPrice}</span>
-          {artisan && <span className="product-card__artisan">{artisan.name}</span>}
+          {artisanName && <span className="product-card__artisan">{artisanName}</span>}
         </div>
       </div>
     </article>

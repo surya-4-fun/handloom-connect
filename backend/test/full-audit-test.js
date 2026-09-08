@@ -4,7 +4,7 @@ import bcrypt from 'bcryptjs'
 import app from '../src/app.js'
 
 const PORT = 5098
-const JWT_SECRET = process.env.JWT_SECRET || 'handloom_connect_dev_secret_jwt_2026_secure_key'
+const JWT_SECRET = process.env.JWT_SECRET
 
 function request(path, options = {}) {
   return new Promise((resolve, reject) => {
@@ -67,6 +67,18 @@ async function runAuditTests() {
       test('Security header X-Content-Type-Options is nosniff', health.headers['x-content-type-options'] === 'nosniff')
       test('X-DNS-Prefetch-Control header is present', !!health.headers['x-dns-prefetch-control'])
 
+      // CORS Security Audit
+      const corsDevReq = await request('/api/health', {
+        headers: { 'Origin': 'http://localhost:5173' }
+      })
+      test('CORS: Configured development origin is accepted', corsDevReq.headers['access-control-allow-origin'] === 'http://localhost:5173')
+      test('CORS: Wildcard * is not used when credentials are true', corsDevReq.headers['access-control-allow-origin'] !== '*')
+
+      const corsUntrustedReq = await request('/api/health', {
+        headers: { 'Origin': 'https://untrusted-cross-origin.com' }
+      })
+      test('CORS: Untrusted origin is rejected (omits allow-origin header)', !corsUntrustedReq.headers['access-control-allow-origin'])
+
       console.log('\n--- 2. Auth Flow & JWT Security Audit ---')
       // Registration validation fail check
       const emptyReg = await request('/api/auth/register', { method: 'POST', body: {} })
@@ -101,9 +113,9 @@ async function runAuditTests() {
       })
       test('Reject expired JWT with 401 TOKEN_EXPIRED', expiredReq.status === 401 && expiredReq.data.code === 'TOKEN_EXPIRED')
 
-      // Create synthetic valid token to test protected routes
+      // Create synthetic valid token for authentic seeded user to test protected routes
       const validToken = jwt.sign(
-        { id: 'usr-collector-1', email: 'collector@handloomconnect.com', role: 'customer', fullName: 'Ananya Collector' },
+        { id: 'user_hc_2026', email: 'collector@handloomconnect.com', role: 'customer', fullName: 'Ananya Collector' },
         JWT_SECRET,
         { expiresIn: '1h' }
       )
@@ -130,12 +142,53 @@ async function runAuditTests() {
       })
       test('Reject order with empty items array with 400', emptyOrder.status === 400)
 
+      // Test successful order creation and retrieval
+      const validOrderReq = await request('/api/orders', {
+        method: 'POST',
+        headers: { 'Authorization': `Bearer ${validToken}` },
+        body: {
+          items: [{ productId: 'kanchipuram-korvai', quantity: 1 }],
+          shippingAddress: {
+            fullName: 'Ananya Collector',
+            addressLine1: '128 Heritage Enclave',
+            city: 'Bengaluru',
+            state: 'Karnataka',
+            postalCode: '560038'
+          },
+          deliveryMethod: { id: 'standard', name: 'Standard Transit', cost: 0 },
+          paymentDetails: { method: 'upi', upiId: 'ananya@upi' }
+        }
+      })
+      test('Create authentic order successfully with 201', validOrderReq.status === 201 && !!validOrderReq.data?.data?.id)
+
+      const createdAuditOrderId = validOrderReq.data?.data?.id
+
+      // Owner retrieves order
+      const ownerOrderReq = await request(`/api/orders/${createdAuditOrderId}`, {
+        headers: { 'Authorization': `Bearer ${validToken}` }
+      })
+      test('Owner retrieves created order with 200', ownerOrderReq.status === 200 && ownerOrderReq.data?.data?.id === createdAuditOrderId)
+
       // Test order tracking authorization & IDOR isolation
       const otherUserOrderToken = jwt.sign(
         { id: 'usr-unauthorized-user-999', email: 'intruder@example.com', role: 'customer', fullName: 'Intruder' },
         JWT_SECRET,
         { expiresIn: '1h' }
       )
+      const idorOrderReq = await request(`/api/orders/${createdAuditOrderId}`, {
+        headers: { 'Authorization': `Bearer ${otherUserOrderToken}` }
+      })
+      test('IDOR defense: Reject unauthorized user access with 403', idorOrderReq.status === 403)
+
+      // Order tracking check
+      const trackingReq = await request(`/api/orders/${createdAuditOrderId}/tracking`, {
+        headers: { 'Authorization': `Bearer ${validToken}` }
+      })
+      test('Retrieve order tracking stages and certification with 200', trackingReq.status === 200 && Array.isArray(trackingReq.data?.data?.stages))
+
+      // Missing order check
+      const missingOrderReq = await request('/api/orders/HC-NON-EXISTENT-8888')
+      test('Reject non-existent order query with 404', missingOrderReq.status === 404 && missingOrderReq.data?.code === 'ORDER_NOT_FOUND')
 
       console.log('\n--- 5. Contact Form Validation Audit ---')
       const emptyContact = await request('/api/contact', { method: 'POST', body: {} })

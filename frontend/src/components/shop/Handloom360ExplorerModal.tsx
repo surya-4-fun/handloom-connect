@@ -651,8 +651,8 @@ export function Handloom360ExplorerModal({
                 <span style={{ fontSize: '0.75rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.12em', color: 'var(--gold)' }}>
                   Heirloom Provenance Certificate
                 </span>
-                <span style={{ fontSize: '0.75rem', color: '#22c55e', fontWeight: 700 }}>
-                  ✓ {data?.passport?.verificationStatus || 'GI Origin Authenticated'}
+                <span style={{ fontSize: '0.75rem', color: data?.passport ? '#22c55e' : 'var(--muted)', fontWeight: 700 }}>
+                  {data?.passport ? `✓ ${data.passport.verificationStatus}` : 'Verification Pending'}
                 </span>
               </div>
               <h3 style={{ fontFamily: 'var(--font-display)', fontSize: '1.4rem', color: 'var(--ink)', margin: '0 0 10px' }}>
@@ -661,19 +661,19 @@ export function Handloom360ExplorerModal({
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '14px', marginTop: '14px' }}>
                 <div style={{ background: 'var(--surface)', padding: '12px', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border)' }}>
                   <small style={{ display: 'block', color: 'var(--muted)', fontSize: '0.7rem', textTransform: 'uppercase' }}>GI Registry No.</small>
-                  <strong style={{ color: 'var(--gold)', fontSize: '0.95rem' }}>{data?.passport?.giRegistryNo || 'GI-4482-REG'}</strong>
+                  <strong style={{ color: 'var(--gold)', fontSize: '0.95rem' }}>{data?.passport?.giRegistryNo || 'Not Registered / Pending'}</strong>
                 </div>
                 <div style={{ background: 'var(--surface)', padding: '12px', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border)' }}>
                   <small style={{ display: 'block', color: 'var(--muted)', fontSize: '0.7rem', textTransform: 'uppercase' }}>Silk Mark Certificate</small>
-                  <strong style={{ color: 'var(--gold)', fontSize: '0.95rem' }}>{data?.passport?.silkMarkNo || 'SM-2026-CERT'}</strong>
+                  <strong style={{ color: 'var(--gold)', fontSize: '0.95rem' }}>{data?.passport?.silkMarkNo || 'Not Certified'}</strong>
                 </div>
                 <div style={{ background: 'var(--surface)', padding: '12px', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border)' }}>
                   <small style={{ display: 'block', color: 'var(--muted)', fontSize: '0.7rem', textTransform: 'uppercase' }}>Loom Architecture</small>
-                  <strong style={{ color: 'var(--ink)', fontSize: '0.95rem' }}>{data?.passport?.loomType || 'Pit Loom / Korvai Harness'}</strong>
+                  <strong style={{ color: 'var(--ink)', fontSize: '0.95rem' }}>{data?.passport?.loomType || 'Traditional Handloom'}</strong>
                 </div>
                 <div style={{ background: 'var(--surface)', padding: '12px', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border)' }}>
                   <small style={{ display: 'block', color: 'var(--muted)', fontSize: '0.7rem', textTransform: 'uppercase' }}>Weft / Warp Density</small>
-                  <strong style={{ color: 'var(--ink)', fontSize: '0.95rem' }}>{data?.passport?.weaveDensity || '84 Ends/Inch x 76 Picks/Inch'}</strong>
+                  <strong style={{ color: 'var(--ink)', fontSize: '0.95rem' }}>{data?.passport?.weaveDensity || 'Handwoven Standard Density'}</strong>
                 </div>
               </div>
             </div>
@@ -694,29 +694,28 @@ export function Handloom360ExplorerModal({
         {/* TAB 3: BEHIND THE LOOM STAGES */}
         {!isLoading && activeTab === 'stages' && (
           <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', maxHeight: '420px', overflowY: 'auto' }}>
-            {(data?.passport?.craftJourney || [
-              { stageNumber: 1, title: 'Raw Material Selection', description: 'Grade AAA natural silk filaments and electroplated zari threads.', weaverNote: 'Pure raw materials sourced directly from registered sericulture cooperatives.' },
-              { stageNumber: 2, title: 'Botanical Hank Dyeing', description: 'Small vat dyeing with organic fixatives.', weaverNote: 'Dried in shade to lock color vibrancy.' },
-              { stageNumber: 3, title: 'Warp Setting on Loom', description: 'Over 2,400 individual warp threads aligned by hand.', weaverNote: 'Takes 4 days of precise tensioning.' },
-              { stageNumber: 4, title: 'Master Shuttle Weaving', description: 'Hand-operated wooden shuttles interlock weft motifs.', weaverNote: 'Averaging 8 inches of intricate brocade per day.' },
-              { stageNumber: 5, title: 'Quality & Density Audit', description: 'Weave density audit and Silk Mark inspection.', weaverNote: 'Zero synthetic blends guaranteed.' },
-              { stageNumber: 6, title: 'Cedarwood Preservation Packaging', description: 'Wax sealed with handwritten certificate of provenance.', weaverNote: 'Ready for heirloom transit.' }
-            ]).map(stg => (
-              <div key={stg.stageNumber} style={{ background: 'var(--canvas)', border: '1px solid var(--border)', borderRadius: 'var(--radius-md)', padding: '14px' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '4px' }}>
-                  <strong style={{ color: 'var(--gold)', fontSize: '0.88rem' }}>
-                    Stage {stg.stageNumber}: {stg.title}
-                  </strong>
-                  <span style={{ fontSize: '0.75rem', color: '#22c55e' }}>✓ Verified Stage</span>
-                </div>
-                <p style={{ margin: '0 0 6px', fontSize: '0.84rem', color: 'var(--muted)' }}>{stg.description}</p>
-                {stg.weaverNote && (
-                  <div style={{ fontSize: '0.78rem', color: 'var(--ink)', fontStyle: 'italic' }}>
-                    💬 Weaver Note: &quot;{stg.weaverNote}&quot;
+            {data?.passport?.craftJourney && data.passport.craftJourney.length > 0 ? (
+              data.passport.craftJourney.map(stg => (
+                <div key={stg.stageNumber} style={{ background: 'var(--canvas)', border: '1px solid var(--border)', borderRadius: 'var(--radius-md)', padding: '14px' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '4px' }}>
+                    <strong style={{ color: 'var(--gold)', fontSize: '0.88rem' }}>
+                      Stage {stg.stageNumber}: {stg.title}
+                    </strong>
+                    <span style={{ fontSize: '0.75rem', color: '#22c55e' }}>✓ Verified Stage</span>
                   </div>
-                )}
+                  <p style={{ margin: '0 0 6px', fontSize: '0.84rem', color: 'var(--muted)' }}>{stg.description}</p>
+                  {stg.weaverNote && (
+                    <div style={{ fontSize: '0.78rem', color: 'var(--ink)', fontStyle: 'italic' }}>
+                      💬 Weaver Note: &quot;{stg.weaverNote}&quot;
+                    </div>
+                  )}
+                </div>
+              ))
+            ) : (
+              <div style={{ padding: '32px', textAlign: 'center', color: 'var(--muted)', fontSize: '0.88rem', background: 'var(--canvas)', borderRadius: 'var(--radius-md)', border: '1px solid var(--border)' }}>
+                Authoritative craft journey stages are not currently registered for this piece.
               </div>
-            ))}
+            )}
           </div>
         )}
 

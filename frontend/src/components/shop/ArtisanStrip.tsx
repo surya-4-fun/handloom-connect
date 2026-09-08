@@ -15,9 +15,14 @@ export function ArtisanStrip({ artisan }: ArtisanStripProps) {
           {artisan.craft} · {artisan.region} ({artisan.experience})
         </span>
       </div>
-      <Link to={`/artisans/${artisan.id}`} className="artisan-strip__link">
-        Meet the Artisan →
-      </Link>
+      <div style={{ display: 'flex', gap: '10px', alignItems: 'center', flexWrap: 'wrap' }}>
+        <Link to={`/artisan-story/${artisan.id}`} className="artisan-strip__link" style={{ color: 'var(--gold)', fontWeight: 600 }}>
+          Story Lens →
+        </Link>
+        <Link to={`/artisans/${artisan.id}`} className="artisan-strip__link">
+          Meet the Artisan →
+        </Link>
+      </div>
     </div>
   )
 }

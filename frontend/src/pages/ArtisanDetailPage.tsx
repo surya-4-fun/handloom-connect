@@ -145,6 +145,14 @@ export function ArtisanDetailPage() {
                 <Icon name={following ? 'heart-filled' : 'heart'} size={18} />
                 {following ? 'Following Artisan' : 'Follow Weaver'}
               </Button>
+              <Link
+                to={`/ai-fashion-assistant?artisanId=${artisan.id}`}
+                className="button button--secondary"
+                style={{ display: 'inline-flex', alignItems: 'center', gap: '8px' }}
+              >
+                <Icon name="sparkles" size={16} />
+                Ask AI about Weaver
+              </Link>
             </div>
           </div>
         </div>

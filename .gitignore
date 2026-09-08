@@ -14,6 +14,17 @@ frontend/dist/
 backend/.env
 frontend/.env
 frontend/.env.local
+ai-service/.env
+
+# Python Virtual Environments & Cache
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+venv/
+env/
+*.egg-info/
+
 
 # Logs
 *.log

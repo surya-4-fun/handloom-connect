@@ -171,9 +171,10 @@ export const orderModel = {
   },
 
   async getOrderById(orderId) {
+    if (!orderId || typeof orderId !== 'string') return null
     const cleanId = orderId.trim().toUpperCase()
-    const [orderRows] = await query('SELECT * FROM orders WHERE UPPER(id) = ? LIMIT 1', [cleanId])
-    if (!orderRows.length) return null
+    const orderRows = await query('SELECT * FROM orders WHERE UPPER(id) = ? LIMIT 1', [cleanId])
+    if (!orderRows || !orderRows.length) return null
 
     const itemRows = await query('SELECT * FROM order_items WHERE order_id = ?', [orderRows[0].id])
     return formatOrder(orderRows[0], itemRows)

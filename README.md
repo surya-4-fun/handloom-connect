@@ -18,7 +18,7 @@ D:\handloom-connect
 │   │   ├── hooks/                # Custom React hooks (useCart, useShopState, etc.)
 │   │   ├── layouts/              # AppLayout shell
 │   │   ├── pages/                # Route pages (Marketplace, PDP, Artisans, etc.)
-│   │   ├── services/             # API services (products, orders, auth, AI preview, 360)
+│   │   ├── services/             # API services (products, orders, auth, aiChat, AI preview, 360)
 │   │   ├── styles/               # CSS Design System & animation tokens
 │   │   ├── types/                # TypeScript domain models & interfaces
 │   │   ├── utils/                # WebGL helpers & offline mock datasets
@@ -48,6 +48,13 @@ D:\handloom-connect
 │   ├── .env
 │   └── .env.example
 │
+├── ai-service/                   # Python FastAPI AI Microservice
+│   ├── main.py                   # FastAPI Application Entrypoint
+│   ├── models.py                 # Pydantic Schemas for validation
+│   ├── provider.py               # AI Provider Abstraction Interface
+│   ├── requirements.txt          # Python dependencies
+│   └── .env.example              # Env configuration (API Keys, etc.)
+│
 ├── .gitignore
 ├── README.md
 └── package.json                  # Root workspace orchestration
@@ -55,19 +62,50 @@ D:\handloom-connect
 
 ---
 
+## 🤖 AI Architecture (React → Node → FastAPI)
+
+Handloom Connect utilizes a specialized architecture for AI capabilities to ensure security and decoupling:
+1. **React Frontend**: The UI (e.g. `AIAssistantPage`) sends a chat request to the Node.js API Gateway. No AI API keys are exposed to the browser.
+2. **Node.js Express API**: The main backend authenticates the user, constructs contextual data (e.g., user preferences), and securely forwards the payload to the Python AI service.
+3. **Python FastAPI Service**: A dedicated microservice handling AI workloads. It parses the context, interfaces with the chosen AI Provider (OpenAI, Gemini, Anthropic, or Mock) using an abstraction pattern, and returns a structured response to Express.
+
+---
+
 ## 🚀 Quick Start
 
-### 1. Backend Setup
+### 1. Python AI Service Setup (New)
+Ensure you have Python 3.9+ installed.
+```bash
+cd ai-service
+# Create a virtual environment (optional but recommended)
+python -m venv venv
+# Activate the virtual environment
+# Windows: venv\Scripts\activate
+# Mac/Linux: source venv/bin/activate
+
+# Install dependencies
+pip install -r requirements.txt
+
+# Copy environment configuration
+cp .env.example .env
+
+# Start the FastAPI server (runs on http://localhost:8000)
+uvicorn main:app --reload
+```
+You can verify it's running by visiting `http://localhost:8000/health`.
+
+### 2. Backend Setup
 ```bash
 cd backend
 npm install
 # Copy environment configuration
 cp .env.example .env
+# Make sure to update .env with FASTAPI_SERVICE_URL=http://localhost:8000
 # Start the backend server (runs on http://localhost:5000)
 npm run dev
 ```
 
-### 2. Frontend Setup
+### 3. Frontend Setup
 ```bash
 cd frontend
 npm install
@@ -75,7 +113,7 @@ npm install
 npm run dev
 ```
 
-### 3. Root Workspace Commands
+### 4. Root Workspace Commands
 From the project root:
 ```bash
 # Run frontend dev server
