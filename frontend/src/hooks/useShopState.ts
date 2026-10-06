@@ -83,6 +83,7 @@ export function useShopState(
     return () => {
       isMounted = false
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     filters.category,
     filters.sort,

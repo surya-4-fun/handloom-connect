@@ -138,12 +138,13 @@ export function ARProductPreviewModal({
         await videoRef.current.play().catch(() => {})
       }
       setCameraState('active')
-    } catch (err: any) {
-      console.warn('[AR Preview] Camera access not granted:', err?.name || err?.message)
-      if (err?.name === 'NotAllowedError' || err?.name === 'PermissionDeniedError') {
+    } catch (err: unknown) {
+      const e = err as { name?: string; message?: string }
+      console.warn('[AR Preview] Camera access not granted:', e?.name || e?.message)
+      if (e?.name === 'NotAllowedError' || e?.name === 'PermissionDeniedError') {
         setCameraState('denied')
         setCameraError('Camera permission was denied. You can continue with studio backdrops.')
-      } else if (err?.name === 'NotFoundError' || err?.name === 'DevicesNotFoundError') {
+      } else if (e?.name === 'NotFoundError' || e?.name === 'DevicesNotFoundError') {
         setCameraState('unsupported')
         setCameraError('No video input device detected on this system.')
       } else {

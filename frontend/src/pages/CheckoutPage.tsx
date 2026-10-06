@@ -73,9 +73,9 @@ export function CheckoutPage() {
               displayPrice: prod?.displayPrice || '₹18,500',
               quantity: item.quantity,
               image: prod?.images?.[0] || 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?q=80&w=1200&auto=format&fit=crop',
-              craft: prod?.technique || artisan?.craft || 'Traditional Weave',
-              artisanName: artisan?.name || 'Master Weaver Guild',
-              cluster: artisan?.region || prod?.region || 'India Weaving Cluster'
+              craft: (prod?.technique as string) || (artisan?.craft as string) || 'Traditional Weave',
+              artisanName: (artisan?.name as string) || 'Master Weaver Guild',
+              cluster: (artisan?.region as string) || (prod?.region as string) || 'India Weaving Cluster'
             }
           })
         )
@@ -143,10 +143,12 @@ export function CheckoutPage() {
 
       clearCart()
       setIsSubmitting(false)
-      navigate(`/order-confirmation/${newOrder.id}`)
-    } catch (err: any) {
+      if (newOrder) {
+        navigate(`/order-confirmation/${newOrder.id}`)
+      }
+    } catch (err: unknown) {
       setIsSubmitting(false)
-      const msg = err?.message || 'Failed to place order. Please try again.'
+      const msg = err instanceof Error ? err.message : 'Failed to place order. Please try again.'
       alert(msg)
     }
   }

@@ -92,8 +92,8 @@ export function AIWearPreviewModal({ product, isOpen, onClose }: AIWearPreviewMo
         bodyShape
       })
       setResult(data)
-    } catch (err: any) {
-      setErrorMsg(err.message || 'Unable to generate the wear preview right now. Please try again.')
+    } catch (err: unknown) {
+      setErrorMsg(err instanceof Error ? err.message : 'Unable to generate the wear preview right now. Please try again.')
     } finally {
       setIsLoading(false)
     }

@@ -379,7 +379,7 @@ class SpiralEngine {
   // Spiral geometry helper constants
   PI_HALF_STEPS = Math.PI / 2 / 0.85;
 
-  constructor(canvas: HTMLCanvasElement, cardsList: CardData[], options: { onState?: any } = {}) {
+  constructor(canvas: HTMLCanvasElement, cardsList: CardData[], options: { onState?: (state: { active: number; scrollOffset: number }) => void } = {}) {
     this.n = cardsList.length;
     this.center = Math.floor(this.n / 2);
     this.onState = options.onState;
@@ -657,7 +657,7 @@ class SpiralEngine {
     this.raf = requestAnimationFrame(this.frame);
   }
 
-  placeCard(card: any, offsetIndex: number, revealProgress: number) {
+  placeCard(card: { mesh: { position: { set: (x: number, y: number, z: number) => void }, rotation: { y: number } } }, offsetIndex: number, revealProgress: number) {
     const angle = 0.8 * offsetIndex;
     const radius = 2.4 * (1 - revealProgress / 2);
     
@@ -794,9 +794,10 @@ class SpiralEngine {
     if (this.disposed) return;
     this.disposed = true;
     this.stop();
-    this.scene.traverse((node: any) => {
-      if (node.geometry) node.geometry.remove();
-      if (node.program) node.program.remove();
+    this.scene.traverse((node: Transform) => {
+      const meshNode = node as unknown as { geometry?: { remove: () => void }; program?: { remove: () => void } };
+      if (meshNode.geometry) meshNode.geometry.remove();
+      if (meshNode.program) meshNode.program.remove();
     });
     if (this.backdrop) {
       const gl = this.renderer.gl;
@@ -838,7 +839,7 @@ export function SpiralHero() {
     if (!canvas || !container) return;
 
     const engine = new SpiralEngine(canvas, CARDS_DATA, {
-      onState: (state: any) => {
+      onState: (state: { active: number; scrollOffset: number }) => {
         setActiveIndex(state.active);
         // Calculate scroll scrub pct
         const total = CARDS_DATA.length;
@@ -872,6 +873,9 @@ export function SpiralHero() {
   useEffect(() => {
     const cursor = cursorRef.current;
     if (!cursor) return;
+
+    const currentCanvas = canvasRef.current;
+    const currentPointerPos = pointerPos;
 
     let cx = 0;
     let cy = 0;
@@ -959,8 +963,8 @@ export function SpiralHero() {
       document.removeEventListener('mouseleave', handleMouseLeave);
       window.removeEventListener('click', handleClick);
       cancelAnimationFrame(animId);
-      pointerPos.current.active = false;
-      if (canvasRef.current) canvasRef.current.style.cursor = '';
+      currentPointerPos.current.active = false;
+      if (currentCanvas) currentCanvas.style.cursor = '';
       document.body.style.cursor = '';
       document.body.style.removeProperty('cursor');
     };

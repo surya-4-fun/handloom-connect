@@ -30,8 +30,8 @@ export function LoginPage() {
     try {
       await login({ email, password })
       navigate(from, { replace: true })
-    } catch (err: any) {
-      setError(err.message || 'Invalid login credentials.')
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : 'Invalid login credentials.')
     }
   }
 

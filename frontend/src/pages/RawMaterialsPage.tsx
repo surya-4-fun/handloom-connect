@@ -174,7 +174,7 @@ export function RawMaterialsPage() {
             {/* Sort Dropdown */}
             <select
               value={sortOption}
-              onChange={e => setSortOption(e.target.value as any)}
+              onChange={e => setSortOption(e.target.value as 'featured' | 'price-asc' | 'price-desc' | 'min-order')}
               style={{ background: 'var(--canvas)', border: '1px solid var(--border)', borderRadius: 'var(--radius-md)', padding: '10px 14px', color: 'var(--ink)', fontSize: '0.88rem' }}
             >
               <option value="featured">Featured Supply</option>

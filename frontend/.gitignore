@@ -13,3 +13,6 @@ dist-ssr/
 # Editor & OS
 .DS_Store
 Thumbs.db
+
+.vercel
+.env*

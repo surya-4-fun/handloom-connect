@@ -8,7 +8,7 @@ import {
   fetchServerWishlist,
   toggleServerWishlist,
 } from '../services/cartService'
-import { getAuthToken } from '../services/api'
+import { supabase } from '../lib/supabase'
 
 interface CartItem {
   productId: string
@@ -37,11 +37,10 @@ export function useCart() {
 
   // Sync with server if token is present
   useEffect(() => {
-    const token = getAuthToken()
-    if (!token) return
-
     let isMounted = true
     const initServerSync = async () => {
+      const { data } = await supabase.auth.getSession()
+      if (!data.session) return
       try {
         const [serverCart, serverWishlist] = await Promise.all([
           fetchServerCart(),
@@ -65,8 +64,9 @@ export function useCart() {
     return () => { isMounted = false }
   }, [])
 
-  const addToCart = useCallback((productId: string, quantity = 1) => {
-    if (getAuthToken()) {
+  const addToCart = useCallback(async (productId: string, quantity = 1) => {
+    const { data } = await supabase.auth.getSession()
+    if (data.session) {
       addServerCartItem(productId, quantity).then(res => {
         if (res && res.items) {
           setCartItems(res.items.map(i => ({ productId: i.productId, quantity: i.quantity })))
@@ -83,8 +83,9 @@ export function useCart() {
     }
   }, [])
 
-  const removeFromCart = useCallback((productId: string) => {
-    if (getAuthToken()) {
+  const removeFromCart = useCallback(async (productId: string) => {
+    const { data } = await supabase.auth.getSession()
+    if (data.session) {
       removeServerCartItem(productId).then(res => {
         if (res && res.items) {
           setCartItems(res.items.map(i => ({ productId: i.productId, quantity: i.quantity })))
@@ -95,8 +96,9 @@ export function useCart() {
     }
   }, [])
 
-  const updateQuantity = useCallback((productId: string, quantity: number) => {
-    if (getAuthToken()) {
+  const updateQuantity = useCallback(async (productId: string, quantity: number) => {
+    const { data } = await supabase.auth.getSession()
+    if (data.session) {
       if (quantity <= 0) {
         removeServerCartItem(productId).then(res => {
           if (res && res.items) setCartItems(res.items.map(i => ({ productId: i.productId, quantity: i.quantity })))
@@ -115,8 +117,9 @@ export function useCart() {
     }
   }, [])
 
-  const toggleWishlist = useCallback((productId: string) => {
-    if (getAuthToken()) {
+  const toggleWishlist = useCallback(async (productId: string) => {
+    const { data } = await supabase.auth.getSession()
+    if (data.session) {
       toggleServerWishlist(productId).then(res => {
         if (res && res.wishlistIds) {
           setWishlistIds(res.wishlistIds)
@@ -131,8 +134,9 @@ export function useCart() {
     }
   }, [])
 
-  const clearCart = useCallback(() => {
-    if (getAuthToken()) {
+  const clearCart = useCallback(async () => {
+    const { data } = await supabase.auth.getSession()
+    if (data.session) {
       clearServerCart().then(() => {
         setCartItems([])
       }).catch(() => {})

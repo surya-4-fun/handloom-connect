@@ -110,7 +110,7 @@ export function GlobalSearch({ isOpen, onClose }: GlobalSearchProps) {
 
     const timer = setTimeout(async () => {
       try {
-        const userDisplayName = user?.fullName || (user as any)?.name || ''
+        const userDisplayName = user?.fullName || (user as { name?: string })?.name || ''
         const res = await executeGlobalSearch(query, isAuthenticated, userDisplayName)
         if (isCurrent) {
           setResults(res)
@@ -290,7 +290,7 @@ export function GlobalSearch({ isOpen, onClose }: GlobalSearchProps) {
                       }}
                     >
                       <div className="global-search-quick-icon">
-                        <Icon name={qa.icon as any} size={20} />
+                        <Icon name={qa.icon as React.ComponentProps<typeof Icon>['name']} size={20} />
                       </div>
                       <div className="global-search-quick-text">
                         <strong>{qa.title}</strong>

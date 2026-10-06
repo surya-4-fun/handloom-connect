@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react'
 import { toggleFollowArtisan, fetchFollowedArtisanIds } from '../services/artisanService'
-import { getAuthToken } from '../services/api'
+import { supabase } from '../lib/supabase'
 
 const FOLLOWED_KEY = 'hc-followed-artisans'
 
@@ -21,22 +21,27 @@ export function useFollowArtisans() {
   }, [followedIds])
 
   useEffect(() => {
-    if (!getAuthToken()) return
     let isMounted = true
-    fetchFollowedArtisanIds().then(ids => {
-      if (isMounted && ids.length) setFollowedIds(ids)
-    }).catch(() => {})
+    const init = async () => {
+      const { data } = await supabase.auth.getSession()
+      if (!data.session) return
+      fetchFollowedArtisanIds().then(ids => {
+        if (isMounted && ids.length) setFollowedIds(ids)
+      }).catch(() => {})
+    }
+    init()
     return () => { isMounted = false }
   }, [])
 
-  const toggleFollow = useCallback((artisanId: string) => {
+  const toggleFollow = useCallback(async (artisanId: string) => {
     setFollowedIds(prev =>
       prev.includes(artisanId)
         ? prev.filter(id => id !== artisanId)
         : [...prev, artisanId]
     )
 
-    if (getAuthToken()) {
+    const { data } = await supabase.auth.getSession()
+    if (data.session) {
       toggleFollowArtisan(artisanId).catch(() => {})
     }
   }, [])

@@ -56,21 +56,26 @@ export function AIAssistantPage() {
         }
       })
 
+      const replyText = response?.reply ?? ''
+      if (!replyText) {
+        throw new Error('Received an empty response from the AI service. Please try again.')
+      }
+
       const aiMsg: ChatMessage = {
         id: (Date.now() + 1).toString(),
         sender: 'ai',
-        text: response.data.reply,
-        recommendations: response.data.suggestions,
-        materialSuggestions: response.data.materialSuggestions
+        text: replyText,
+        recommendations: response?.suggestions,
+        materialSuggestions: response?.materialSuggestions
       }
       
       setMessages(prev => [...prev, aiMsg])
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Error fetching AI response:', error)
       const errorMsg: ChatMessage = {
         id: (Date.now() + 1).toString(),
         sender: 'ai',
-        text: error.message || 'I apologize, but I am having trouble connecting to my knowledge base right now. Please try again in a moment.'
+        text: error instanceof Error ? error.message : 'I apologize, but I am having trouble connecting to my knowledge base right now. Please try again in a moment.'
       }
       setMessages(prev => [...prev, errorMsg])
     } finally {

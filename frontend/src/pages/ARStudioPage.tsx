@@ -122,12 +122,13 @@ export function ARStudioPage() {
         await videoRef.current.play().catch(() => {})
       }
       setCameraState('active')
-    } catch (err: any) {
-      console.warn('[AR Studio] Camera access not granted:', err?.name || err?.message)
-      if (err?.name === 'NotAllowedError' || err?.name === 'PermissionDeniedError') {
+    } catch (err: unknown) {
+      const e = err as { name?: string; message?: string }
+      console.warn('[AR Studio] Camera access not granted:', e?.name || e?.message)
+      if (e?.name === 'NotAllowedError' || e?.name === 'PermissionDeniedError') {
         setCameraState('denied')
         setCameraError('Camera access was denied. Virtual drape continues in studio backdrop mode.')
-      } else if (err?.name === 'NotFoundError' || err?.name === 'DevicesNotFoundError') {
+      } else if (e?.name === 'NotFoundError' || e?.name === 'DevicesNotFoundError') {
         setCameraState('unsupported')
         setCameraError('No video input device detected on this system.')
       } else {

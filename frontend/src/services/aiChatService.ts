@@ -1,4 +1,4 @@
-import api from './api';
+import { supabase } from '../lib/supabase'
 
 export interface ProductRecommendation {
   id?: string;
@@ -46,7 +46,7 @@ export interface ClientAIContext {
     category?: string;
     price?: string;
   }>;
-  [key: string]: any;
+  [key: string]: unknown;
 }
 
 export interface ChatRequestPayload {
@@ -61,18 +61,20 @@ export interface ChatResponseData {
   materialSuggestions?: MaterialRecommendation[];
 }
 
-export interface ChatResponse {
-  success: boolean;
-  message: string;
-  data: ChatResponseData;
-}
-
 export const aiChatService = {
-  /**
-   * Send a chat message to the AI service with optional context
-   */
-  async sendMessage(payload: ChatRequestPayload): Promise<ChatResponse> {
-    const response = await api.post<ChatResponse>('/ai/chat', payload);
-    return response.data;
+  async sendMessage(payload: ChatRequestPayload): Promise<ChatResponseData> {
+    try {
+      const { data, error } = await supabase.functions.invoke('ai-chat', {
+        body: payload
+      })
+      if (error) throw error
+      return data
+    } catch (err: unknown) {
+      console.warn('AI Edge Function failed, falling back to mock response', err)
+      return {
+        reply: "Hello! I am currently in offline/mock mode. Once the 'ai-chat' Edge Function is deployed with AI keys, I'll be able to assist you fully with styling and recommendations.",
+        suggestions: []
+      }
+    }
   }
 };

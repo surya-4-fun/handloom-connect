@@ -5,12 +5,22 @@ import { fetchProductDetail } from '../services/productService'
 import { Button } from '../components/primitives/Button'
 import { Icon } from '../components/primitives/Icon'
 
+interface DisplayItem {
+  id: string
+  title: string
+  craft: string
+  price: number
+  image: string
+  qty: number
+  slug: string
+}
+
 export function CartWishlistPage({ type }: { type: 'cart' | 'wishlist' }) {
   const navigate = useNavigate()
   const { cartItems, wishlistIds, removeFromCart, updateQuantity, toggleWishlist, addToCart } = useCart()
   const [giftBox, setGiftBox] = useState(true)
 
-  const [displayItems, setDisplayItems] = useState<any[]>([])
+  const [displayItems, setDisplayItems] = useState<DisplayItem[]>([])
   const [isLoading, setIsLoading] = useState(false)
 
   useEffect(() => {
@@ -28,7 +38,7 @@ export function CartWishlistPage({ type }: { type: 'cart' | 'wishlist' }) {
             return {
               id: id,
               title: prod?.name || 'Handloom Textile Piece',
-              craft: prod?.technique || artisan?.craft || 'Traditional Weave',
+              craft: (prod?.technique as string) || (artisan?.craft as string) || 'Traditional Weave',
               price: prod?.price || 18500,
               image: prod?.images?.[0] || 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?q=80&w=400&auto=format&fit=crop',
               qty,

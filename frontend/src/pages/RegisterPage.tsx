@@ -43,8 +43,8 @@ export function RegisterPage() {
     try {
       await register({ fullName, email, password, acceptTerms })
       navigate('/profile', { replace: true })
-    } catch (err: any) {
-      setError(err.message || 'Registration failed. Please try again.')
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : 'Registration failed. Please try again.')
     }
   }
 

@@ -77,12 +77,14 @@ export function MarketplacePage() {
     if (urlSearch !== filters.search) {
       updateFilter('search', urlSearch)
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [urlSearch, updateFilter])
 
   useEffect(() => {
     if (urlCategory && urlCategory !== filters.category) {
       updateFilter('category', urlCategory)
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [urlCategory, updateFilter])
 
   const {

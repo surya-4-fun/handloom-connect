@@ -62,7 +62,7 @@ export function GlobalSearchResults({
                 onMouseEnter={() => onHoverIndex(idx)}
               >
                 <div className="global-search__item-icon global-search__item-icon--command">
-                  <Icon name={(command.icon as any) || 'sliders'} size={20} />
+                  <Icon name={(command.icon as React.ComponentProps<typeof Icon>['name']) || 'sliders'} size={20} />
                 </div>
                 <div className="global-search__item-info">
                   <strong className="global-search__item-title">{command.title}</strong>
@@ -141,7 +141,7 @@ export function GlobalSearchResults({
                 onMouseEnter={() => onHoverIndex(idx)}
               >
                 <div className="global-search__item-icon global-search__item-icon--feature">
-                  <Icon name={(f.icon as any) || 'sparkles'} size={18} />
+                  <Icon name={(f.icon as React.ComponentProps<typeof Icon>['name']) || 'sparkles'} size={18} />
                 </div>
                 <div className="global-search__item-info">
                   <strong className="global-search__item-title">{f.title}</strong>
@@ -207,7 +207,7 @@ export function GlobalSearchResults({
                 onMouseEnter={() => onHoverIndex(idx)}
               >
                 <div className="global-search__item-icon">
-                  <Icon name={(n.icon as any) || 'compass'} size={18} />
+                  <Icon name={(n.icon as React.ComponentProps<typeof Icon>['name']) || 'compass'} size={18} />
                 </div>
                 <div className="global-search__item-info">
                   <strong className="global-search__item-title">{n.title}</strong>
@@ -237,7 +237,7 @@ export function GlobalSearchResults({
                 onMouseEnter={() => onHoverIndex(idx)}
               >
                 <div className="global-search__item-icon">
-                  <Icon name={(act.icon as any) || 'user'} size={18} />
+                  <Icon name={(act.icon as React.ComponentProps<typeof Icon>['name']) || 'user'} size={18} />
                 </div>
                 <div className="global-search__item-info">
                   <strong className="global-search__item-title">{act.title}</strong>

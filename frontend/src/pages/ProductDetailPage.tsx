@@ -184,15 +184,15 @@ export function ProductDetailPage() {
             <div className="pdp__specs">
               <div>
                 <span className="pdp__spec-label">Material</span>
-                <span className="pdp__spec-value">{product.material}</span>
+                <span className="pdp__spec-value">{product.material || 'No materials available'}</span>
               </div>
               <div>
                 <span className="pdp__spec-label">Region</span>
-                <span className="pdp__spec-value">{product.region}</span>
+                <span className="pdp__spec-value">{product.region || 'No regions available'}</span>
               </div>
               <div>
                 <span className="pdp__spec-label">Technique</span>
-                <span className="pdp__spec-value">{product.technique}</span>
+                <span className="pdp__spec-value">{product.technique || 'No techniques available'}</span>
               </div>
               {product.dimensions && (
                 <div>

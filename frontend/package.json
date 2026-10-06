@@ -11,6 +11,7 @@
     "lint": "eslint . --max-warnings 0"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.117.2",
     "framer-motion": "^11.15.0",
     "gsap": "^3.12.7",
     "lenis": "^1.1.20",
