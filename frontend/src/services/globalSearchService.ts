@@ -49,15 +49,7 @@ const STATIC_FEATURES: Array<{
     to: '/ai-fashion-assistant',
     keywords: ['ai', 'assistant', 'stylist', 'advisor', 'cultural', 'fashion', 'draping', 'recommendations', 'style']
   },
-  {
-    id: 'feat-ai-material',
-    title: 'AI Material Assistant & Craft Science',
-    subtitle: 'Learn about natural fiber breathability, weave tensile strengths & botanical dyes',
-    badge: 'Textile Science',
-    icon: 'book-open',
-    to: '/ai-material-guide',
-    keywords: ['ai', 'material', 'fiber', 'silk', 'cotton', 'wool', 'pashmina', 'tensile', 'dyes', 'craft science', 'guide']
-  },
+
   {
     id: 'feat-ar-studio',
     title: 'AR Product Studio & Preview',
@@ -138,14 +130,7 @@ const STATIC_NAVIGATION: Array<{
     icon: 'users',
     keywords: ['artisans', 'weavers', 'makers', 'guilds', 'collectives', 'masters', 'craftsmen', 'profiles']
   },
-  {
-    id: 'nav-materials',
-    title: 'Textile Science & Materials',
-    subtitle: 'Botanical dye vats, Ahimsa silk reels, and GI-certified warp densities',
-    to: '/materials',
-    icon: 'book',
-    keywords: ['materials', 'craft science', 'dyes', 'textiles', 'fibers', 'education']
-  },
+
   {
     id: 'nav-cart',
     title: 'Shopping Bag',

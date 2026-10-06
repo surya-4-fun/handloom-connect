@@ -3,8 +3,8 @@ import handloomEmblem from '../../assets/images/handloom-logo-emblem.png'
 
 const footerGroups = [
   { title: 'Shop', links: [['Handloom Marketplace', '/marketplace'], ['Raw Material Supply', '/raw-materials'], ['Virtual AR Studio', '/ar-studio'], ['Gift guide', '/marketplace']] },
-  { title: 'Discover', links: [['Artisan stories', '/artisans'], ['Interactive Craft Map', '/origin-map'], ['Textile Science Guide', '/materials'], ['AI stylist', '/ai-fashion-assistant']] },
-  { title: 'Support', links: [['Track Loom Order', '/order-tracking'], ['Delivery & returns', '/contact'], ['Care guide', '/ai-material-guide'], ['About us', '/about']] },
+  { title: 'Discover', links: [['Artisan stories', '/artisans'], ['Interactive Craft Map', '/origin-map'], ['AI stylist', '/ai-fashion-assistant']] },
+  { title: 'Support', links: [['Track Loom Order', '/order-tracking'], ['Delivery & returns', '/contact'], ['About us', '/about']] },
 ]
 
 export function SiteFooter() {

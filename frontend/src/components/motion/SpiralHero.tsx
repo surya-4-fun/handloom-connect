@@ -78,7 +78,7 @@ const CARDS_DATA: CardData[] = [
     detail: 'Organic Craft · Nila Workshop · Gujarat',
     src: 'https://images.unsplash.com/photo-1598300042247-d088f8ab3a91?q=80&w=1200&auto=format&fit=crop',
     lg: 'https://images.unsplash.com/photo-1598300042247-d088f8ab3a91?q=80&w=1200&auto=format&fit=crop',
-    to: '/materials',
+    to: '/raw-materials',
     accent: [0.384, 0.635, 0.798],
     w: 1200,
     h: 800

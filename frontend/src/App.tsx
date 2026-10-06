@@ -7,7 +7,7 @@ import { HomePage } from './pages/HomePage'
 import { MarketplacePage } from './pages/MarketplacePage'
 import { ProductDetailPage } from './pages/ProductDetailPage'
 import { ArtisansPage } from './pages/ArtisansPage'
-import { MaterialsPage } from './pages/MaterialsPage'
+
 import { AIAssistantPage } from './pages/AIAssistantPage'
 import { CartWishlistPage } from './pages/CartWishlistPage'
 import { AboutPage } from './pages/AboutPage'
@@ -45,9 +45,7 @@ export function App() {
           <Route path="/artisans" element={<ArtisansPage />} />
           <Route path="/artisans/:artisanId" element={<ArtisanDetailPage />} />
           <Route path="/artisan-story/:artisanId" element={<ArtisanStoryPage />} />
-          <Route path="/materials" element={<MaterialsPage />} />
           <Route path="/raw-materials" element={<RawMaterialsPage />} />
-          <Route path="/ai-material-guide" element={<MaterialsPage />} />
           <Route path="/ai-fashion-assistant" element={<AIAssistantPage />} />
           <Route path="/ar-studio" element={<ARStudioPage />} />
           <Route path="/order-tracking" element={<OrderTrackingPage />} />

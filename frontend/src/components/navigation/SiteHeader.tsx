@@ -139,9 +139,10 @@ export function SiteHeader() {
           ))}
           <NavLink to="/marketplace" className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}>Marketplace</NavLink>
           <NavLink to="/artisans" className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}>Master Artisans</NavLink>
-          <NavLink to="/materials" className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}>Craft Science</NavLink>
+
           <NavLink to="/raw-materials" className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}>Raw Materials (B2B)</NavLink>
           <NavLink to="/ar-studio" className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}>AR Studio</NavLink>
+          <NavLink to="/about" className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}>About</NavLink>
           <NavLink to="/order-tracking" className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}>Track Order</NavLink>
           <NavLink to="/ai-fashion-assistant" className={({ isActive }) => `nav-link nav-link--ai ${isActive ? 'active' : ''}`}><Icon name="sparkles" size={15}/> AI Assistant</NavLink>
         </nav>
@@ -197,12 +198,12 @@ export function SiteHeader() {
           <div style={{ height: '1px', background: 'rgba(255,255,255,0.08)', margin: '15px 0' }} />
           <NavLink to="/marketplace">Shop the collection</NavLink>
           <NavLink to="/artisans">Master Artisans</NavLink>
-          <NavLink to="/materials">Materials & Craft Science</NavLink>
+
           <NavLink to="/raw-materials">Raw Material Marketplace (B2B)</NavLink>
           <NavLink to="/about">About us</NavLink>
           <NavLink to="/contact">Contact us</NavLink>
           <NavLink to="/ai-fashion-assistant">AI Fashion Assistant</NavLink>
-          <NavLink to="/ai-material-guide">AI Material Guide</NavLink>
+
         </nav>
         <div className="mobile-drawer__footer">
           {isAuthenticated ? (

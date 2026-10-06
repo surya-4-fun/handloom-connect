@@ -190,9 +190,7 @@ export function RawMaterialsPage() {
         {/* Counter */}
         <div style={{ marginBottom: '24px', fontSize: '0.9rem', color: 'var(--muted)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <span>Found <strong>{materials.length}</strong> raw material listings</span>
-          <Link to="/materials" style={{ color: 'var(--muted)', fontSize: '0.85rem', textDecoration: 'underline' }}>
-            Read Textile Science Guide →
-          </Link>
+
         </div>
 
         {/* Raw Materials Grid */}
