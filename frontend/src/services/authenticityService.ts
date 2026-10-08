@@ -1,11 +1,12 @@
 import { supabase } from '../lib/supabase'
 import type { AuthenticityPassport } from '../types/authenticity'
+import { isUUID } from '../utils/uuid'
 
 export async function fetchAuthenticityPassport(productIdOrSlug: string): Promise<AuthenticityPassport | null> {
   if (!productIdOrSlug) return null
   try {
     let query = supabase.from('authenticity_passports').select('*, products!inner(slug)')
-    if (productIdOrSlug.length > 20) {
+    if (isUUID(productIdOrSlug)) {
       query = query.eq('product_id', productIdOrSlug)
     } else {
       query = query.eq('products.slug', productIdOrSlug)

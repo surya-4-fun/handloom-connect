@@ -1,4 +1,5 @@
 import { supabase } from '../lib/supabase'
+import { normalizeImageArray } from '../utils/imageUtils'
 
 export interface CartItemDto {
   productId: string
@@ -42,7 +43,7 @@ async function getCartResponse(userId: string): Promise<CartResponse> {
       name: p.name,
       price: Number(p.price),
       displayPrice: p.display_price,
-      image: typeof p.images === 'string' ? JSON.parse(p.images)[0] : (p.images?.[0] || ''),
+      image: normalizeImageArray(p.images)[0] || '',
       craft: p.technique,
       inStock: p.in_stock
     }

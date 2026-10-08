@@ -1,5 +1,6 @@
 import { supabase } from '../lib/supabase'
 import type { ShopArtisan, ShopProduct } from '../types/shopTypes'
+import { normalizeImageArray } from '../utils/imageUtils'
 
 export interface ArtisanDetailResult {
   artisan: ShopArtisan
@@ -75,7 +76,7 @@ export async function fetchArtisanDetail(id: string): Promise<ArtisanDetailResul
       category: '',
       price: Number(p.price),
       displayPrice: p.display_price,
-      images: typeof p.images === 'string' ? JSON.parse(p.images) : p.images || [],
+      images: normalizeImageArray(p.images),
       alt: p.alt || '',
       material: p.material,
       region: p.region,

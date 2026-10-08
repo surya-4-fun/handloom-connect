@@ -1,6 +1,8 @@
 import { supabase } from '../lib/supabase'
 import type { ShopProduct, ShopCategory, ShopFilters, ShopArtisan } from '../types/shopTypes'
 import type { AuthenticityPassport } from '../types/authenticity'
+import { isUUID } from '../utils/uuid'
+import { normalizeImageArray } from '../utils/imageUtils'
 
 export interface ProductListResult {
   products: ShopProduct[]
@@ -26,16 +28,17 @@ interface SupabaseProductRecord {
   id: string
   name: string
   slug: string
+  category_id?: string
   categories?: { label: string }
   price: string | number
-  display_price: string
-  images: string[] | string
+  display_price?: string
+  images?: unknown
   alt?: string
   material: string
   region: string
   technique: string
   artisan_id?: string
-  artisans?: { id: string; name: string; region: string; craft: string; image: string }
+  artisans?: { id: string; name: string; title?: string; region: string; craft: string; specialty?: string; experience?: string; bio?: string; story?: string; image: string }
   description?: string
   dimensions?: string
   care?: string
@@ -47,25 +50,34 @@ interface SupabaseProductRecord {
 }
 
 function mapProduct(p: SupabaseProductRecord): ShopProduct {
+  const numPrice = Number(p.price) || 0
+  const displayPrice = p.display_price || (numPrice > 0 ? `₹${numPrice.toLocaleString('en-IN')}` : '₹0')
+
   return {
     id: p.id,
     name: p.name,
     slug: p.slug,
     category: p.categories?.label || '',
-    price: Number(p.price),
-    displayPrice: p.display_price,
-    images: typeof p.images === 'string' ? JSON.parse(p.images) : p.images || [],
-    alt: p.alt || '',
-    material: p.material,
-    region: p.region,
-    technique: p.technique,
-    artisanId: p.artisan_id || '',
+    categoryId: p.category_id,
+    price: numPrice,
+    displayPrice,
+    images: normalizeImageArray(p.images),
+    alt: p.alt || p.name || 'Handloom handcrafted creation',
+    material: p.material || '',
+    region: p.region || '',
+    technique: p.technique || '',
+    artisanId: p.artisan_id || p.artisans?.id || '',
     artisanName: p.artisans?.name,
     artisan: p.artisans ? {
       id: p.artisans.id,
       name: p.artisans.name,
+      title: p.artisans.title,
       region: p.artisans.region,
       craft: p.artisans.craft,
+      specialty: p.artisans.specialty,
+      experience: p.artisans.experience || '',
+      bio: p.artisans.bio || '',
+      story: p.artisans.story,
       image: p.artisans.image
     } : undefined,
     description: p.description || '',
@@ -100,14 +112,18 @@ export async function fetchProducts(filters: Partial<ShopFilters> & { page?: num
     if (filters.sort === 'price-asc') query = query.order('price', { ascending: true })
     else if (filters.sort === 'price-desc') query = query.order('price', { ascending: false })
     else if (filters.sort === 'newest') query = query.order('created_at', { ascending: false })
-    // default/featured handled randomly or implicitly
   }
 
-  // Handle category join implicitly, but since we can't filter by a joined table easily without inner join, 
-  // we'll fetch category ID first if needed. Assuming category name is passed.
+  // Handle category filter by ID (preferred UUID) or by label
   if (filters.category && filters.category !== 'all') {
-    const { data: cat } = await supabase.from('categories').select('id').eq('label', filters.category).single()
-    if (cat) query = query.eq('category_id', cat.id)
+    if (isUUID(filters.category)) {
+      query = query.eq('category_id', filters.category)
+    } else {
+      const { data: cat } = await supabase.from('categories').select('id').ilike('label', filters.category).maybeSingle()
+      if (cat?.id) {
+        query = query.eq('category_id', cat.id)
+      }
+    }
   }
 
   const page = filters.page || 1
@@ -130,30 +146,82 @@ export async function fetchProducts(filters: Partial<ShopFilters> & { page?: num
 }
 
 export async function fetchProductDetail(idOrSlug: string): Promise<ProductDetailResult | null> {
+  if (!idOrSlug) return null
+
   let query = supabase.from('products').select(`
     *,
     categories ( label ),
     artisans ( id, name, title, region, craft, specialty, experience, bio, story, image )
   `)
   
-  if (idOrSlug.length > 20) {
-    query = query.eq('id', idOrSlug) // Assuming UUID is long
+  if (isUUID(idOrSlug)) {
+    query = query.eq('id', idOrSlug)
   } else {
     query = query.eq('slug', idOrSlug)
   }
 
-  const { data, error } = await query.single()
-  if (error || !data) return null
+  const { data, error } = await query.maybeSingle()
+  if (error || !data) {
+    if (error) console.error('Fetch product detail error:', error)
+    return null
+  }
 
   const product = mapProduct(data)
 
-  const { data: passportData } = await supabase.from('authenticity_passports').select('*').eq('product_id', data.id).single()
-  const { data: relatedData } = await supabase.from('products').select('*, categories(label), artisans(name)').eq('category_id', data.category_id).neq('id', data.id).limit(4)
+  // Fetch authenticity passport with safe fallback
+  const { data: passportData, error: passportError } = await supabase
+    .from('authenticity_passports')
+    .select('*')
+    .eq('product_id', data.id)
+    .maybeSingle()
+
+  if (passportError) {
+    console.warn('Authenticity passport lookup notice:', passportError.message)
+  }
+
+  let mappedPassport: AuthenticityPassport | undefined = undefined
+  if (passportData) {
+    let craftJourney = []
+    if (Array.isArray(passportData.craft_journey)) {
+      craftJourney = passportData.craft_journey
+    } else if (typeof passportData.craft_journey === 'string') {
+      try {
+        const parsed = JSON.parse(passportData.craft_journey)
+        if (Array.isArray(parsed)) craftJourney = parsed
+      } catch {
+        craftJourney = []
+      }
+    }
+
+    mappedPassport = {
+      authenticityId: passportData.id,
+      productId: passportData.product_id,
+      productName: product.name,
+      verificationStatus: passportData.verification_status || 'GI Associated Craft',
+      handwovenVerified: Boolean(passportData.handwoven_verified),
+      originVerified: Boolean(passportData.origin_verified),
+      giRegistryNo: passportData.gi_registry_no || '',
+      silkMarkNo: passportData.silk_mark_no || '',
+      loomType: passportData.loom_type || '',
+      warpThreadCount: passportData.warp_thread_count || '',
+      weaveDensity: passportData.weave_density || '',
+      culturalStory: passportData.cultural_story || '',
+      craftJourney
+    }
+  }
+
+  // Fetch related products in the same category
+  const { data: relatedData } = await supabase
+    .from('products')
+    .select('*, categories ( label ), artisans ( id, name, region, craft, image )')
+    .eq('category_id', data.category_id)
+    .neq('id', data.id)
+    .limit(4)
 
   return {
     product,
     artisan: data.artisans,
-    passport: passportData || undefined,
+    passport: mappedPassport,
     relatedProducts: (relatedData || []).map(mapProduct)
   }
 }

@@ -123,7 +123,12 @@ export function useShopState(
 
     // Category
     if (filters.category && filters.category !== 'all') {
-      results = results.filter(p => p.category.toLowerCase() === filters.category.toLowerCase())
+      const catVal = filters.category.toLowerCase()
+      results = results.filter(p => {
+        if (p.categoryId && p.categoryId.toLowerCase() === catVal) return true
+        if (p.category && p.category.toLowerCase() === catVal) return true
+        return false
+      })
     }
 
     // Search (Immediate client-side filtering for fast responsive feedback)

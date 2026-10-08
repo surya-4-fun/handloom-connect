@@ -1,10 +1,12 @@
 import { supabase } from '../lib/supabase'
 import type { Product360Data } from '../types/product360'
+import { isUUID } from '../utils/uuid'
 
 export async function fetchProduct360(idOrSlug: string): Promise<Product360Data | null> {
+  if (!idOrSlug) return null
   try {
     let query = supabase.from('product_360_images').select('*, products!inner(id, slug)')
-    if (idOrSlug.length > 20) {
+    if (isUUID(idOrSlug)) {
       query = query.eq('product_id', idOrSlug)
     } else {
       query = query.eq('products.slug', idOrSlug)

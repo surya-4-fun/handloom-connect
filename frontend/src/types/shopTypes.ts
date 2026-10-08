@@ -33,6 +33,7 @@ export interface ShopProduct {
   name: string
   slug: string
   category: string
+  categoryId?: string
   price: number
   /** Pre-formatted display price, e.g. "₹4,800" */
   displayPrice: string

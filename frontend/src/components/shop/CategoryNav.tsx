@@ -7,10 +7,20 @@ interface CategoryNavProps {
 }
 
 export function CategoryNav({ categories, activeCategory, onSelect }: CategoryNavProps) {
+  const isAll = !activeCategory || activeCategory === 'all'
+
   return (
     <nav className="category-nav" aria-label="Product categories">
       <div className="container">
         <div className="category-nav__list" role="tablist">
+          <button
+            role="tab"
+            aria-selected={isAll}
+            className={`category-chip ${isAll ? 'category-chip--active' : ''}`}
+            onClick={() => onSelect('all')}
+          >
+            All Products
+          </button>
           {categories.map(cat => (
             <button
               key={cat.id}

@@ -1,5 +1,6 @@
 import { supabase } from '../lib/supabase'
 import type { RawMaterial, BulkRequestForm, RawMaterialCategory, MaterialQuality } from '../types/rawMaterial'
+import { normalizeImageArray } from '../utils/imageUtils'
 
 interface SupabaseRawMaterialRecord {
   id: string
@@ -8,7 +9,7 @@ interface SupabaseRawMaterialRecord {
   material_type: string
   origin: string
   supplier_id: string
-  material_suppliers?: { name: string }
+  material_suppliers?: { name: string } | { name: string }[] | null
   quality: MaterialQuality
   quantity_unit: string
   price: string | number
@@ -23,6 +24,9 @@ interface SupabaseRawMaterialRecord {
 }
 
 function mapRawMaterial(m: SupabaseRawMaterialRecord): RawMaterial {
+  const supplierRecord = Array.isArray(m.material_suppliers)
+    ? m.material_suppliers[0]
+    : m.material_suppliers
   return {
     id: m.id,
     name: m.name,
@@ -31,7 +35,7 @@ function mapRawMaterial(m: SupabaseRawMaterialRecord): RawMaterial {
     origin: m.origin,
     supplier: {
       id: m.supplier_id,
-      name: m.material_suppliers?.name || 'Unknown',
+      name: supplierRecord?.name || 'Unknown',
       location: '',
       rating: 0,
       certified: false,
@@ -47,7 +51,7 @@ function mapRawMaterial(m: SupabaseRawMaterialRecord): RawMaterial {
     inStock: m.in_stock,
     sustainabilityInfo: m.sustainability_info || '',
     description: m.description || '',
-    images: typeof m.images === 'string' ? JSON.parse(m.images) : m.images || [],
+    images: normalizeImageArray(m.images),
     badge: m.badge,
     denierOrCount: m.denier_or_count
   }
@@ -63,7 +67,7 @@ export async function fetchRawMaterials(filters: {
 } = {}): Promise<RawMaterial[]> {
   let query = supabase.from('raw_materials').select('*, material_suppliers(name)')
   if (filters.category && filters.category !== 'all') query = query.eq('category', filters.category)
-  if (filters.origin && filters.origin !== 'all') query = query.eq('origin', filters.origin)
+  if (filters.origin && filters.origin !== 'all') query = query.ilike('origin', `%${filters.origin}%`)
   if (filters.quality && filters.quality !== 'all') query = query.eq('quality', filters.quality)
   if (filters.inStockOnly) query = query.eq('in_stock', true)
   if (filters.search) query = query.ilike('name', `%${filters.search}%`)
@@ -71,15 +75,20 @@ export async function fetchRawMaterials(filters: {
   if (filters.sort) {
     if (filters.sort === 'price-asc') query = query.order('price', { ascending: true })
     else if (filters.sort === 'price-desc') query = query.order('price', { ascending: false })
+    else if (filters.sort === 'min-order') query = query.order('min_order_qty', { ascending: true })
   }
   
-  const { data } = await query
+  const { data, error } = await query
+  if (error) {
+    console.error('Error fetching raw materials from Supabase:', error)
+    return []
+  }
   return (data || []).map(mapRawMaterial)
 }
 
 export async function fetchRawMaterialById(id: string): Promise<RawMaterial | null> {
-  const { data } = await supabase.from('raw_materials').select('*, material_suppliers(*)').eq('id', id).single()
-  if (!data) return null
+  const { data, error } = await supabase.from('raw_materials').select('*, material_suppliers(*)').eq('id', id).single()
+  if (error || !data) return null
   return mapRawMaterial(data)
 }
 

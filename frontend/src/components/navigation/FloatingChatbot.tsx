@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { Icon } from '../primitives/Icon'
+import { aiChatService } from '../../services/aiChatService'
 
 interface Message {
   id: string
@@ -10,6 +11,7 @@ interface Message {
 
 export function FloatingChatbot() {
   const [isOpen, setIsOpen] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
   const [messages, setMessages] = useState<Message[]>([
     {
       id: '1',
@@ -23,37 +25,50 @@ export function FloatingChatbot() {
   ])
   const [input, setInput] = useState('')
 
-  const handleSend = (e: React.FormEvent) => {
+  const handleSend = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (!input.trim()) return
+    if (!input.trim() || isLoading) return
 
-    const userMsg: Message = { id: Date.now().toString(), sender: 'user', text: input }
+    const userText = input.trim()
+    const userMsg: Message = { id: Date.now().toString(), sender: 'user', text: userText }
     setMessages(prev => [...prev, userMsg])
-    const prompt = input.toLowerCase()
     setInput('')
+    setIsLoading(true)
 
-    setTimeout(() => {
-      let aiText = "Thank you for asking. Based on heirloom weave characteristics, I recommend examining our Mulberry Silk or Tussar collection."
-      let recs = [
-        { title: 'Kanchipuram Temple Border Korvai Silk', craft: 'Korvai Weave', price: '₹39,200' },
-        { title: 'Dhakai Jamdani Fine Muslin Saree', craft: 'Phulia Weave', price: '₹28,400' }
-      ]
+    try {
+      const historyForApi = messages.map(msg => ({
+        sender: msg.sender,
+        text: msg.text
+      }))
 
-      if (prompt.includes('wedding') || prompt.includes('bridal') || prompt.includes('heavy') || prompt.includes('saree')) {
-        aiText = "For wedding celebrations, nothing matches the rich drape and electroplated gold zari of Banarasi Katan Silk or Kanchipuram Korvai."
-        recs = [
-          { title: 'Banarasi Real Zari Katan Silk Saree', craft: 'Banarasi Brocade', price: '₹48,500' },
-          { title: 'Kanchipuram Temple Border Korvai Silk', craft: 'Kanchipuram Silk', price: '₹39,200' }
-        ]
-      } else if (prompt.includes('winter') || prompt.includes('shawl') || prompt.includes('warm')) {
-        aiText = "For winter warmth, hand-spun Ladakhi Pashmina with fine Sozni needlework offers featherweight insulation and timeless elegance."
-        recs = [
-          { title: 'Kashmiri Hand-Embroidered Pashmina Shawl', craft: 'Sozni Needlework', price: '₹62,000' }
-        ]
-      }
+      const response = await aiChatService.sendMessage({
+        message: userText,
+        history: historyForApi,
+        context: { currentPage: 'floating_widget' }
+      })
 
-      setMessages(prev => [...prev, { id: (Date.now() + 1).toString(), sender: 'ai', text: aiText, recommendations: recs }])
-    }, 500)
+      const replyText = response?.reply || "Thank you for asking. Based on heirloom weave characteristics, I recommend examining our Mulberry Silk or Tussar collection."
+      const recs = response?.suggestions?.map(s => ({
+        title: s.title,
+        craft: s.craft,
+        price: s.price
+      }))
+
+      setMessages(prev => [...prev, {
+        id: (Date.now() + 1).toString(),
+        sender: 'ai',
+        text: replyText,
+        recommendations: recs && recs.length > 0 ? recs : undefined
+      }])
+    } catch {
+      setMessages(prev => [...prev, {
+        id: (Date.now() + 1).toString(),
+        sender: 'ai',
+        text: "I am having trouble connecting to my curator assistant right now. Please try again in a moment."
+      }])
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   return (
