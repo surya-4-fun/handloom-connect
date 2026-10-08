@@ -1,12 +1,14 @@
 import { useState } from 'react'
+import { Link } from 'react-router-dom'
 import { Icon } from '../primitives/Icon'
-import { aiChatService } from '../../services/aiChatService'
+import { aiChatService, ProductRecommendation, MaterialRecommendation } from '../../services/aiChatService'
 
 interface Message {
   id: string
   sender: 'ai' | 'user'
   text: string
-  recommendations?: { title: string; craft: string; price: string }[]
+  recommendations?: ProductRecommendation[]
+  materialSuggestions?: MaterialRecommendation[]
 }
 
 export function FloatingChatbot() {
@@ -16,11 +18,7 @@ export function FloatingChatbot() {
     {
       id: '1',
       sender: 'ai',
-      text: 'Greetings. I am your Handloom Connect AI Curator. Looking for a specific weave, occasion outfit, or artisan story today?',
-      recommendations: [
-        { title: 'Banarasi Real Zari Katan Silk', craft: 'Banarasi Brocade', price: '₹48,500' },
-        { title: 'Kashmiri Hand-Embroidered Pashmina', craft: 'Sozni Needlework', price: '₹62,000' }
-      ]
+      text: 'Greetings! I am your Handloom Connect AI Curator. Looking for a specific weave, occasion outfit, or artisan story today?'
     }
   ])
   const [input, setInput] = useState('')
@@ -47,8 +45,9 @@ export function FloatingChatbot() {
         context: { currentPage: 'floating_widget' }
       })
 
-      const replyText = response?.reply || "Thank you for asking. Based on heirloom weave characteristics, I recommend examining our Mulberry Silk or Tussar collection."
+      const replyText = response?.reply || "I am here to help you explore authentic Indian handlooms, GI-certified weaves, and master artisan collections. What would you like to discover today?"
       const recs = response?.suggestions?.map(s => ({
+        id: s.id || s.productId,
         title: s.title,
         craft: s.craft,
         price: s.price
@@ -58,7 +57,8 @@ export function FloatingChatbot() {
         id: (Date.now() + 1).toString(),
         sender: 'ai',
         text: replyText,
-        recommendations: recs && recs.length > 0 ? recs : undefined
+        recommendations: recs && recs.length > 0 ? recs : undefined,
+        materialSuggestions: response?.materialSuggestions && response.materialSuggestions.length > 0 ? response.materialSuggestions : undefined
       }])
     } catch {
       setMessages(prev => [...prev, {
@@ -152,13 +152,37 @@ export function FloatingChatbot() {
                   {msg.text}
                 </div>
 
-                {msg.recommendations && (
+                {msg.recommendations && msg.recommendations.length > 0 && (
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginTop: '8px' }}>
                     {msg.recommendations.map(rec => (
                       <div key={rec.title} style={{ padding: '8px 12px', background: 'var(--canvas)', border: '1px solid var(--border)', borderRadius: 'var(--radius-md)' }}>
                         <span style={{ color: 'var(--gold)', fontSize: '0.6rem', letterSpacing: '0.08em', textTransform: 'uppercase' }}>{rec.craft}</span>
                         <div style={{ fontFamily: 'var(--font-display)', fontSize: '0.9rem', color: 'var(--ink)' }}>{rec.title}</div>
-                        <strong style={{ color: 'var(--gold)', fontSize: '0.8rem' }}>{rec.price}</strong>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '4px' }}>
+                          <strong style={{ color: 'var(--gold)', fontSize: '0.8rem' }}>{rec.price}</strong>
+                          {rec.id && (
+                            <Link to={`/marketplace/${rec.id}`} onClick={() => setIsOpen(false)} style={{ color: 'var(--gold)', fontSize: '0.72rem', textDecoration: 'underline' }}>
+                              View →
+                            </Link>
+                          )}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                {msg.materialSuggestions && msg.materialSuggestions.length > 0 && (
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginTop: '8px' }}>
+                    {msg.materialSuggestions.map(mat => (
+                      <div key={mat.name} style={{ padding: '8px 12px', background: 'var(--canvas)', border: '1px solid var(--border)', borderRadius: 'var(--radius-md)' }}>
+                        <span style={{ color: 'var(--gold)', fontSize: '0.6rem', letterSpacing: '0.08em', textTransform: 'uppercase' }}>{mat.category}</span>
+                        <div style={{ fontFamily: 'var(--font-display)', fontSize: '0.9rem', color: 'var(--ink)' }}>{mat.name}</div>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '4px' }}>
+                          <strong style={{ color: 'var(--gold)', fontSize: '0.8rem' }}>{mat.price} {mat.unit ? `/${mat.unit}` : ''}</strong>
+                          <Link to="/raw-materials" onClick={() => setIsOpen(false)} style={{ color: 'var(--gold)', fontSize: '0.72rem', textDecoration: 'underline' }}>
+                            Catalog →
+                          </Link>
+                        </div>
                       </div>
                     ))}
                   </div>

@@ -18,11 +18,7 @@ export function AIAssistantPage() {
         ? `Greetings. I am your Handloom Connect AI Curator. You are viewing artisan profile "${artisanId}". Inquire about their heritage lineage, master techniques, or regional craft.`
         : rawMaterialId
         ? `Greetings. I am your Handloom Connect AI Assistant. You are inspecting material reference "${rawMaterialId}". Ask me about fiber origin, sustainability, or technical specifications.`
-        : 'Greetings. I am your Handloom Connect AI Curator & Stylist. Tell me about the occasion, textile drape preference, or region you wish to explore today.',
-      recommendations: [
-        { title: 'Banarasi Real Zari Katan Silk Saree', craft: 'Varanasi Weave', price: '₹48,500' },
-        { title: 'Kashmiri Hand-Embroidered Pashmina', craft: 'Sozni Needlework', price: '₹62,000' }
-      ]
+        : 'Greetings. I am your Handloom Connect AI Curator & Stylist. Tell me about the occasion, textile drape preference, or region you wish to explore today.'
     }
   ])
   const [input, setInput] = useState('')
