@@ -28,22 +28,35 @@ export function FloatingChatbot() {
     if (!input.trim() || isLoading) return
 
     const userText = input.trim()
-    const userMsg: Message = { id: Date.now().toString(), sender: 'user', text: userText }
-    setMessages(prev => [...prev, userMsg])
+    const userMsgId = Date.now().toString()
+    const aiMsgId = (Date.now() + 1).toString()
+
+    const userMsg: Message = { id: userMsgId, sender: 'user', text: userText }
+    const aiPlaceholder: Message = { id: aiMsgId, sender: 'ai', text: '' }
+
+    setMessages(prev => [...prev, userMsg, aiPlaceholder])
     setInput('')
     setIsLoading(true)
 
     try {
-      const historyForApi = messages.map(msg => ({
+      // Send only recent 6 messages to keep request payload compact and fast
+      const historyForApi = messages.slice(-6).map(msg => ({
         sender: msg.sender,
         text: msg.text
       }))
 
-      const response = await aiChatService.sendMessage({
-        message: userText,
-        history: historyForApi,
-        context: { currentPage: 'floating_widget' }
-      })
+      const response = await aiChatService.sendMessage(
+        {
+          message: userText,
+          history: historyForApi,
+          context: { currentPage: 'floating_widget' }
+        },
+        {
+          onDelta: (accumulated) => {
+            setMessages(prev => prev.map(m => m.id === aiMsgId ? { ...m, text: accumulated } : m))
+          }
+        }
+      )
 
       const replyText = response?.reply || "I am here to help you explore authentic Indian handlooms, GI-certified weaves, and master artisan collections. What would you like to discover today?"
       const recs = response?.suggestions?.map(s => ({
@@ -53,19 +66,17 @@ export function FloatingChatbot() {
         price: s.price
       }))
 
-      setMessages(prev => [...prev, {
-        id: (Date.now() + 1).toString(),
-        sender: 'ai',
+      setMessages(prev => prev.map(m => m.id === aiMsgId ? {
+        ...m,
         text: replyText,
         recommendations: recs && recs.length > 0 ? recs : undefined,
         materialSuggestions: response?.materialSuggestions && response.materialSuggestions.length > 0 ? response.materialSuggestions : undefined
-      }])
+      } : m))
     } catch {
-      setMessages(prev => [...prev, {
-        id: (Date.now() + 1).toString(),
-        sender: 'ai',
-        text: "I am having trouble connecting to my curator assistant right now. Please try again in a moment."
-      }])
+      setMessages(prev => prev.map(m => m.id === aiMsgId ? {
+        ...m,
+        text: m.text ? m.text : "I am having trouble connecting to my curator assistant right now. Please try again in a moment."
+      } : m))
     } finally {
       setIsLoading(false)
     }
@@ -149,7 +160,7 @@ export function FloatingChatbot() {
                   fontSize: '0.88rem',
                   lineHeight: '1.5'
                 }}>
-                  {msg.text}
+                  {msg.text || (isLoading && msg.sender === 'ai' ? '...' : '')}
                 </div>
 
                 {msg.recommendations && msg.recommendations.length > 0 && (
@@ -197,6 +208,7 @@ export function FloatingChatbot() {
               type="text"
               value={input}
               onChange={e => setInput(e.target.value)}
+              disabled={isLoading}
               placeholder="Ask about sarees, dyes, or shawls..."
               style={{
                 flexGrow: 1,
@@ -206,11 +218,23 @@ export function FloatingChatbot() {
                 border: '1px solid var(--border)',
                 color: 'var(--ink)',
                 fontSize: '0.85rem',
-                outline: 'none'
+                outline: 'none',
+                opacity: isLoading ? 0.7 : 1
               }}
             />
-            <button type="submit" className="button button--primary" style={{ borderRadius: '100px', padding: '0 16px', minHeight: '38px', fontSize: '0.7rem' }}>
-              Send
+            <button
+              type="submit"
+              disabled={isLoading}
+              className="button button--primary"
+              style={{
+                borderRadius: '100px',
+                padding: '0 16px',
+                minHeight: '38px',
+                fontSize: '0.7rem',
+                opacity: isLoading ? 0.7 : 1
+              }}
+            >
+              {isLoading ? '...' : 'Send'}
             </button>
           </form>
         </div>

@@ -29,51 +29,58 @@ export function AIAssistantPage() {
     if (!input.trim() || isLoading) return
 
     const userText = input.trim()
-    const userMsg: ChatMessage = { id: Date.now().toString(), sender: 'user', text: userText }
-    setMessages(prev => [...prev, userMsg])
+    const userMsgId = Date.now().toString()
+    const aiMsgId = (Date.now() + 1).toString()
+
+    const userMsg: ChatMessage = { id: userMsgId, sender: 'user', text: userText }
+    const aiPlaceholder: ChatMessage = { id: aiMsgId, sender: 'ai', text: '' }
+
+    setMessages(prev => [...prev, userMsg, aiPlaceholder])
     setInput('')
     setIsLoading(true)
 
     try {
-      // Format history for the API (exclude the current message)
-      const historyForApi = messages.map(msg => ({
+      // Send only recent 6 messages to keep request payload compact and fast
+      const historyForApi = messages.slice(-6).map(msg => ({
         sender: msg.sender,
         text: msg.text
       }))
 
-      const response = await aiChatService.sendMessage({
-        message: userText,
-        history: historyForApi,
-        context: {
-          currentPage: productId ? 'product_detail' : artisanId ? 'artisan_detail' : rawMaterialId ? 'raw_materials' : 'assistant',
-          productId,
-          artisanId,
-          rawMaterialId
+      const response = await aiChatService.sendMessage(
+        {
+          message: userText,
+          history: historyForApi,
+          context: {
+            currentPage: productId ? 'product_detail' : artisanId ? 'artisan_detail' : rawMaterialId ? 'raw_materials' : 'assistant',
+            productId,
+            artisanId,
+            rawMaterialId
+          }
+        },
+        {
+          onDelta: (accumulated) => {
+            setMessages(prev => prev.map(m => m.id === aiMsgId ? { ...m, text: accumulated } : m))
+          }
         }
-      })
+      )
 
       const replyText = response?.reply ?? ''
       if (!replyText) {
         throw new Error('Received an empty response from the AI service. Please try again.')
       }
 
-      const aiMsg: ChatMessage = {
-        id: (Date.now() + 1).toString(),
-        sender: 'ai',
+      setMessages(prev => prev.map(m => m.id === aiMsgId ? {
+        ...m,
         text: replyText,
         recommendations: response?.suggestions,
         materialSuggestions: response?.materialSuggestions
-      }
-      
-      setMessages(prev => [...prev, aiMsg])
+      } : m))
     } catch (error: unknown) {
       console.error('Error fetching AI response:', error)
-      const errorMsg: ChatMessage = {
-        id: (Date.now() + 1).toString(),
-        sender: 'ai',
-        text: error instanceof Error ? error.message : 'I apologize, but I am having trouble connecting to my knowledge base right now. Please try again in a moment.'
-      }
-      setMessages(prev => [...prev, errorMsg])
+      setMessages(prev => prev.map(m => m.id === aiMsgId ? {
+        ...m,
+        text: m.text ? m.text : (error instanceof Error ? error.message : 'I apologize, but I am having trouble connecting to my knowledge base right now. Please try again in a moment.')
+      } : m))
     } finally {
       setIsLoading(false)
     }
@@ -127,7 +134,7 @@ export function AIAssistantPage() {
                   fontSize: '0.95rem',
                   lineHeight: 1.5
                 }}>
-                  {msg.text}
+                  {msg.text || (isLoading && msg.sender === 'ai' ? 'Consulting weaving archives...' : '')}
                 </div>
 
                 {msg.recommendations && msg.recommendations.length > 0 && (
@@ -200,7 +207,7 @@ export function AIAssistantPage() {
                 )}
               </div>
             ))}
-            {isLoading && (
+            {isLoading && !messages.some(m => m.sender === 'ai' && !m.text) && (
               <div style={{ alignSelf: 'flex-start', maxWidth: '80%' }}>
                  <div style={{
                   padding: '16px 20px',

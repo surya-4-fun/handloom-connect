@@ -242,6 +242,236 @@ async function fetchRawMaterials(): Promise<RawMaterialItem[]> {
   return CATALOG_RAW_MATERIALS
 }
 
+// In-memory module-scope TTL cache to prevent repeated database fetches on every AI message
+interface CatalogCache {
+  products: CatalogProduct[];
+  rawMaterials: RawMaterialItem[];
+  timestamp: number;
+}
+
+const CACHE_TTL_MS = 10 * 60 * 1000; // 10 minutes cache TTL
+let catalogCache: CatalogCache | null = null;
+let catalogFetchPromise: Promise<CatalogCache> | null = null;
+
+async function getCachedCatalog(): Promise<{ products: CatalogProduct[]; rawMaterials: RawMaterialItem[] }> {
+  const now = Date.now();
+  if (catalogCache && (now - catalogCache.timestamp < CACHE_TTL_MS)) {
+    return { products: catalogCache.products, rawMaterials: catalogCache.rawMaterials };
+  }
+
+  // De-duplicate concurrent in-flight fetches
+  if (!catalogFetchPromise) {
+    catalogFetchPromise = (async () => {
+      try {
+        const [products, rawMaterials] = await Promise.all([
+          fetchCatalogProducts(),
+          fetchRawMaterials()
+        ]);
+        catalogCache = {
+          products,
+          rawMaterials,
+          timestamp: Date.now()
+        };
+        return catalogCache;
+      } finally {
+        catalogFetchPromise = null;
+      }
+    })();
+  }
+
+  const active = await catalogFetchPromise;
+  return { products: active.products, rawMaterials: active.rawMaterials };
+}
+
+// Safely unescape standard JSON string literal escape sequences (\", \\, \/, \n, \r, \t, \b, \f, \uXXXX)
+function unescapeJsonString(str: string): string {
+  let result = ''
+  let i = 0
+  while (i < str.length) {
+    if (str[i] === '\\' && i + 1 < str.length) {
+      const next = str[i + 1]
+      if (next === '"') { result += '"'; i += 2 }
+      else if (next === '\\') { result += '\\'; i += 2 }
+      else if (next === '/') { result += '/'; i += 2 }
+      else if (next === 'n') { result += '\n'; i += 2 }
+      else if (next === 'r') { result += '\r'; i += 2 }
+      else if (next === 't') { result += '\t'; i += 2 }
+      else if (next === 'b') { result += '\b'; i += 2 }
+      else if (next === 'f') { result += '\f'; i += 2 }
+      else if (next === 'u' && i + 5 < str.length) {
+        const hex = str.substring(i + 2, i + 6)
+        if (/^[0-9a-fA-F]{4}$/.test(hex)) {
+          result += String.fromCharCode(parseInt(hex, 16))
+          i += 6
+        } else {
+          result += '\\u'
+          i += 2
+        }
+      } else {
+        result += next
+        i += 2
+      }
+    } else {
+      result += str[i]
+      i += 1
+    }
+  }
+  return result
+}
+
+// Progressive streaming extractor that pulls the "reply" string content out of the JSON stream in real time,
+// shielding raw JSON characters from the client while streaming natural text deltas.
+class ReplyStreamExtractor {
+  private rawAccumulated = ''
+  private replyStarted = false
+  private replyFinished = false
+  private processedIndex = 0
+  private isJsonMode = true
+  private accumulatedReply = ''
+
+  feed(chunk: string): string[] {
+    this.rawAccumulated += chunk
+    const deltas: string[] = []
+
+    if (!this.replyStarted) {
+      const trimmed = this.rawAccumulated.trim()
+      if (trimmed.length > 0 && !trimmed.startsWith('{')) {
+        // Plain text mode: model did not output a JSON object
+        this.isJsonMode = false
+        this.replyStarted = true
+      }
+    }
+
+    if (!this.isJsonMode) {
+      this.accumulatedReply += chunk
+      return [chunk]
+    }
+
+    if (this.replyFinished) {
+      return deltas
+    }
+
+    if (!this.replyStarted) {
+      const match = this.rawAccumulated.match(/"(?:reply|message|content|answer)"\s*:\s*"/)
+      if (match && match.index !== undefined) {
+        this.replyStarted = true
+        this.processedIndex = match.index + match[0].length
+      } else {
+        return deltas
+      }
+    }
+
+    let sliceEnd = this.rawAccumulated.length
+    let foundClosingQuote = false
+
+    let i = this.processedIndex
+    while (i < this.rawAccumulated.length) {
+      if (this.rawAccumulated[i] === '\\') {
+        i += 2 // skip escaped character
+      } else if (this.rawAccumulated[i] === '"') {
+        sliceEnd = i
+        foundClosingQuote = true
+        this.replyFinished = true
+        break
+      } else {
+        i += 1
+      }
+    }
+
+    if (!foundClosingQuote) {
+      // Check for incomplete escape sequence at the end of the raw buffer
+      if (this.rawAccumulated.endsWith('\\')) {
+        sliceEnd -= 1
+      } else {
+        const uMatch = this.rawAccumulated.match(/\\u[0-9a-fA-F]{0,3}$/)
+        if (uMatch) {
+          sliceEnd -= uMatch[0].length
+        }
+      }
+    }
+
+    if (sliceEnd > this.processedIndex) {
+      const rawSlice = this.rawAccumulated.substring(this.processedIndex, sliceEnd)
+      const unescaped = unescapeJsonString(rawSlice)
+      if (unescaped.length > 0) {
+        deltas.push(unescaped)
+        this.accumulatedReply += unescaped
+      }
+      this.processedIndex = sliceEnd
+    }
+
+    if (foundClosingQuote) {
+      this.processedIndex = sliceEnd + 1
+    }
+
+    return deltas
+  }
+
+  flush(): string[] {
+    if (!this.isJsonMode || this.replyFinished || !this.replyStarted) {
+      return []
+    }
+    const deltas: string[] = []
+    if (this.rawAccumulated.length > this.processedIndex) {
+      const rawSlice = this.rawAccumulated.substring(this.processedIndex)
+      const unescaped = unescapeJsonString(rawSlice)
+      if (unescaped.length > 0) {
+        deltas.push(unescaped)
+        this.accumulatedReply += unescaped
+      }
+      this.processedIndex = this.rawAccumulated.length
+    }
+    return deltas
+  }
+
+  getAccumulatedText(): string {
+    return this.accumulatedReply
+  }
+}
+
+// Robust helper for parsing model JSON responses, handling plain JSON, markdown code fences, and whitespace
+function parseModelJson(raw: string): { reply?: string; recommendedProductIds?: string[] } | null {
+  if (!raw || typeof raw !== 'string') return null;
+
+  let text = raw.trim();
+
+  // Strip leading markdown code blocks (e.g. ```json or ```)
+  if (text.startsWith('```')) {
+    text = text.replace(/^```(?:json)?\s*/i, '');
+  }
+
+  // Strip trailing markdown code blocks (e.g. ```)
+  if (text.endsWith('```')) {
+    text = text.replace(/\s*```$/, '');
+  }
+
+  text = text.trim();
+
+  try {
+    return JSON.parse(text);
+  } catch {
+    // If model wrapped explanatory text around the JSON object, extract outermost braces
+    const firstBrace = text.indexOf('{');
+    const lastBrace = text.lastIndexOf('}');
+    if (firstBrace !== -1 && lastBrace > firstBrace) {
+      try {
+        const extracted = text.substring(firstBrace, lastBrace + 1);
+        return JSON.parse(extracted);
+      } catch {
+        return null;
+      }
+    }
+    return null;
+  }
+}
+
+// Fast check for pure greeting inquiries
+function isSimpleGreeting(message: string): boolean {
+  const q = (message || '').trim().toLowerCase();
+  const greetingWords = ['hi', 'hello', 'hey', 'namaste', 'greetings', 'good morning', 'good afternoon', 'good evening', 'pranam', 'yo'];
+  return greetingWords.includes(q) || /^(hi|hello|hey|namaste|greetings)[\s!.,?]*$/i.test(q);
+}
+
 function formatProductSuggestions(productIds: string[], catalog: CatalogProduct[]) {
   const matches: Array<{
     id: string;
@@ -490,12 +720,23 @@ serve(async (req) => {
     const { message, context, history } = await req.json()
     const userMessage = (message || '').trim()
 
-    // 1. Dynamic Catalog Retrieval from Supabase Database (with cache fallback)
-    const activeCatalog = await fetchCatalogProducts()
-    const activeRawMaterials = await fetchRawMaterials()
+    // Fast-path: simple greetings do not require catalog fetching or AI calls
+    if (isSimpleGreeting(userMessage)) {
+      return new Response(
+        JSON.stringify({
+          reply: "Namaste! Welcome to Handloom Connect. I am your artisan curator and textile stylist. Whether you are seeking an heirloom saree for an occasion, exploring regional weaves like Banarasi and Kanchipuram, or looking for certified raw materials, how may I assist you today?",
+          suggestions: [],
+          provider: 'handloom-concierge'
+        }),
+        { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      )
+    }
 
-    const geminiApiKey = Deno.env.get('GEMINI_API_KEY')
-    const openAiApiKey = Deno.env.get('OPENAI_API_KEY')
+    // 1. Retrieve catalog concurrently with in-memory TTL caching
+    const { products: activeCatalog, rawMaterials: activeRawMaterials } = await getCachedCatalog()
+
+    const groqApiKey = Deno.env.get('GROQ_API_KEY')
+    const targetModel = Deno.env.get('GROQ_MODEL') || 'openai/gpt-oss-20b'
 
     // Prepare catalog context for AI model
     const catalogContext = activeCatalog.map(p =>
@@ -530,227 +771,13 @@ You MUST respond with valid JSON:
   "recommendedProductIds": ["exact-product-id-1"] // Only include IDs from the catalog when relevant, otherwise empty array []
 }`
 
-    let geminiDebug: {
-      nativeStatus?: number;
-      nativeError?: string;
-      modelTried?: string;
-      availableModels?: string[];
-      compatStatus?: number;
-      compatError?: string;
-      exception?: string;
-    } = {}
+    // 2. Groq AI Generation (OpenAI-compatible Chat Completions API with Streaming)
+    if (groqApiKey) {
+      const controller = new AbortController()
+      const timeoutId = setTimeout(() => controller.abort(), 10000) // 10s maximum timeout
 
-    // 2. Primary Provider: Google Gemini API (if GEMINI_API_KEY is configured)
-    if (geminiApiKey) {
       try {
         const conversationMessages = [
-          ...(Array.isArray(history)
-            ? history.slice(-6).map((h: { sender: string; text: string }) => ({
-                role: h.sender === 'user' ? 'user' : 'model',
-                parts: [{ text: h.text }]
-              }))
-            : []),
-          {
-            role: 'user',
-            parts: [{
-              text: context?.currentPage
-                ? `[Context: viewing ${context.currentPage}] ${userMessage}`
-                : userMessage
-            }]
-          }
-        ]
-
-        // Helper to invoke generateContent for a given model
-        const tryGenerateContent = async (modelName: string) => {
-          const cleanModel = modelName.replace(/^models\//, '')
-          const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${cleanModel}:generateContent?key=${geminiApiKey}`
-          const response = await fetch(geminiUrl, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              systemInstruction: {
-                parts: [{ text: systemPrompt }]
-              },
-              contents: conversationMessages,
-              generationConfig: {
-                temperature: 0.7,
-                maxOutputTokens: 600,
-                responseMimeType: 'application/json'
-              }
-            })
-          })
-          return { response, model: cleanModel }
-        }
-
-        // Try candidate models: gemini-1.5-flash first, then 2026 active models
-        const candidateModels = ['gemini-1.5-flash', 'gemini-2.5-flash', 'gemini-flash-latest', 'gemini-2.5-pro', 'gemini-pro-latest']
-        let aiResponse: Response | null = null
-        let chosenModel = ''
-
-        for (const candidate of candidateModels) {
-          const attempt = await tryGenerateContent(candidate)
-          aiResponse = attempt.response
-          chosenModel = attempt.model
-          geminiDebug.modelTried = chosenModel
-
-          if (aiResponse.ok) {
-            break
-          }
-          // If status is not 404 (e.g., 429 quota, 403, 400), stop trying other candidates
-          if (aiResponse.status !== 404) {
-            break
-          }
-        }
-
-        // If candidates 404, dynamically discover supported models via ListModels
-        if (aiResponse && !aiResponse.ok && aiResponse.status === 404) {
-          try {
-            const listUrl = `https://generativelanguage.googleapis.com/v1beta/models?key=${geminiApiKey}`
-            const listRes = await fetch(listUrl)
-            if (listRes.ok) {
-              const listData = await listRes.json()
-              const supportedModels: string[] = (listData.models || [])
-                .filter((m: { supportedGenerationMethods?: string[] }) =>
-                  Array.isArray(m.supportedGenerationMethods) && m.supportedGenerationMethods.includes('generateContent')
-                )
-                .map((m: { name: string }) => m.name.replace(/^models\//, ''))
-              geminiDebug.availableModels = supportedModels
-
-              const discoveredModel = supportedModels.find(m => m === 'gemini-2.5-flash') ||
-                supportedModels.find(m => m.includes('flash')) ||
-                supportedModels.find(m => m.includes('pro')) ||
-                supportedModels[0]
-
-              if (discoveredModel) {
-                const attemptDiscovered = await tryGenerateContent(discoveredModel)
-                aiResponse = attemptDiscovered.response
-                chosenModel = attemptDiscovered.model
-                geminiDebug.modelTried = chosenModel
-              }
-            }
-          } catch (listErr) {
-            console.warn('Failed to dynamically discover Gemini models:', listErr)
-          }
-        }
-
-        if (aiResponse && aiResponse.ok) {
-          const data = await aiResponse.json()
-          const rawText = data.candidates?.[0]?.content?.parts?.[0]?.text?.trim()
-          if (rawText) {
-            try {
-              const parsed = JSON.parse(rawText)
-              const replyText = parsed.reply?.trim()
-              const recIds: string[] = Array.isArray(parsed.recommendedProductIds) ? parsed.recommendedProductIds : []
-              const suggestions = formatProductSuggestions(recIds, activeCatalog)
-
-              if (replyText) {
-                return new Response(
-                  JSON.stringify({
-                    reply: replyText,
-                    suggestions,
-                    provider: 'gemini',
-                    model: chosenModel
-                  }),
-                  { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-                )
-              }
-            } catch {
-              return new Response(
-                JSON.stringify({
-                  reply: rawText,
-                  suggestions: [],
-                  provider: 'gemini',
-                  model: chosenModel
-                }),
-                { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-              )
-            }
-          }
-        } else if (aiResponse) {
-          geminiDebug.nativeStatus = aiResponse.status
-          try {
-            const errText = await aiResponse.text()
-            const errJson = JSON.parse(errText)
-            geminiDebug.nativeError = (errJson?.error?.message || errJson?.error?.status || errText.slice(0, 200))
-              .replace(/AIza[0-9A-Za-z-_]+/g, '[REDACTED]')
-              .replace(/key=[^&\s"]+/gi, 'key=[REDACTED]')
-          } catch {
-            geminiDebug.nativeError = 'Failed to parse error response'
-          }
-
-          // Fallback Endpoint: OpenAI-compatible Gemini endpoint
-          const openAiCompatUrl = 'https://generativelanguage.googleapis.com/v1beta/openai/chat/completions'
-          const compatResponse = await fetch(openAiCompatUrl, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${geminiApiKey}`
-            },
-            body: JSON.stringify({
-              model: chosenModel || 'gemini-1.5-flash',
-              messages: [
-                { role: 'system', content: systemPrompt },
-                ...(Array.isArray(history)
-                  ? history.slice(-6).map((h: { sender: string; text: string }) => ({
-                      role: h.sender === 'user' ? 'user' : 'assistant',
-                      content: h.text
-                    }))
-                  : []),
-                { role: 'user', content: userMessage }
-              ],
-              temperature: 0.7,
-              max_tokens: 600
-            })
-          })
-
-          if (compatResponse.ok) {
-            const compatData = await compatResponse.json()
-            const replyContent = compatData.choices?.[0]?.message?.content?.trim()
-            if (replyContent) {
-              try {
-                const parsed = JSON.parse(replyContent)
-                const recIds: string[] = Array.isArray(parsed.recommendedProductIds) ? parsed.recommendedProductIds : []
-                return new Response(
-                  JSON.stringify({
-                    reply: parsed.reply || replyContent,
-                    suggestions: formatProductSuggestions(recIds, activeCatalog),
-                    provider: 'gemini-openai-compat'
-                  }),
-                  { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-                )
-              } catch {
-                return new Response(
-                  JSON.stringify({
-                    reply: replyContent,
-                    suggestions: [],
-                    provider: 'gemini-openai-compat'
-                  }),
-                  { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-                )
-              }
-            }
-          } else {
-            geminiDebug.compatStatus = compatResponse.status
-            try {
-              const compatErrText = await compatResponse.text()
-              const compatErrJson = JSON.parse(compatErrText)
-              geminiDebug.compatError = (compatErrJson?.error?.message || compatErrJson?.error?.status || compatErrText.slice(0, 200))
-                .replace(/AIza[0-9A-Za-z-_]+/g, '[REDACTED]')
-                .replace(/Bearer\s+[^\s"]+/gi, 'Bearer [REDACTED]')
-            } catch {
-              geminiDebug.compatError = 'Failed to parse compat error'
-            }
-          }
-        }
-      } catch (geminiErr: unknown) {
-        console.warn('Gemini request encountered an exception, proceeding to resilient domain fallback:', geminiErr)
-      }
-    }
-
-    // 3. Optional Secondary Provider: OpenAI (if OPENAI_API_KEY is configured)
-    if (openAiApiKey) {
-      try {
-        const messages = [
           { role: 'system', content: systemPrompt },
           ...(Array.isArray(history)
             ? history.slice(-6).map((h: { sender: string; text: string }) => ({
@@ -758,52 +785,210 @@ You MUST respond with valid JSON:
                 content: h.text
               }))
             : []),
-          { role: 'user', content: userMessage }
+          {
+            role: 'user',
+            content: context?.currentPage
+              ? `[Context: viewing ${context.currentPage}] ${userMessage}`
+              : userMessage
+          }
         ]
 
-        const aiResponse = await fetch('https://api.openai.com/v1/chat/completions', {
+        const groqUrl = 'https://api.groq.com/openai/v1/chat/completions'
+        const aiResponse = await fetch(groqUrl, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${openAiApiKey}`
+            'Authorization': `Bearer ${groqApiKey}`
           },
+          signal: controller.signal,
           body: JSON.stringify({
-            model: 'gpt-4o-mini',
-            messages,
-            response_format: { type: 'json_object' },
+            model: targetModel,
+            messages: conversationMessages,
             temperature: 0.7,
-            max_tokens: 600
+            max_tokens: 600,
+            stream: true
           })
         })
 
-        if (aiResponse.ok) {
-          const data = await aiResponse.json()
-          const content = data.choices?.[0]?.message?.content?.trim()
-          if (content) {
-            const parsed = JSON.parse(content)
-            const recIds: string[] = Array.isArray(parsed.recommendedProductIds) ? parsed.recommendedProductIds : []
-            return new Response(
-              JSON.stringify({
-                reply: parsed.reply || content,
-                suggestions: formatProductSuggestions(recIds, activeCatalog),
-                provider: 'openai'
-              }),
-              { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-            )
+        if (aiResponse.ok && aiResponse.body) {
+          const sseHeaders = {
+            ...corsHeaders,
+            'Content-Type': 'text/event-stream',
+            'Cache-Control': 'no-cache, no-transform',
+            'Connection': 'keep-alive'
+          }
+
+          const stream = new ReadableStream({
+            async start(streamController) {
+              const encoder = new TextEncoder()
+              const decoder = new TextDecoder()
+              const extractor = new ReplyStreamExtractor()
+              const groqReader = aiResponse.body!.getReader()
+              let groqBuffer = ''
+              let fullRawText = ''
+
+              const safeEnqueue = (data: Uint8Array) => {
+                try {
+                  streamController.enqueue(data)
+                } catch {
+                  // Controller closed
+                }
+              }
+
+              const safeClose = () => {
+                try {
+                  streamController.close()
+                } catch {
+                  // Already closed
+                }
+              }
+
+              try {
+                // Initial start signal
+                safeEnqueue(encoder.encode('data: {"type":"start"}\n\n'))
+
+                while (true) {
+                  const { done, value } = await groqReader.read()
+                  if (done) break
+
+                  groqBuffer += decoder.decode(value, { stream: true })
+                  const lines = groqBuffer.split('\n')
+                  groqBuffer = lines.pop() || ''
+
+                  for (const line of lines) {
+                    const trimmed = line.trim()
+                    if (!trimmed || !trimmed.startsWith('data:')) continue
+
+                    const dataStr = trimmed.slice(5).trim()
+                    if (dataStr === '[DONE]') continue
+
+                    try {
+                      const chunkObj = JSON.parse(dataStr)
+                      const deltaContent = chunkObj.choices?.[0]?.delta?.content
+                      if (deltaContent) {
+                        fullRawText += deltaContent
+                        const deltas = extractor.feed(deltaContent)
+                        for (const d of deltas) {
+                          safeEnqueue(encoder.encode(`data: ${JSON.stringify({ type: 'delta', text: d })}\n\n`))
+                        }
+                      }
+                    } catch {
+                      // Skip invalid chunk
+                    }
+                  }
+                }
+
+                // Flush any trailing characters held back by escape sequence detection
+                const flushed = extractor.flush()
+                for (const d of flushed) {
+                  safeEnqueue(encoder.encode(`data: ${JSON.stringify({ type: 'delta', text: d })}\n\n`))
+                }
+
+                clearTimeout(timeoutId)
+
+                // Parse completed structured JSON
+                let finalReply = ''
+                let recommendedIds: string[] = []
+
+                const parsed = parseModelJson(fullRawText)
+                if (parsed && typeof parsed.reply === 'string' && parsed.reply.trim().length > 0) {
+                  finalReply = parsed.reply.trim()
+                  if (Array.isArray(parsed.recommendedProductIds)) {
+                    recommendedIds = parsed.recommendedProductIds
+                  }
+                } else if (extractor.getAccumulatedText().trim().length > 0) {
+                  finalReply = extractor.getAccumulatedText().trim()
+                } else {
+                  const fb = generateDomainFallback(userMessage, activeCatalog, activeRawMaterials, context)
+                  finalReply = fb.reply
+                  recommendedIds = fb.suggestions.map(s => s.id)
+                }
+
+                const suggestions = formatProductSuggestions(recommendedIds, activeCatalog)
+
+                // Send completion event
+                safeEnqueue(
+                  encoder.encode(`data: ${JSON.stringify({
+                    type: 'done',
+                    reply: finalReply,
+                    suggestions,
+                    provider: 'groq',
+                    model: targetModel
+                  })}\n\n`)
+                )
+                safeEnqueue(encoder.encode('data: [DONE]\n\n'))
+                safeClose()
+              } catch (streamErr) {
+                clearTimeout(timeoutId)
+                console.warn('Streaming error during Groq response:', streamErr)
+
+                if (extractor.getAccumulatedText().trim().length === 0) {
+                  const fb = generateDomainFallback(userMessage, activeCatalog, activeRawMaterials, context)
+                  safeEnqueue(
+                    encoder.encode(`data: ${JSON.stringify({ type: 'delta', text: fb.reply })}\n\n`)
+                  )
+                  safeEnqueue(
+                    encoder.encode(`data: ${JSON.stringify({
+                      type: 'done',
+                      reply: fb.reply,
+                      suggestions: fb.suggestions,
+                      provider: 'domain-fallback'
+                    })}\n\n`)
+                  )
+                  safeEnqueue(encoder.encode('data: [DONE]\n\n'))
+                } else {
+                  safeEnqueue(
+                    encoder.encode(`data: ${JSON.stringify({
+                      type: 'done',
+                      reply: extractor.getAccumulatedText().trim(),
+                      suggestions: [],
+                      provider: 'groq',
+                      model: targetModel
+                    })}\n\n`)
+                  )
+                  safeEnqueue(encoder.encode('data: [DONE]\n\n'))
+                }
+                safeClose()
+              } finally {
+                groqReader.releaseLock()
+              }
+            },
+            cancel() {
+              clearTimeout(timeoutId)
+              controller.abort()
+            }
+          })
+
+          return new Response(stream, { headers: sseHeaders })
+        } else {
+          // Fast failure: log status and fall through to domain fallback
+          clearTimeout(timeoutId)
+          try {
+            const errJson = await aiResponse.json()
+            const errMsg = (errJson?.error?.message || `HTTP ${aiResponse.status}`)
+              .replace(/gsk_[0-9A-Za-z-_]+/g, '[REDACTED]')
+              .replace(/Bearer\s+[^\s"]+/gi, 'Bearer [REDACTED]')
+            console.warn(`Groq API error ${aiResponse.status}: ${errMsg}. Failing fast to domain fallback.`)
+          } catch {
+            console.warn(`Groq API returned status ${aiResponse.status}. Failing fast to domain fallback.`)
           }
         }
-      } catch (openAiErr) {
-        console.warn('OpenAI request failed, proceeding to resilient domain fallback:', openAiErr)
+      } catch (err: unknown) {
+        clearTimeout(timeoutId)
+        const isAbort = err instanceof Error && err.name === 'AbortError'
+        const errMsg = isAbort ? 'Request timed out after 10s' : String(err)
+        console.warn('Groq request failed quickly:', errMsg)
       }
+    } else {
+      console.warn('GROQ_API_KEY is not configured in Supabase secrets')
     }
 
-    // 4. Resilient Domain Fallback
+    // 3. Resilient Instant Domain Fallback (when Groq is unavailable or errored before streaming)
     const fallbackResult = generateDomainFallback(userMessage, activeCatalog, activeRawMaterials, context)
     return new Response(
       JSON.stringify({
         ...fallbackResult,
-        provider: 'domain-fallback',
-        geminiDebug: Object.keys(geminiDebug).length > 0 ? geminiDebug : undefined
+        provider: 'domain-fallback'
       }),
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     )
