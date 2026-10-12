@@ -543,6 +543,12 @@ export function ARProductPreviewModal({
               <img
                 src={activeImage}
                 alt={product.name}
+                onError={(e) => {
+                  const target = e.currentTarget
+                  if (!target.src.includes('/images/fallbacks/')) {
+                    target.src = product.images?.[0] || '/images/fallbacks/saree-fallback.jpg'
+                  }
+                }}
                 style={{
                   maxHeight: '340px',
                   maxWidth: '75vw',

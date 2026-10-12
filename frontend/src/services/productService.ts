@@ -52,12 +52,14 @@ interface SupabaseProductRecord {
 function mapProduct(p: SupabaseProductRecord): ShopProduct {
   const numPrice = Number(p.price) || 0
   const displayPrice = p.display_price || (numPrice > 0 ? `₹${numPrice.toLocaleString('en-IN')}` : '₹0')
+  const categoryObj = Array.isArray(p.categories) ? p.categories[0] : p.categories
+  const artisanObj = Array.isArray(p.artisans) ? p.artisans[0] : p.artisans
 
   return {
     id: p.id,
     name: p.name,
     slug: p.slug,
-    category: p.categories?.label || '',
+    category: categoryObj?.label || '',
     categoryId: p.category_id,
     price: numPrice,
     displayPrice,
@@ -66,19 +68,19 @@ function mapProduct(p: SupabaseProductRecord): ShopProduct {
     material: p.material || '',
     region: p.region || '',
     technique: p.technique || '',
-    artisanId: p.artisan_id || p.artisans?.id || '',
-    artisanName: p.artisans?.name,
-    artisan: p.artisans ? {
-      id: p.artisans.id,
-      name: p.artisans.name,
-      title: p.artisans.title,
-      region: p.artisans.region,
-      craft: p.artisans.craft,
-      specialty: p.artisans.specialty,
-      experience: p.artisans.experience || '',
-      bio: p.artisans.bio || '',
-      story: p.artisans.story,
-      image: p.artisans.image
+    artisanId: p.artisan_id || artisanObj?.id || '',
+    artisanName: artisanObj?.name,
+    artisan: artisanObj ? {
+      id: artisanObj.id,
+      name: artisanObj.name,
+      title: artisanObj.title,
+      region: artisanObj.region,
+      craft: artisanObj.craft,
+      specialty: artisanObj.specialty,
+      experience: artisanObj.experience || '',
+      bio: artisanObj.bio || '',
+      story: artisanObj.story,
+      image: artisanObj.image
     } : undefined,
     description: p.description || '',
     dimensions: p.dimensions,

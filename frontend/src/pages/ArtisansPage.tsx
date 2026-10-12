@@ -4,6 +4,7 @@ import { Icon } from '../components/primitives/Icon'
 import { fetchArtisans } from '../services/artisanService'
 import type { ShopArtisan } from '../types/shopTypes'
 import { useFollowArtisans } from '../hooks/useFollowArtisans'
+import { HandloomImage } from '../components/common/HandloomImage'
 
 export function ArtisansPage() {
   const navigate = useNavigate()
@@ -158,7 +159,12 @@ export function ArtisansPage() {
                 onClick={() => navigate(`/artisans/${artisan.id}`)}
               >
                 <div style={{ position: 'relative', aspectRatio: '4/3', overflow: 'hidden' }}>
-                  <img src={artisan.image} alt={artisan.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                  <HandloomImage
+                    src={artisan.image}
+                    alt={artisan.name}
+                    fallbackCategory="artisan"
+                    style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                  />
                   <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(10,9,8,0.95) 0%, transparent 60%)' }} />
                   
                   {/* Badge */}

@@ -692,6 +692,12 @@ export function ARStudioPage() {
                   <img
                     src={activeImage}
                     alt={selectedProduct.name}
+                    onError={(e) => {
+                      const target = e.currentTarget
+                      if (!target.src.includes('/images/fallbacks/')) {
+                        target.src = selectedProduct?.images?.[0] || '/images/fallbacks/saree-fallback.jpg'
+                      }
+                    }}
                     style={{
                       maxHeight: '400px',
                       maxWidth: '85%',
@@ -1129,6 +1135,12 @@ export function ARStudioPage() {
                         <img
                           src={item.images[0]}
                           alt={item.name}
+                          onError={(e) => {
+                            const target = e.currentTarget
+                            if (!target.src.includes('/images/fallbacks/')) {
+                              target.src = '/images/fallbacks/saree-fallback.jpg'
+                            }
+                          }}
                           style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                         />
                       </button>

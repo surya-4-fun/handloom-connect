@@ -6,6 +6,7 @@ import { RawMaterial } from '../types/rawMaterial'
 import { RawMaterialDetailModal } from '../components/shop/RawMaterialDetailModal'
 import { BulkQuoteModal } from '../components/shop/BulkQuoteModal'
 import { useCart } from '../hooks/useCart'
+import { HandloomImage } from '../components/common/HandloomImage'
 
 const CATEGORIES: { id: string; label: string; icon: string }[] = [
   { id: 'all', label: 'All Raw Materials', icon: '🧵' },
@@ -211,7 +212,12 @@ export function RawMaterialsPage() {
               }}
             >
               <div style={{ position: 'relative', aspectRatio: '4/3', overflow: 'hidden' }}>
-                <img src={mat.images[0]} alt={mat.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                <HandloomImage
+                  src={mat.images?.[0]}
+                  alt={mat.name}
+                  fallbackCategory="raw_material"
+                  style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                />
                 <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(10,9,8,0.9) 0%, transparent 60%)' }} />
                 
                 {mat.badge && (

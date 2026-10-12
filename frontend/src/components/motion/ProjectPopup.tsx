@@ -198,6 +198,13 @@ export function ProjectPopup({ project, onClose }: ProjectPopupProps) {
             src={project.lg || project.src}
             alt={project.title}
             onLoad={() => setLoaded(true)}
+            onError={(e) => {
+              const target = e.currentTarget
+              if (!target.src.includes('/images/fallbacks/')) {
+                target.src = '/images/fallbacks/saree-fallback.jpg'
+              }
+              setLoaded(true)
+            }}
             className={`project-popup-image ${loaded ? 'is-loaded' : ''}`}
           />
           

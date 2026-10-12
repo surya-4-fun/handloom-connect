@@ -5,6 +5,7 @@ import { Button } from '../components/primitives/Button'
 import { ProductCard } from '../components/shop/ProductCard'
 import { fetchArtisanDetail, supportArtisan } from '../services/artisanService'
 import type { ShopArtisan, ShopProduct } from '../types/shopTypes'
+import { HandloomImage } from '../components/common/HandloomImage'
 import { useFollowArtisans } from '../hooks/useFollowArtisans'
 import { useCart } from '../hooks/useCart'
 
@@ -100,7 +101,12 @@ export function ArtisanDetailPage() {
         {/* Hero Card Showcase */}
         <div className="artisan-hero-card">
           <div className="artisan-portrait-wrapper">
-            <img src={artisan.image} alt={artisan.name} className="artisan-portrait-img" />
+            <HandloomImage
+              src={artisan.image}
+              alt={artisan.name}
+              fallbackCategory="artisan"
+              className="artisan-portrait-img"
+            />
             <div style={{ position: 'absolute', top: '12px', left: '12px', background: 'rgba(0,0,0,0.7)', backdropFilter: 'blur(8px)', padding: '6px 12px', borderRadius: '100px', fontSize: '0.72rem', color: 'var(--gold)', letterSpacing: '0.1em', fontWeight: 700 }}>
               {artisan.isCollective ? 'ARTISAN GUILD' : 'MASTER WEAVER'}
             </div>

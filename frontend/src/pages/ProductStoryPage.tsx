@@ -6,6 +6,7 @@ import { QRCodeView } from '../components/primitives/QRCodeView'
 import { fetchProductDetail } from '../services/productService'
 import type { ShopProduct, ShopArtisan } from '../types/shopTypes'
 import type { AuthenticityPassport } from '../types/authenticity'
+import { HandloomImage } from '../components/common/HandloomImage'
 
 export function ProductStoryPage() {
   const { productId } = useParams<{ productId: string }>()
@@ -78,7 +79,12 @@ export function ProductStoryPage() {
           
           {/* Left Imagery & QR Overlay */}
           <div style={{ position: 'relative', borderRadius: 'var(--radius-xl)', overflow: 'hidden', border: '1px solid var(--border)', aspectRatio: '4/3' }}>
-            <img src={product.images[0]} alt={product.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+            <HandloomImage
+              src={product.images[0]}
+              alt={product.name}
+              fallbackCategory={product.category}
+              style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+            />
             <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(10,9,8,0.95) 0%, transparent 60%)' }} />
             
             <div style={{ position: 'absolute', top: '16px', left: '16px', background: 'var(--gold)', color: '#000', padding: '4px 12px', borderRadius: '100px', fontSize: '0.72rem', fontWeight: 800, letterSpacing: '0.12em' }}>
@@ -168,7 +174,12 @@ export function ProductStoryPage() {
             <div style={{ background: 'var(--canvas-secondary)', border: '1px solid var(--border)', borderRadius: 'var(--radius-xl)', padding: '28px' }}>
               <span style={{ color: 'var(--gold)', fontSize: '0.72rem', fontWeight: 800, letterSpacing: '0.14em', textTransform: 'uppercase' }}>Master Weaver</span>
               <div style={{ display: 'flex', gap: '16px', alignItems: 'center', margin: '14px 0' }}>
-                <img src={artisan.image} alt={artisan.name} style={{ width: '70px', height: '70px', borderRadius: '50%', objectFit: 'cover', border: '1px solid var(--border)' }} />
+                <HandloomImage
+                  src={artisan.image}
+                  alt={artisan.name}
+                  fallbackCategory="artisan"
+                  style={{ width: '70px', height: '70px', borderRadius: '50%', objectFit: 'cover', border: '1px solid var(--border)' }}
+                />
                 <div>
                   <h3 style={{ fontFamily: 'var(--font-display)', fontSize: '1.4rem', margin: 0, fontWeight: 400 }}>{artisan.name}</h3>
                   <p style={{ color: 'var(--muted)', fontSize: '0.85rem', margin: '2px 0 0' }}>{artisan.region} • {artisan.experience}</p>

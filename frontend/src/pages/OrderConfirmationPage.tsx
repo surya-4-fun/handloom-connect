@@ -4,6 +4,7 @@ import { Icon } from '../components/primitives/Icon'
 import { Button } from '../components/primitives/Button'
 import { fetchOrderById } from '../services/orderService'
 import { Order } from '../types/order'
+import { HandloomImage } from '../components/common/HandloomImage'
 
 export function OrderConfirmationPage() {
   const { orderId } = useParams<{ orderId: string }>()
@@ -85,7 +86,12 @@ export function OrderConfirmationPage() {
               <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
                 {order.items.map(item => (
                   <div key={item.productId} style={{ display: 'flex', gap: '16px', background: 'var(--canvas)', border: '1px solid var(--border)', borderRadius: 'var(--radius-md)', padding: '16px', alignItems: 'center' }}>
-                    <img src={item.image} alt={item.name} style={{ width: '70px', height: '70px', objectFit: 'cover', borderRadius: 'var(--radius-sm)' }} />
+                    <HandloomImage
+                      src={item.image}
+                      alt={item.name}
+                      fallbackCategory="saree"
+                      style={{ width: '70px', height: '70px', objectFit: 'cover', borderRadius: 'var(--radius-sm)' }}
+                    />
                     <div style={{ flexGrow: 1 }}>
                       <strong style={{ fontSize: '1.05rem', display: 'block', color: 'var(--ink)' }}>{item.name}</strong>
                       <span style={{ fontSize: '0.85rem', color: 'var(--gold)', fontWeight: 600 }}>{item.craft}</span>

@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { ButtonLink } from '../components/primitives/Button'
+import { HandloomImage } from '../components/common/HandloomImage'
 
 interface ClusterData {
   id: string
@@ -28,7 +29,7 @@ const CLUSTERS: ClusterData[] = [
     technique: 'Korvai Interlock & Pure Gold Zari Brocade',
     signatureMotif: 'Temple Borders (Gopuram) & Peacock (Mayil)',
     artisanCount: 120,
-    image: 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?q=80&w=1200&auto=format&fit=crop',
+    image: '/images/products/kanchipuram-korvai.jpg',
     productName: 'Royal Crimson Gold Zari Saree',
     productPrice: '₹24,500',
     coordinates: { x: 42, y: 78 },
@@ -43,7 +44,7 @@ const CLUSTERS: ClusterData[] = [
     technique: 'Kadwa Hand-Brocade & Tanchoi Weave',
     signatureMotif: 'Jal Floral Vines & Paisley (Kalka)',
     artisanCount: 240,
-    image: 'https://images.unsplash.com/photo-1584917865442-de89df76afd3?q=80&w=1200&auto=format&fit=crop',
+    image: '/images/products/banarasi-zari-saree.jpg',
     productName: 'Banarasi Kadwa Silk Saree',
     productPrice: '₹28,000',
     coordinates: { x: 54, y: 38 },
@@ -58,7 +59,7 @@ const CLUSTERS: ClusterData[] = [
     technique: 'Ek Nali Transparent Silk-Cotton Weave',
     signatureMotif: 'Ashrafi Gold Coin & Nalferma Motifs',
     artisanCount: 85,
-    image: 'https://images.unsplash.com/photo-1528459801416-a9e53bbf4e17?q=80&w=1200&auto=format&fit=crop',
+    image: '/images/products/chanderi-silk-saree.jpg',
     productName: 'Chanderi Gold Coin Dupatta',
     productPrice: '₹8,900',
     coordinates: { x: 44, y: 46 },
@@ -73,7 +74,7 @@ const CLUSTERS: ClusterData[] = [
     technique: 'Extra Weft Brocade & Indigo Vat Dyeing',
     signatureMotif: 'Geometric Mirrors & Reversible Borders',
     artisanCount: 95,
-    image: 'https://images.unsplash.com/photo-1598300042247-d088f8ab3a91?q=80&w=1200&auto=format&fit=crop',
+    image: '/images/products/indigo-throw.jpg',
     productName: 'Reversible Indigo Cotton Throw',
     productPrice: '₹4,200',
     coordinates: { x: 22, y: 45 },
@@ -88,7 +89,7 @@ const CLUSTERS: ClusterData[] = [
     technique: 'Wild Tussar Hand-Reeling & Natural Slub Weave',
     signatureMotif: 'Organic Bark Texture & Natural Gold Patina',
     artisanCount: 160,
-    image: 'https://images.unsplash.com/photo-1606760227091-3dd858d9721d?q=80&w=1200&auto=format&fit=crop',
+    image: '/images/products/bhagalpuri-silk-stole.jpg',
     productName: 'Wild Tussar Silk Stole',
     productPrice: '₹6,800',
     coordinates: { x: 65, y: 41 },
@@ -103,7 +104,7 @@ const CLUSTERS: ClusterData[] = [
     technique: 'Pagdu Bandhu Double Ikat Tie-Dye',
     signatureMotif: 'Mathematical Geometric Diamonds',
     artisanCount: 110,
-    image: 'https://images.unsplash.com/photo-1579656381226-5fc0f0100c3b?q=80&w=1200&auto=format&fit=crop',
+    image: '/images/products/pochampally-ikat.jpg',
     productName: 'Pochampally Double Ikat Saree',
     productPrice: '₹16,500',
     coordinates: { x: 44, y: 64 },
@@ -118,7 +119,7 @@ const CLUSTERS: ClusterData[] = [
     technique: 'Discontinuous Weft Hand-Embroidery on Loom',
     signatureMotif: 'Panna Hazar (Thousand Emeralds) & Rose Sprigs',
     artisanCount: 180,
-    image: 'https://images.unsplash.com/photo-1513364776144-60967b0f800f?q=80&w=1200&auto=format&fit=crop',
+    image: '/images/products/jamdani-muslin-saree.jpg',
     productName: 'Fine Jamdani Muslin Saree',
     productPrice: '₹19,200',
     coordinates: { x: 68, y: 46 },
@@ -133,7 +134,7 @@ const CLUSTERS: ClusterData[] = [
     technique: 'Bandha Warp Ikat & Temple Borders',
     signatureMotif: 'Shankha (Conch) & Chakra (Wheel)',
     artisanCount: 130,
-    image: 'https://images.unsplash.com/photo-1504439468489-c8920d796a29?q=80&w=1200&auto=format&fit=crop',
+    image: '/images/products/sambalpuri-ikat.jpg',
     productName: 'Sambalpuri Ikat Silk Saree',
     productPrice: '₹14,800',
     coordinates: { x: 56, y: 52 },
@@ -274,7 +275,12 @@ export function OriginMapPage() {
         <div style={{ background: 'var(--surface)', borderRadius: '24px', border: '1px solid rgba(255,255,255,0.1)', padding: '2rem' }}>
           
           <div style={{ position: 'relative', height: '240px', borderRadius: '16px', overflow: 'hidden', marginBottom: '1.5rem' }}>
-            <img src={selectedCluster.image} alt={selectedCluster.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+            <HandloomImage
+              src={selectedCluster.image}
+              alt={selectedCluster.name}
+              fallbackCategory={selectedCluster.type === 'silk' ? 'saree' : 'fabrics'}
+              style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+            />
             <div style={{ position: 'absolute', top: '1rem', right: '1rem', background: 'var(--gold)', color: '#000', padding: '4px 12px', borderRadius: '100px', fontSize: '0.72rem', fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase' }}>
               {selectedCluster.type} Weave
             </div>

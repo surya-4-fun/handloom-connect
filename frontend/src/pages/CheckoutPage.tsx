@@ -8,6 +8,7 @@ import { DELIVERY_METHODS, createOrder } from '../services/orderService'
 import { fetchProductDetail } from '../services/productService'
 import { Address } from '../types/auth'
 import { DeliveryMethod, PaymentMethodType, OrderItem } from '../types/order'
+import { HandloomImage } from '../components/common/HandloomImage'
 
 export function CheckoutPage() {
   const navigate = useNavigate()
@@ -72,7 +73,7 @@ export function CheckoutPage() {
               price: prod?.price || 18500,
               displayPrice: prod?.displayPrice || '₹18,500',
               quantity: item.quantity,
-              image: prod?.images?.[0] || 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?q=80&w=1200&auto=format&fit=crop',
+              image: prod?.images?.[0] || '/images/fallbacks/saree-fallback.jpg',
               craft: (prod?.technique as string) || (artisan?.craft as string) || 'Traditional Weave',
               artisanName: (artisan?.name as string) || 'Master Weaver Guild',
               cluster: (artisan?.region as string) || (prod?.region as string) || 'India Weaving Cluster'
@@ -473,7 +474,12 @@ export function CheckoutPage() {
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
                     {orderItems.map(item => (
                       <div key={item.productId} style={{ display: 'flex', gap: '16px', alignItems: 'center', background: 'var(--canvas)', border: '1px solid var(--border)', borderRadius: 'var(--radius-md)', padding: '12px 16px' }}>
-                        <img src={item.image} alt={item.name} style={{ width: '60px', height: '60px', objectFit: 'cover', borderRadius: 'var(--radius-sm)' }} />
+                        <HandloomImage
+                          src={item.image}
+                          alt={item.name}
+                          fallbackCategory="saree"
+                          style={{ width: '60px', height: '60px', objectFit: 'cover', borderRadius: 'var(--radius-sm)' }}
+                        />
                         <div style={{ flexGrow: 1 }}>
                           <strong style={{ fontSize: '1rem', display: 'block' }}>{item.name}</strong>
                           <span style={{ fontSize: '0.82rem', color: 'var(--muted)' }}>{item.craft} • By {item.artisanName}</span>

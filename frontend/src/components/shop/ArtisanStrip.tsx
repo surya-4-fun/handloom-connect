@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 import type { ShopArtisan } from '../../types/shopTypes'
+import { HandloomImage } from '../common/HandloomImage'
 
 interface ArtisanStripProps {
   artisan: ShopArtisan
@@ -8,7 +9,12 @@ interface ArtisanStripProps {
 export function ArtisanStrip({ artisan }: ArtisanStripProps) {
   return (
     <div className="artisan-strip">
-      <img src={artisan.image} alt={artisan.name} className="artisan-strip__avatar" />
+      <HandloomImage
+        src={artisan.image}
+        alt={artisan.name}
+        fallbackCategory="artisan"
+        className="artisan-strip__avatar"
+      />
       <div className="artisan-strip__info">
         <h4 className="artisan-strip__name">{artisan.name}</h4>
         <span className="artisan-strip__craft">

@@ -4,6 +4,7 @@ import { useCart } from '../hooks/useCart'
 import { fetchProductDetail } from '../services/productService'
 import { Button } from '../components/primitives/Button'
 import { Icon } from '../components/primitives/Icon'
+import { HandloomImage } from '../components/common/HandloomImage'
 
 interface DisplayItem {
   id: string
@@ -40,7 +41,7 @@ export function CartWishlistPage({ type }: { type: 'cart' | 'wishlist' }) {
               title: prod?.name || 'Handloom Textile Piece',
               craft: (prod?.technique as string) || (artisan?.craft as string) || 'Traditional Weave',
               price: prod?.price || 18500,
-              image: prod?.images?.[0] || 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?q=80&w=400&auto=format&fit=crop',
+              image: prod?.images?.[0] || '/images/fallbacks/saree-fallback.jpg',
               qty,
               slug: prod?.slug || id
             }
@@ -89,7 +90,12 @@ export function CartWishlistPage({ type }: { type: 'cart' | 'wishlist' }) {
               {displayItems.map(item => (
                 <div key={item.id} style={{ display: 'flex', gap: '20px', background: 'var(--canvas-secondary)', border: '1px solid var(--border)', borderRadius: 'var(--radius-lg)', padding: '20px', alignItems: 'center' }}>
                   <Link to={`/marketplace/${item.slug}`}>
-                    <img src={item.image} alt={item.title} style={{ width: '100px', height: '100px', objectFit: 'cover', borderRadius: 'var(--radius-md)' }} />
+                    <HandloomImage
+                      src={item.image}
+                      alt={item.title}
+                      fallbackCategory="saree"
+                      style={{ width: '100px', height: '100px', objectFit: 'cover', borderRadius: 'var(--radius-md)' }}
+                    />
                   </Link>
                   <div style={{ flexGrow: 1 }}>
                     <span style={{ color: 'var(--gold)', fontSize: '0.68rem', fontWeight: 800, letterSpacing: '0.12em', textTransform: 'uppercase' }}>{item.craft}</span>

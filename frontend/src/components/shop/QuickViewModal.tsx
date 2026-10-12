@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { Icon } from '../primitives/Icon'
 import { Button } from '../primitives/Button'
 import type { ShopProduct } from '../../types/shopTypes'
+import { HandloomImage } from '../common/HandloomImage'
 
 interface QuickViewModalProps {
   product: ShopProduct | null
@@ -50,7 +51,12 @@ export function QuickViewModal({ product, onClose, onAddToCart, isInCart }: Quic
         </button>
 
         <div className="quick-view__image-wrap">
-          <img src={product.images[0]} alt={product.alt} className="quick-view__image" />
+          <HandloomImage
+            src={product.images?.[0]}
+            alt={product.alt || product.name}
+            fallbackCategory={product.category}
+            className="quick-view__image"
+          />
         </div>
 
         <div className="quick-view__body">

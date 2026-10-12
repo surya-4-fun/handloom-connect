@@ -69,7 +69,7 @@ export const RAW_MATERIALS: RawMaterial[] = [
     inStock: true,
     sustainabilityInfo: '100% Pure Mulberry Silk Filaments • Zero Chemical Bleach • Hand-reeled Spring Harvest',
     description: 'High-tensile double warp Mulberry silk yarn specifically prepared for Korvai temple border weaving. Degummed in natural mountain spring water.',
-    images: ['https://images.unsplash.com/photo-1610030469983-98e550d6193c?q=80&w=800&auto=format&fit=crop'],
+    images: ['/images/raw-materials/raw-silk-filament-hank.jpg'],
     badge: 'GI Certified',
     denierOrCount: '20/22 Denier'
   },
@@ -88,7 +88,7 @@ export const RAW_MATERIALS: RawMaterial[] = [
     inStock: true,
     sustainabilityInfo: 'Wild Forest Cocoons • Eco-Friendly Ahimsa Reel • Botanical Wash',
     description: 'Rich golden-patina Tussar silk yarn with organic slub texture. Ideal for thermal stoles, sarees, and home atelier upholstery.',
-    images: ['https://images.unsplash.com/photo-1558171813-4c088753af8f?q=80&w=800&auto=format&fit=crop'],
+    images: ['/images/products/bhagalpuri-silk-stole.jpg'],
     badge: 'Artisan Grade',
     denierOrCount: '160 GSM Slub'
   },
@@ -107,7 +107,7 @@ export const RAW_MATERIALS: RawMaterial[] = [
     inStock: true,
     sustainabilityInfo: '100% Rain-fed Indigenous Cotton • Zero Pesticides • Carbon-Negative Farming',
     description: 'Resilient, short-staple rain-fed organic cotton yarn spun in Kutchi villages. Highly absorbent and perfect for natural dye bonding.',
-    images: ['https://images.unsplash.com/photo-1528458876861-544fd1761a91?q=80&w=800&auto=format&fit=crop'],
+    images: ['/images/raw-materials/khadi-charkha-yarn.jpg'],
     badge: 'Organic Vat',
     denierOrCount: '40s Count'
   },
@@ -126,7 +126,7 @@ export const RAW_MATERIALS: RawMaterial[] = [
     inStock: true,
     sustainabilityInfo: 'Humid Pit-Loom Spun • Natural Starch Sizing • Zero Synthetic Finish',
     description: 'Featherlight 100s count combed cotton yarn engineered for UNESCO Jamdani hand-inlay weaving.',
-    images: ['https://images.unsplash.com/photo-1606760227091-3dd858d9721d?q=80&w=800&auto=format&fit=crop'],
+    images: ['/images/products/jamdani-muslin-saree.jpg'],
     badge: 'Direct Guild',
     denierOrCount: '100s Superfine'
   },
@@ -145,7 +145,7 @@ export const RAW_MATERIALS: RawMaterial[] = [
     inStock: true,
     sustainabilityInfo: 'Ethically Shed Winter Undercoat • Nomadic Changpa Co-op • Hand-combed',
     description: 'Ultra-fine 14.5 micron pashm wool combed from Changthangi goats living at 14,000+ ft. Butter-soft tactile hand feel.',
-    images: ['https://images.unsplash.com/photo-1516483638261-f4dbaf036963?q=80&w=800&auto=format&fit=crop'],
+    images: ['/images/raw-materials/ladakhi-pashm-wool-top.jpg'],
     badge: 'GI Certified',
     denierOrCount: '14.5 Micron'
   },
@@ -164,7 +164,7 @@ export const RAW_MATERIALS: RawMaterial[] = [
     inStock: true,
     sustainabilityInfo: '100% Botanical Vat Dye • Fermented with Natural Jaggery & Lime • Zero Synthetics',
     description: 'Living organic indigo pigment prepared in underground clay vats. Yields deep midnight navy tones on silk and cotton.',
-    images: ['https://images.unsplash.com/photo-1503602642458-232111445657?q=80&w=800&auto=format&fit=crop'],
+    images: ['/images/raw-materials/indigo-dye-extract.jpg'],
     badge: 'Organic Vat',
     denierOrCount: '98% Purity'
   },
@@ -183,7 +183,7 @@ export const RAW_MATERIALS: RawMaterial[] = [
     inStock: true,
     sustainabilityInfo: 'Wild Harvested Himalayan Roots • Solar Sun-Dried • Biodegradable',
     description: 'Rich terracotta to ruby red natural botanical dye powder. Ideal for yarn hank dyeing and Ajrakh block printing.',
-    images: ['https://images.unsplash.com/photo-1579656381226-5fc0f0100c3b?q=80&w=800&auto=format&fit=crop'],
+    images: ['/images/raw-materials/madder-dye.jpg'],
     badge: 'Artisan Grade',
     denierOrCount: 'Botanical Powder'
   },
@@ -202,7 +202,7 @@ export const RAW_MATERIALS: RawMaterial[] = [
     inStock: true,
     sustainabilityInfo: 'Temple Waste Floral Upcycling • Solar Distilled • Zero Heavy Metals',
     description: 'Luminous mustard yellow and warm saffron natural dye extract sourced from upcycled temple floral offerings.',
-    images: ['https://images.unsplash.com/photo-1584917865442-de89df76afd3?q=80&w=800&auto=format&fit=crop'],
+    images: ['/images/raw-materials/marigold-yellow-dye.jpg'],
     badge: 'Artisan Grade',
     denierOrCount: 'Floral Extract'
   },
@@ -221,7 +221,7 @@ export const RAW_MATERIALS: RawMaterial[] = [
     inStock: true,
     sustainabilityInfo: 'Pure Silver (98.5%) Base Wire • 24K Gold Electroplating • Tarnish Resistant',
     description: 'Royal grade metallic zari thread used for Banarasi Kadwa brocade and Kanchipuram temple borders. Will not tarnish over generations.',
-    images: ['https://images.unsplash.com/photo-1610030469983-98e550d6193c?q=80&w=800&auto=format&fit=crop'],
+    images: ['/images/raw-materials/gold-zari-spool.jpg'],
     badge: 'GI Certified',
     denierOrCount: '0.12mm Gauge'
   },
@@ -240,7 +240,7 @@ export const RAW_MATERIALS: RawMaterial[] = [
     inStock: true,
     sustainabilityInfo: 'Reclaimed Teakwood • Hand-carved by Master Woodcrafters • Oil Seasoned',
     description: 'Precision-carved wooden block set featuring classic Ajrakh geometric grid motifs. Treated with sesame oil for water resistance.',
-    images: ['https://images.unsplash.com/photo-1598300042247-d088f8ab3a91?q=80&w=800&auto=format&fit=crop'],
+    images: ['/images/raw-materials/teakwood-printing-blocks.jpg'],
     badge: 'Direct Guild',
     denierOrCount: '3-Piece Set'
   },
@@ -259,7 +259,7 @@ export const RAW_MATERIALS: RawMaterial[] = [
     inStock: true,
     sustainabilityInfo: 'Indigenous Bamboo • Brass Tip Reinforcement • Smooth Glaze',
     description: 'Hand-balanced fly shuttles for pit looms. Features low-friction brass eyelets designed for silk and high-count cotton yarns.',
-    images: ['https://images.unsplash.com/photo-1579656381226-5fc0f0100c3b?q=80&w=800&auto=format&fit=crop'],
+    images: ['/images/raw-materials/pit-loom-shuttle.jpg'],
     badge: 'Artisan Grade',
     denierOrCount: 'Standard Loom Size'
   },
@@ -278,7 +278,7 @@ export const RAW_MATERIALS: RawMaterial[] = [
     inStock: true,
     sustainabilityInfo: 'Hand-punched Recycled Board • Drafted by Master Nakshaband Artificers',
     description: 'Authentic 120-card Jacquard harness punch set featuring classic Kalka Paisley motifs for pit loom brocade weaving.',
-    images: ['https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=800&auto=format&fit=crop'],
+    images: ['/images/raw-materials/jacquard-naksha-cards.jpg'],
     badge: 'Direct Guild',
     denierOrCount: '120 Harness Set'
   }

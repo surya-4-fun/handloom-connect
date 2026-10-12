@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { Button } from '../components/primitives/Button'
 import { fetchOrderById } from '../services/orderService'
+import { HandloomImage } from '../components/common/HandloomImage'
 
 interface OrderDetails {
   id: string
@@ -45,7 +46,7 @@ export function OrderTrackingPage() {
           setActiveOrder({
             id: found.id,
             itemName: found.items[0]?.name || 'Handloom Textile Piece',
-            itemImage: found.items[0]?.image || 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?q=80&w=1200&auto=format&fit=crop',
+            itemImage: found.items[0]?.image || '/images/fallbacks/saree-fallback.jpg',
             price: `₹${found.totalAmount.toLocaleString()}`,
             artisan: found.items[0]?.artisanName || 'Master Weaver Collective',
             cluster: found.items[0]?.cluster || 'India',
@@ -125,7 +126,12 @@ export function OrderTrackingPage() {
         <div style={{ background: 'var(--surface)', borderRadius: '24px', border: '1px solid rgba(255,255,255,0.1)', padding: '2rem' }}>
           
           <div style={{ position: 'relative', borderRadius: '16px', overflow: 'hidden', height: '260px', marginBottom: '1.5rem' }}>
-            <img src={activeOrder.itemImage} alt={activeOrder.itemName} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+            <HandloomImage
+              src={activeOrder.itemImage}
+              alt={activeOrder.itemName}
+              fallbackCategory="saree"
+              style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+            />
             <div style={{ position: 'absolute', bottom: '1rem', left: '1rem', background: 'rgba(0,0,0,0.7)', backdropFilter: 'blur(10px)', padding: '6px 14px', borderRadius: '100px', fontSize: '0.75rem', color: 'var(--gold)', letterSpacing: '0.12em' }}>
               COMMISSION ID: {activeOrder.id}
             </div>

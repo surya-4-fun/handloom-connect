@@ -14,25 +14,68 @@ export interface ArtisanStoryResult {
   verifiedAt: string
 }
 
-function mapArtisan(a: { id: string; name: string; title: string; region: string; craft: string; specialty: string; experience: string; bio: string; story: string; techniques: string[]; cultural_background: string; community_impact: { activeLooms: number; fairWagePercentage: number; apprenticesTrained: number; summary: string }; image: string; is_featured: boolean; is_collective: boolean; follower_count: number; support_count: number }): ShopArtisan {
+interface SupabaseArtisanRecord {
+  id: string
+  name: string
+  title?: string
+  region?: string
+  craft?: string
+  specialty?: string
+  experience?: string
+  bio?: string
+  story?: string
+  techniques?: unknown
+  cultural_background?: string
+  community_impact?: unknown
+  image?: string
+  is_featured?: boolean
+  is_collective?: boolean
+  follower_count?: number
+  support_count?: number
+}
+
+function mapArtisan(a: SupabaseArtisanRecord): ShopArtisan {
+  let techniques: string[] = []
+  if (Array.isArray(a.techniques)) {
+    techniques = a.techniques
+  } else if (typeof a.techniques === 'string') {
+    try {
+      const parsed = JSON.parse(a.techniques)
+      if (Array.isArray(parsed)) techniques = parsed
+    } catch {
+      techniques = [a.techniques]
+    }
+  }
+
+  let communityImpact: ShopArtisan['communityImpact']
+  if (typeof a.community_impact === 'object' && a.community_impact !== null) {
+    communityImpact = a.community_impact as ShopArtisan['communityImpact']
+  } else if (typeof a.community_impact === 'string') {
+    try {
+      communityImpact = JSON.parse(a.community_impact) as ShopArtisan['communityImpact']
+    } catch {
+      communityImpact = undefined
+    }
+  }
+
   return {
     id: a.id,
     name: a.name,
     title: a.title,
-    region: a.region,
-    craft: a.craft,
-    specialty: a.specialty,
-    experience: a.experience,
-    bio: a.bio,
+    region: a.region || '',
+    craft: a.craft || '',
+    specialty: a.specialty || '',
+    experience: a.experience || '',
+    bio: a.bio || '',
     story: a.story,
-    techniques: a.techniques,
+    techniques,
     culturalBackground: a.cultural_background,
-    communityImpact: a.community_impact,
-    image: a.image,
-    isFeatured: a.is_featured,
-    isCollective: a.is_collective,
-    followerCount: a.follower_count,
-    supportCount: a.support_count
+    communityImpact,
+    image: a.image || '',
+    isFeatured: Boolean(a.is_featured),
+    isCollective: Boolean(a.is_collective),
+    followerCount: Number(a.follower_count) || 0,
+    supportCount: Number(a.support_count) || 0
   }
 }
 

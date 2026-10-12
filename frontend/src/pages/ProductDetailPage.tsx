@@ -10,6 +10,7 @@ import { Handloom360ExplorerModal } from '../components/shop/Handloom360Explorer
 import { ARProductPreviewModal } from '../components/shop/ARProductPreviewModal'
 import { useCart } from '../hooks/useCart'
 import type { ShopProduct, ShopArtisan } from '../types/shopTypes'
+import { HandloomImage } from '../components/common/HandloomImage'
 import { QRCodeView } from '../components/primitives/QRCodeView'
 import type { AuthenticityPassport } from '../types/authenticity'
 import { fetchProductDetail } from '../services/productService'
@@ -112,9 +113,10 @@ export function ProductDetailPage() {
           {/* Image Gallery */}
           <div className="pdp__gallery">
             <div className="pdp__gallery-main" style={{ position: 'relative' }}>
-              <img
+              <HandloomImage
                 src={product.images[activeImageIdx] || product.images[0]}
-                alt={product.alt}
+                alt={product.alt || product.name}
+                category={product.category}
               />
               <button
                 type="button"
@@ -153,7 +155,7 @@ export function ProductDetailPage() {
                     onClick={() => setActiveImageIdx(idx)}
                     aria-label={`View image ${idx + 1}`}
                   >
-                    <img src={img} alt="" />
+                    <HandloomImage src={img} alt={`${product.name} angle ${idx + 1}`} category={product.category} />
                   </button>
                 ))}
               </div>

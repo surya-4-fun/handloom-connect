@@ -29,7 +29,7 @@ export const SHOP_ARTISANS: ShopArtisan[] = [
       apprenticesTrained: 45,
       summary: 'Sustains 18 artisan families in Varanasi with guaranteed direct trade wages.'
     },
-    image: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?q=80&w=800&auto=format&fit=crop',
+    image: '/images/artisans/rajeshwar-ansari.jpg',
     isFeatured: true,
     isCollective: false,
     followerCount: 340,
@@ -53,7 +53,7 @@ export const SHOP_ARTISANS: ShopArtisan[] = [
       apprenticesTrained: 60,
       summary: 'Empowers over 60 indigenous female cocoon harvesters and yarn spinners.'
     },
-    image: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=800&auto=format&fit=crop',
+    image: '/images/artisans/meera-devi.jpg',
     isFeatured: true,
     isCollective: false,
     followerCount: 512,
@@ -77,7 +77,7 @@ export const SHOP_ARTISANS: ShopArtisan[] = [
       apprenticesTrained: 90,
       summary: 'Guarantees pension, health benefits, and loom ownership for 32 female master weavers.'
     },
-    image: 'https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?q=80&w=800&auto=format&fit=crop',
+    image: '/images/artisans/saraswathi-guild.jpg',
     isFeatured: true,
     isCollective: true,
     followerCount: 680,
@@ -101,7 +101,7 @@ export const SHOP_ARTISANS: ShopArtisan[] = [
       apprenticesTrained: 30,
       summary: 'Supports nomadic Changpa herders in Changthang and Kashmiri needle artisans.'
     },
-    image: 'https://images.unsplash.com/photo-1560250097-0b93528c311a?q=80&w=800&auto=format&fit=crop',
+    image: '/images/artisans/ghulam-rasool.jpg',
     isFeatured: false,
     isCollective: false,
     followerCount: 290,
@@ -125,7 +125,7 @@ export const SHOP_ARTISANS: ShopArtisan[] = [
       apprenticesTrained: 50,
       summary: 'Reclaims organic Kala Cotton farming and preserves non-chemical indigo wells.'
     },
-    image: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?q=80&w=800&auto=format&fit=crop',
+    image: '/images/artisans/nila-collective.jpg',
     isFeatured: true,
     isCollective: true,
     followerCount: 420,
@@ -149,7 +149,7 @@ export const SHOP_ARTISANS: ShopArtisan[] = [
       apprenticesTrained: 70,
       summary: 'Maintains Bengal’s historic 200-count muslin spinning heritage.'
     },
-    image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=800&auto=format&fit=crop',
+    image: '/images/artisans/phulia-weavers.jpg',
     isFeatured: false,
     isCollective: true,
     followerCount: 380,
@@ -160,14 +160,14 @@ export const SHOP_ARTISANS: ShopArtisan[] = [
 /* ─── Categories ─────────────────────────────────────────────────── */
 
 export const SHOP_CATEGORIES: ShopCategory[] = [
-  { id: 'all', label: 'All', count: 0, image: 'https://images.unsplash.com/photo-1558171813-4c088753af8f?q=80&w=400&auto=format&fit=crop' },
-  { id: 'sarees', label: 'Sarees', count: 0, image: 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?q=80&w=400&auto=format&fit=crop' },
-  { id: 'dupattas', label: 'Dupattas', count: 0, image: 'https://images.unsplash.com/photo-1594040226829-7f251ab46d80?q=80&w=400&auto=format&fit=crop' },
-  { id: 'shawls', label: 'Shawls', count: 0, image: 'https://images.unsplash.com/photo-1601244005535-a48d21d951ac?q=80&w=400&auto=format&fit=crop' },
-  { id: 'kurtas', label: 'Kurtas', count: 0, image: 'https://images.unsplash.com/photo-1606760227091-3dd858d9721d?q=80&w=400&auto=format&fit=crop' },
-  { id: 'home-textiles', label: 'Home Textiles', count: 0, image: 'https://images.unsplash.com/photo-1586105251261-72a756497a11?q=80&w=400&auto=format&fit=crop' },
-  { id: 'stoles', label: 'Stoles', count: 0, image: 'https://images.unsplash.com/photo-1606744824163-985d376605aa?q=80&w=400&auto=format&fit=crop' },
-  { id: 'accessories', label: 'Accessories', count: 0, image: 'https://images.unsplash.com/photo-1490751907972-0ae72a22f0ba?q=80&w=400&auto=format&fit=crop' },
+  { id: 'all', label: 'All', count: 0, image: '/images/categories/all.jpg' },
+  { id: 'sarees', label: 'Sarees', count: 0, image: '/images/categories/sarees.jpg' },
+  { id: 'dupattas', label: 'Dupattas', count: 0, image: '/images/categories/dupattas.jpg' },
+  { id: 'shawls', label: 'Shawls', count: 0, image: '/images/categories/shawls.jpg' },
+  { id: 'kurtas', label: 'Kurtas', count: 0, image: '/images/categories/kurtas.jpg' },
+  { id: 'home-textiles', label: 'Home Textiles', count: 0, image: '/images/categories/home-textiles.jpg' },
+  { id: 'stoles', label: 'Stoles', count: 0, image: '/images/categories/stoles.jpg' },
+  { id: 'accessories', label: 'Accessories', count: 0, image: '/images/categories/accessories.jpg' },
 ]
 
 /* ─── Products ───────────────────────────────────────────────────── */
@@ -182,8 +182,8 @@ export const SHOP_PRODUCTS: ShopProduct[] = [
     price: 48500,
     displayPrice: '₹48,500',
     images: [
-      'https://images.unsplash.com/photo-1610030469983-98e550d6193c?q=80&w=800&auto=format&fit=crop',
-      'https://images.unsplash.com/photo-1617627143750-d86bc21e42bb?q=80&w=800&auto=format&fit=crop',
+      '/images/products/banarasi-zari-saree.jpg',
+      '/images/360/banarasi-270.jpg',
     ],
     alt: 'Banarasi Zari Katan Silk Saree in deep crimson with gold brocade',
     material: 'Pure Mulberry Silk & Fine Silver-Gold Zari',
@@ -205,8 +205,8 @@ export const SHOP_PRODUCTS: ShopProduct[] = [
     price: 39200,
     displayPrice: '₹39,200',
     images: [
-      'https://images.unsplash.com/photo-1612817288484-6f916006741a?q=80&w=800&auto=format&fit=crop',
-      'https://images.unsplash.com/photo-1617627143750-d86bc21e42bb?q=80&w=800&auto=format&fit=crop',
+      '/images/products/kanchipuram-korvai.jpg',
+      '/images/360/kanchipuram-270.jpg',
     ],
     alt: 'Kanchipuram silk saree with temple border korvai technique',
     material: 'Heavy Weight Mulberry Silk',
@@ -228,7 +228,7 @@ export const SHOP_PRODUCTS: ShopProduct[] = [
     price: 28400,
     displayPrice: '₹28,400',
     images: [
-      'https://images.unsplash.com/photo-1553062407-98eeb64c6a62?q=80&w=800&auto=format&fit=crop',
+      '/images/products/jamdani-muslin-saree.jpg',
     ],
     alt: 'Jamdani fine muslin saree with geometric woven motifs',
     material: '100s Count Fine Handspun Cotton',
@@ -250,7 +250,7 @@ export const SHOP_PRODUCTS: ShopProduct[] = [
     price: 14800,
     displayPrice: '₹14,800',
     images: [
-      'https://images.unsplash.com/photo-1583391733956-6c78276477e2?q=80&w=800&auto=format&fit=crop',
+      '/images/products/chanderi-silk-saree.jpg',
     ],
     alt: 'Chanderi silk cotton saree with gold zari border',
     material: 'Silk Cotton Blend with Zari',
@@ -272,7 +272,7 @@ export const SHOP_PRODUCTS: ShopProduct[] = [
     price: 22500,
     displayPrice: '₹22,500',
     images: [
-      'https://images.unsplash.com/photo-1528459801416-a9e53bbf4e17?q=80&w=800&auto=format&fit=crop',
+      '/images/products/pochampally-ikat.jpg',
     ],
     alt: 'Pochampally double ikat silk saree in vivid tones',
     material: 'Pure Silk with Natural Dyes',
@@ -295,7 +295,7 @@ export const SHOP_PRODUCTS: ShopProduct[] = [
     price: 62000,
     displayPrice: '₹62,000',
     images: [
-      'https://images.unsplash.com/photo-1601244005535-a48d21d951ac?q=80&w=800&auto=format&fit=crop',
+      '/images/products/pashmina-sozni-shawl.jpg',
     ],
     alt: 'Kashmiri Pashmina shawl with intricate Sozni embroidery',
     material: '100% Hand-Spun Changthangi Pashmina',
@@ -317,7 +317,7 @@ export const SHOP_PRODUCTS: ShopProduct[] = [
     price: 85000,
     displayPrice: '₹85,000',
     images: [
-      'https://images.unsplash.com/photo-1584917865442-de89df76afd3?q=80&w=800&auto=format&fit=crop',
+      '/images/products/kani-pashmina-shawl.jpg',
     ],
     alt: 'Kani pashmina jamawar shawl with elaborate pattern',
     material: '100% Pashmina with Natural Dyes',
@@ -339,7 +339,7 @@ export const SHOP_PRODUCTS: ShopProduct[] = [
     price: 4200,
     displayPrice: '₹4,200',
     images: [
-      'https://images.unsplash.com/photo-1544441893-675973e31985?q=80&w=800&auto=format&fit=crop',
+      '/images/products/kullu-wool-shawl.jpg',
     ],
     alt: 'Kullu handloom wool shawl with traditional border',
     material: 'Local Himalayan Sheep Wool',
@@ -363,7 +363,7 @@ export const SHOP_PRODUCTS: ShopProduct[] = [
     price: 18900,
     displayPrice: '₹18,900',
     images: [
-      'https://images.unsplash.com/photo-1594040226829-7f251ab46d80?q=80&w=800&auto=format&fit=crop',
+      '/images/products/tussar-kalamkari-stole.jpg',
     ],
     alt: 'Tussar silk stole with hand-drawn Kalamkari art',
     material: 'Wild Tussar Raw Silk',
@@ -385,7 +385,7 @@ export const SHOP_PRODUCTS: ShopProduct[] = [
     price: 6800,
     displayPrice: '₹6,800',
     images: [
-      'https://images.unsplash.com/photo-1606744824163-985d376605aa?q=80&w=800&auto=format&fit=crop',
+      '/images/products/bhagalpuri-silk-stole.jpg',
     ],
     alt: 'Golden Bhagalpuri Tussar silk stole',
     material: 'Wild Tussar Silk',
@@ -406,7 +406,7 @@ export const SHOP_PRODUCTS: ShopProduct[] = [
     price: 3600,
     displayPrice: '₹3,600',
     images: [
-      'https://images.unsplash.com/photo-1558171813-4c088753af8f?q=80&w=800&auto=format&fit=crop',
+      '/images/products/ajrakh-cotton-stole.jpg',
     ],
     alt: 'Ajrakh block printed cotton stole in indigo',
     material: 'Organic Kala Cotton',
@@ -430,7 +430,7 @@ export const SHOP_PRODUCTS: ShopProduct[] = [
     price: 5400,
     displayPrice: '₹5,400',
     images: [
-      'https://images.unsplash.com/photo-1583391733956-6c78276477e2?q=80&w=800&auto=format&fit=crop',
+      '/images/products/maheshwari-dupatta.jpg',
     ],
     alt: 'Maheshwari silk cotton dupatta with reversible border',
     material: 'Silk Cotton Blend',
@@ -452,7 +452,7 @@ export const SHOP_PRODUCTS: ShopProduct[] = [
     price: 8200,
     displayPrice: '₹8,200',
     images: [
-      'https://images.unsplash.com/photo-1612817288484-6f916006741a?q=80&w=800&auto=format&fit=crop',
+      '/images/products/phulkari-dupatta.jpg',
     ],
     alt: 'Punjab Phulkari embroidered dupatta in vibrant colours',
     material: 'Handspun Cotton with Silk Thread',
@@ -474,7 +474,7 @@ export const SHOP_PRODUCTS: ShopProduct[] = [
     price: 4800,
     displayPrice: '₹4,800',
     images: [
-      'https://images.unsplash.com/photo-1594040226829-7f251ab46d80?q=80&w=800&auto=format&fit=crop',
+      '/images/products/bandhani-dupatta.jpg',
     ],
     alt: 'Bandhani tie-dye silk dupatta from Gujarat',
     material: 'Pure Silk',
@@ -497,7 +497,7 @@ export const SHOP_PRODUCTS: ShopProduct[] = [
     price: 7600,
     displayPrice: '₹7,600',
     images: [
-      'https://images.unsplash.com/photo-1606760227091-3dd858d9721d?q=80&w=800&auto=format&fit=crop',
+      '/images/products/chikankari-kurta.jpg',
     ],
     alt: 'White Lucknowi Chikankari embroidered cotton kurta',
     material: 'Fine Cotton Voile',
@@ -519,7 +519,7 @@ export const SHOP_PRODUCTS: ShopProduct[] = [
     price: 4200,
     displayPrice: '₹4,200',
     images: [
-      'https://images.unsplash.com/photo-1490751907972-0ae72a22f0ba?q=80&w=800&auto=format&fit=crop',
+      '/images/products/khadi-linen-kurta.jpg',
     ],
     alt: 'Natural khadi linen kurta in earthy tones',
     material: 'Handspun Khadi Cotton-Linen',
@@ -543,7 +543,7 @@ export const SHOP_PRODUCTS: ShopProduct[] = [
     price: 75000,
     displayPrice: '₹75,000',
     images: [
-      'https://images.unsplash.com/photo-1586105251261-72a756497a11?q=80&w=800&auto=format&fit=crop',
+      '/images/products/bhadohi-carpet.jpg',
     ],
     alt: 'Bhadohi hand-knotted wool carpet with traditional patterns',
     material: 'Bikaneri Wool & Organic Cotton Warp',
@@ -565,7 +565,7 @@ export const SHOP_PRODUCTS: ShopProduct[] = [
     price: 4800,
     displayPrice: '₹4,800',
     images: [
-      'https://images.unsplash.com/photo-1558171813-4c088753af8f?q=80&w=800&auto=format&fit=crop',
+      '/images/products/indigo-throw.jpg',
     ],
     alt: 'Reversible indigo cotton throw handwoven in Kutch',
     material: 'Organic Kala Cotton with Natural Indigo',
@@ -587,7 +587,7 @@ export const SHOP_PRODUCTS: ShopProduct[] = [
     price: 2600,
     displayPrice: '₹2,600',
     images: [
-      'https://images.unsplash.com/photo-1490751907972-0ae72a22f0ba?q=80&w=800&auto=format&fit=crop',
+      '/images/products/handspun-table-linen.jpg',
     ],
     alt: 'Natural handwoven table linen set',
     material: 'Handspun Cotton',
@@ -608,7 +608,7 @@ export const SHOP_PRODUCTS: ShopProduct[] = [
     price: 3400,
     displayPrice: '₹3,400',
     images: [
-      'https://images.unsplash.com/photo-1528459801416-a9e53bbf4e17?q=80&w=800&auto=format&fit=crop',
+      '/images/products/pochampally-cushion-set.jpg',
     ],
     alt: 'Pochampally Ikat cushion covers with geometric patterns',
     material: 'Cotton Ikat',
@@ -632,7 +632,7 @@ export const SHOP_PRODUCTS: ShopProduct[] = [
     price: 2800,
     displayPrice: '₹2,800',
     images: [
-      'https://images.unsplash.com/photo-1594040226829-7f251ab46d80?q=80&w=800&auto=format&fit=crop',
+      '/images/products/kalamkari-tote.jpg',
     ],
     alt: 'Kalamkari hand-painted canvas tote bag',
     material: 'Heavy Canvas with Kalamkari Art',
@@ -654,7 +654,7 @@ export const SHOP_PRODUCTS: ShopProduct[] = [
     price: 12500,
     displayPrice: '₹12,500',
     images: [
-      'https://images.unsplash.com/photo-1606744824163-985d376605aa?q=80&w=800&auto=format&fit=crop',
+      '/images/products/patola-scarf.jpg',
     ],
     alt: 'Patola double ikat silk scarf in geometric pattern',
     material: 'Pure Silk with Natural Dyes',
@@ -676,7 +676,7 @@ export const SHOP_PRODUCTS: ShopProduct[] = [
     price: 1800,
     displayPrice: '₹1,800',
     images: [
-      'https://images.unsplash.com/photo-1553062407-98eeb64c6a62?q=80&w=800&auto=format&fit=crop',
+      '/images/products/block-print-pouch.jpg',
     ],
     alt: 'Block-printed travel pouch set in natural tones',
     material: 'Block-Printed Cotton',
@@ -699,42 +699,42 @@ export const SHOP_REGIONS: ShopRegion[] = [
     name: 'Varanasi',
     state: 'Uttar Pradesh',
     crafts: ['Banarasi Brocade', 'Zari Work', 'Chikankari'],
-    image: 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?q=80&w=600&auto=format&fit=crop',
+    image: '/images/regions/varanasi.jpg',
   },
   {
     id: 'kashmir',
     name: 'Kashmir',
     state: 'Jammu & Kashmir',
     crafts: ['Pashmina', 'Sozni', 'Kani Weave'],
-    image: 'https://images.unsplash.com/photo-1601244005535-a48d21d951ac?q=80&w=600&auto=format&fit=crop',
+    image: '/images/regions/kashmir.jpg',
   },
   {
     id: 'kutch',
     name: 'Kutch',
     state: 'Gujarat',
     crafts: ['Ajrakh', 'Bandhani', 'Natural Indigo'],
-    image: 'https://images.unsplash.com/photo-1558171813-4c088753af8f?q=80&w=600&auto=format&fit=crop',
+    image: '/images/regions/kutch.jpg',
   },
   {
     id: 'kanchipuram',
     name: 'Kanchipuram',
     state: 'Tamil Nadu',
     crafts: ['Korvai Silk', 'Temple Border'],
-    image: 'https://images.unsplash.com/photo-1612817288484-6f916006741a?q=80&w=600&auto=format&fit=crop',
+    image: '/images/regions/kanchipuram.jpg',
   },
   {
     id: 'west-bengal',
     name: 'West Bengal',
     state: 'West Bengal',
     crafts: ['Jamdani', 'Baluchari', 'Fine Muslin'],
-    image: 'https://images.unsplash.com/photo-1553062407-98eeb64c6a62?q=80&w=600&auto=format&fit=crop',
+    image: '/images/regions/west-bengal.jpg',
   },
   {
     id: 'bhagalpur',
     name: 'Bhagalpur',
     state: 'Bihar',
     crafts: ['Tussar Silk', 'Natural Dye'],
-    image: 'https://images.unsplash.com/photo-1606744824163-985d376605aa?q=80&w=600&auto=format&fit=crop',
+    image: '/images/regions/bhagalpur.jpg',
   },
 ]
 

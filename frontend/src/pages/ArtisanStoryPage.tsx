@@ -4,6 +4,7 @@ import { Icon } from '../components/primitives/Icon'
 import { Button } from '../components/primitives/Button'
 import { QRCodeView } from '../components/primitives/QRCodeView'
 import { fetchArtisanStory, type ArtisanStoryResult } from '../services/artisanService'
+import { HandloomImage } from '../components/common/HandloomImage'
 
 export function ArtisanStoryPage() {
   const { artisanId } = useParams<{ artisanId: string }>()
@@ -241,9 +242,10 @@ export function ArtisanStoryPage() {
                 }}
               >
                 {artisan.image ? (
-                  <img
+                  <HandloomImage
                     src={artisan.image}
                     alt={artisan.name}
+                    fallbackCategory="artisan"
                     style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                   />
                 ) : (
@@ -641,9 +643,10 @@ export function ArtisanStoryPage() {
                 >
                   <div style={{ position: 'relative', aspectRatio: '4/3', overflow: 'hidden', background: 'var(--surface)' }}>
                     {p.images && p.images[0] ? (
-                      <img
+                      <HandloomImage
                         src={p.images[0]}
                         alt={p.name}
+                        fallbackCategory="saree"
                         style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                       />
                     ) : (

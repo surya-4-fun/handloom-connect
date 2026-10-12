@@ -2,6 +2,7 @@ import { useEffect, useRef } from 'react'
 import { motion, useInView } from 'framer-motion'
 import { ButtonLink } from '../components/primitives/Button'
 import { Icon } from '../components/primitives/Icon'
+import { HandloomImage } from '../components/common/HandloomImage'
 
 /* ─── Data ─────────────────────────────────────────────────────────── */
 
@@ -129,10 +130,11 @@ export function AboutPage() {
       >
         {/* Background image */}
         <div style={{ position: 'absolute', inset: 0, zIndex: 0 }}>
-          <img
+          <HandloomImage
             className="about-hero__img"
-            src="https://images.unsplash.com/photo-1605000797499-95a51c5269ae?q=80&w=1800&auto=format&fit=crop"
-            alt="Artisan at a handloom loom"
+            src="/images/artisans/hero-artisan.jpg"
+            alt="Artisan at a traditional Indian handloom"
+            fallbackCategory="artisan"
             style={{ width: '100%', height: '110%', objectFit: 'cover', objectPosition: 'center', transformOrigin: 'center top' }}
           />
           <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(10,9,8,0.97) 0%, rgba(10,9,8,0.5) 50%, rgba(10,9,8,0.22) 100%)' }} />
@@ -215,9 +217,10 @@ export function AboutPage() {
               style={{ position: 'relative' }}
             >
               <div style={{ position: 'relative', aspectRatio: '4/5', borderRadius: '18px', overflow: 'hidden', boxShadow: '0 40px 100px rgba(0,0,0,0.55), 0 0 0 1px rgba(255,255,255,0.07)' }}>
-                <img
-                  src="https://images.unsplash.com/photo-1598531147610-cba35f2c8f1d?q=80&w=1200&auto=format&fit=crop"
-                  alt="Artisan weaving silk on traditional loom"
+                <HandloomImage
+                  src="/images/artisans/rajeshwar-ansari.jpg"
+                  alt="Master weaver at traditional Indian pit loom"
+                  fallbackCategory="artisan"
                   style={{ width: '100%', height: '100%', objectFit: 'cover', filter: 'contrast(1.02) brightness(0.92)' }}
                   loading="lazy"
                 />

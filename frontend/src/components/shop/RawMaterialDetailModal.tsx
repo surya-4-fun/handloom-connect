@@ -1,5 +1,6 @@
 import { RawMaterial } from '../../types/rawMaterial'
 import { Button } from '../primitives/Button'
+import { HandloomImage } from '../common/HandloomImage'
 
 interface RawMaterialDetailModalProps {
   material: RawMaterial | null
@@ -32,7 +33,12 @@ export function RawMaterialDetailModal({
           
           {/* Image Left */}
           <div style={{ position: 'relative', background: '#000' }}>
-            <img src={material.images[0]} alt={material.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+            <HandloomImage
+              src={material.images?.[0]}
+              alt={material.name}
+              fallbackCategory="raw_material"
+              style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+            />
             {material.badge && (
               <span style={{ position: 'absolute', top: '16px', left: '16px', background: 'var(--gold)', color: '#000', padding: '4px 10px', borderRadius: '100px', fontSize: '0.7rem', fontWeight: 800, letterSpacing: '0.12em' }}>
                 {material.badge}

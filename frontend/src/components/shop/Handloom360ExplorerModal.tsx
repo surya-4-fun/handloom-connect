@@ -397,6 +397,12 @@ export function Handloom360ExplorerModal({
               <img
                 src={currentImg?.url || product.images[0]}
                 alt={`${product.name} at ${currentImg?.angleLabel || `${currentAngleDeg}°`}`}
+                onError={(e) => {
+                  const target = e.currentTarget
+                  if (!target.src.includes('/images/fallbacks/')) {
+                    target.src = product.images?.[0] || '/images/fallbacks/saree-fallback.jpg'
+                  }
+                }}
                 style={{
                   maxHeight: isZoomed ? '500px' : '340px',
                   maxWidth: '100%',
@@ -727,6 +733,12 @@ export function Handloom360ExplorerModal({
                 <img
                   src={data.artisan.image}
                   alt={data.artisan.name}
+                  onError={(e) => {
+                    const target = e.currentTarget
+                    if (!target.src.includes('/images/fallbacks/')) {
+                      target.src = '/images/fallbacks/artisan-fallback.jpg'
+                    }
+                  }}
                   style={{ width: '80px', height: '80px', borderRadius: '50%', objectFit: 'cover', border: '2px solid var(--gold)' }}
                 />
               )}

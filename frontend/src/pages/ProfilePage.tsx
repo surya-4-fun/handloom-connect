@@ -152,7 +152,17 @@ export function ProfilePage() {
                       
                       {ord.items.map(item => (
                         <div key={item.productId} className="order-items" style={{ marginBottom: '12px' }}>
-                          <img src={item.image} alt={item.name} className="order-item-img" />
+                          <img
+                            src={item.image}
+                            alt={item.name}
+                            className="order-item-img"
+                            onError={(e) => {
+                              const target = e.currentTarget
+                              if (!target.src.includes('/images/fallbacks/')) {
+                                target.src = '/images/fallbacks/saree-fallback.jpg'
+                              }
+                            }}
+                          />
                           <div>
                             <p style={{ fontWeight: 500, margin: '0 0 4px' }}>{item.name}</p>
                             <p style={{ color: 'var(--gold)', fontSize: '0.85rem', margin: '0 0 4px', fontWeight: 600 }}>{item.craft} • {item.artisanName}</p>

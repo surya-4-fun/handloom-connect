@@ -220,6 +220,12 @@ export function AIWearPreviewModal({ product, isOpen, onClose }: AIWearPreviewMo
                 <img
                   src={result.product.image || product.images[0]}
                   alt={result.product.name}
+                  onError={(e) => {
+                    const target = e.currentTarget
+                    if (!target.src.includes('/images/fallbacks/')) {
+                      target.src = product.images?.[0] || '/images/fallbacks/saree-fallback.jpg'
+                    }
+                  }}
                   style={{ width: '100%', height: '240px', objectFit: 'cover', borderRadius: 'var(--radius-sm)' }}
                 />
                 <div style={{ marginTop: '8px', fontSize: '0.85rem', fontWeight: 600, color: 'var(--ink)' }}>
@@ -236,8 +242,14 @@ export function AIWearPreviewModal({ product, isOpen, onClose }: AIWearPreviewMo
                   ✨ AI Wear Preview Reference
                 </span>
                 <img
-                  src={result.previewUrl}
+                  src={result.previewUrl || product.images[0] || '/images/fallbacks/saree-fallback.jpg'}
                   alt={`AI wear preview for ${result.product.name}`}
+                  onError={(e) => {
+                    const target = e.currentTarget
+                    if (!target.src.includes('/images/fallbacks/')) {
+                      target.src = product.images?.[0] || '/images/fallbacks/saree-fallback.jpg'
+                    }
+                  }}
                   style={{ width: '100%', height: '240px', objectFit: 'cover', borderRadius: 'var(--radius-sm)' }}
                 />
                 <div style={{ marginTop: '8px', fontSize: '0.82rem', color: 'var(--muted)' }}>

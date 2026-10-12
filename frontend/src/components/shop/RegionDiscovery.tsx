@@ -1,4 +1,5 @@
 import { SHOP_REGIONS } from '../../utils/mocks/shopData'
+import { HandloomImage } from '../common/HandloomImage'
 
 interface RegionDiscoveryProps {
   onSelectRegion: (regionName: string) => void
@@ -28,7 +29,13 @@ export function RegionDiscovery({ onSelectRegion }: RegionDiscoveryProps) {
               tabIndex={0}
               onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') onSelectRegion(region.name) }}
             >
-              <img src={region.image} alt={`${region.name}, ${region.state}`} className="region-card__image" loading="lazy" />
+              <HandloomImage
+                src={region.image}
+                alt={`${region.name}, ${region.state}`}
+                fallbackCategory="saree"
+                className="region-card__image"
+                loading="lazy"
+              />
               <div className="region-card__overlay" />
               <div className="region-card__content">
                 <span className="region-card__state">{region.state}</span>

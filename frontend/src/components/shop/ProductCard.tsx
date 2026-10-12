@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 import { Icon } from '../primitives/Icon'
+import { HandloomImage } from '../common/HandloomImage'
 import type { ShopProduct } from '../../types/shopTypes'
 
 interface ProductCardProps {
@@ -28,9 +29,10 @@ export function ProductCard({ product, isWishlisted, isInCart, onToggleWishlist,
         className="product-card__image-wrap"
         aria-label={`View ${product.name}`}
       >
-        <img
-          src={product.images[0]}
-          alt={product.alt}
+        <HandloomImage
+          src={product.images?.[0]}
+          alt={product.alt || product.name}
+          category={product.category}
           className="product-card__image"
           loading="lazy"
         />

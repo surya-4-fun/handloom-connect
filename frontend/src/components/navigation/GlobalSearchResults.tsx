@@ -101,7 +101,17 @@ export function GlobalSearchResults({
                   onMouseEnter={() => onHoverIndex(idx)}
                 >
                   {p.image ? (
-                    <img src={p.image} alt={p.title} className="global-search__product-thumb" />
+                    <img
+                      src={p.image}
+                      alt={p.title}
+                      className="global-search__product-thumb"
+                      onError={(e) => {
+                        const target = e.currentTarget
+                        if (!target.src.includes('/images/fallbacks/')) {
+                          target.src = '/images/fallbacks/saree-fallback.jpg'
+                        }
+                      }}
+                    />
                   ) : (
                     <div className="global-search__item-icon">
                       <Icon name="shopping-bag" size={18} />
@@ -172,7 +182,17 @@ export function GlobalSearchResults({
                 onMouseEnter={() => onHoverIndex(idx)}
               >
                 {a.image ? (
-                  <img src={a.image} alt={a.title} className="global-search__artisan-avatar" />
+                  <img
+                    src={a.image}
+                    alt={a.title}
+                    className="global-search__artisan-avatar"
+                    onError={(e) => {
+                      const target = e.currentTarget
+                      if (!target.src.includes('/images/fallbacks/')) {
+                        target.src = '/images/fallbacks/artisan-fallback.jpg'
+                      }
+                    }}
+                  />
                 ) : (
                   <div className="global-search__item-icon">
                     <Icon name="user" size={18} />
