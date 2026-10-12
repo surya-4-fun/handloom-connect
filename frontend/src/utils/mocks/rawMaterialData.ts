@@ -88,7 +88,7 @@ export const RAW_MATERIALS: RawMaterial[] = [
     inStock: true,
     sustainabilityInfo: 'Wild Forest Cocoons • Eco-Friendly Ahimsa Reel • Botanical Wash',
     description: 'Rich golden-patina Tussar silk yarn with organic slub texture. Ideal for thermal stoles, sarees, and home atelier upholstery.',
-    images: ['/images/products/bhagalpuri-silk-stole.jpg'],
+    images: ['/images/raw-materials/tussar-silk-yarn.jpg'],
     badge: 'Artisan Grade',
     denierOrCount: '160 GSM Slub'
   },
@@ -126,7 +126,7 @@ export const RAW_MATERIALS: RawMaterial[] = [
     inStock: true,
     sustainabilityInfo: 'Humid Pit-Loom Spun • Natural Starch Sizing • Zero Synthetic Finish',
     description: 'Featherlight 100s count combed cotton yarn engineered for UNESCO Jamdani hand-inlay weaving.',
-    images: ['/images/products/jamdani-muslin-saree.jpg'],
+    images: ['/images/raw-materials/fine-muslin-cotton-yarn.jpg'],
     badge: 'Direct Guild',
     denierOrCount: '100s Superfine'
   },

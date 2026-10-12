@@ -18,7 +18,8 @@ export function HandloomImage({
   loading = 'lazy',
   ...rest
 }: HandloomImageProps) {
-  const defaultFallback = fallbackSrc || getCategoryFallbackImage(fallbackCategory || category)
+  const resolvedCategory = fallbackCategory || category
+  const defaultFallback = fallbackSrc || getCategoryFallbackImage(resolvedCategory)
 
   const [currentSrc, setCurrentSrc] = useState<string>(() => {
     return src && typeof src === 'string' && src.trim() ? src.trim() : defaultFallback
@@ -27,19 +28,32 @@ export function HandloomImage({
 
   // Reset state when src or category props change
   useEffect(() => {
-    const fallback = fallbackSrc || getCategoryFallbackImage(fallbackCategory || category)
-    setCurrentSrc(src && typeof src === 'string' && src.trim() ? src.trim() : fallback)
+    const fallback = fallbackSrc || getCategoryFallbackImage(resolvedCategory)
+    const validSrc = src && typeof src === 'string' && src.trim() ? src.trim() : fallback
+    setCurrentSrc(validSrc)
     setAttempt(0)
-  }, [src, category, fallbackCategory, fallbackSrc])
+  }, [src, resolvedCategory, fallbackSrc])
 
   const handleError = () => {
-    const fallback = fallbackSrc || getCategoryFallbackImage(fallbackCategory || category)
+    const fallback = fallbackSrc || getCategoryFallbackImage(resolvedCategory)
+    
     if (attempt === 0 && currentSrc !== fallback) {
+      if (process.env.NODE_ENV !== 'production') {
+        console.warn(`[HandloomImage] Failed to load image "${currentSrc}". Falling back to category placeholder "${fallback}".`)
+      }
       setAttempt(1)
       setCurrentSrc(fallback)
-    } else if (attempt < 2 && currentSrc !== CATEGORY_FALLBACKS.general) {
+    } else if (attempt === 1 && currentSrc !== CATEGORY_FALLBACKS.general) {
+      if (process.env.NODE_ENV !== 'production') {
+        console.warn(`[HandloomImage] Fallback failed for "${currentSrc}". Using general craft placeholder "${CATEGORY_FALLBACKS.general}".`)
+      }
       setAttempt(2)
       setCurrentSrc(CATEGORY_FALLBACKS.general)
+    } else {
+      // Loop protection: do nothing further
+      if (process.env.NODE_ENV !== 'production') {
+        console.error(`[HandloomImage] All fallback attempts exhausted for image request. Aborting further attempts.`)
+      }
     }
   }
 

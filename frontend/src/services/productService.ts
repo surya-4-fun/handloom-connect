@@ -2,7 +2,7 @@ import { supabase } from '../lib/supabase'
 import type { ShopProduct, ShopCategory, ShopFilters, ShopArtisan } from '../types/shopTypes'
 import type { AuthenticityPassport } from '../types/authenticity'
 import { isUUID } from '../utils/uuid'
-import { normalizeImageArray } from '../utils/imageUtils'
+import { getAuthoritativeProductImages, getAuthoritativeArtisanImage } from '../utils/imageUtils'
 
 export interface ProductListResult {
   products: ShopProduct[]
@@ -63,7 +63,7 @@ function mapProduct(p: SupabaseProductRecord): ShopProduct {
     categoryId: p.category_id,
     price: numPrice,
     displayPrice,
-    images: normalizeImageArray(p.images),
+    images: getAuthoritativeProductImages(p.slug || p.id, p.images),
     alt: p.alt || p.name || 'Handloom handcrafted creation',
     material: p.material || '',
     region: p.region || '',
@@ -80,7 +80,7 @@ function mapProduct(p: SupabaseProductRecord): ShopProduct {
       experience: artisanObj.experience || '',
       bio: artisanObj.bio || '',
       story: artisanObj.story,
-      image: artisanObj.image
+      image: getAuthoritativeArtisanImage(artisanObj.id, artisanObj.image)
     } : undefined,
     description: p.description || '',
     dimensions: p.dimensions,

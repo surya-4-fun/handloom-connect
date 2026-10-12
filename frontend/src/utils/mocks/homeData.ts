@@ -38,7 +38,7 @@ export const artisans = [
     craft: 'Kanchipuram silk', 
     place: 'Tamil Nadu', 
     years: '28 years at the loom', 
-    image: '/images/artisans/saraswathi-guild.jpg' 
+    image: '/images/artisans/artisan-portrait.jpg' 
   },
   { 
     name: 'The Nila Collective', 

@@ -1,6 +1,6 @@
 import { supabase } from '../lib/supabase'
 import type { ShopArtisan, ShopProduct } from '../types/shopTypes'
-import { normalizeImageArray } from '../utils/imageUtils'
+import { getAuthoritativeArtisanImage, getAuthoritativeProductImages } from '../utils/imageUtils'
 
 export interface ArtisanDetailResult {
   artisan: ShopArtisan
@@ -71,7 +71,7 @@ function mapArtisan(a: SupabaseArtisanRecord): ShopArtisan {
     techniques,
     culturalBackground: a.cultural_background,
     communityImpact,
-    image: a.image || '',
+    image: getAuthoritativeArtisanImage(a.id, a.image),
     isFeatured: Boolean(a.is_featured),
     isCollective: Boolean(a.is_collective),
     followerCount: Number(a.follower_count) || 0,
@@ -119,7 +119,7 @@ export async function fetchArtisanDetail(id: string): Promise<ArtisanDetailResul
       category: '',
       price: Number(p.price),
       displayPrice: p.display_price,
-      images: normalizeImageArray(p.images),
+      images: getAuthoritativeProductImages(p.slug || p.id, p.images),
       alt: p.alt || '',
       material: p.material,
       region: p.region,

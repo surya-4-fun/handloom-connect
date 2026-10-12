@@ -52,6 +52,7 @@ export function QuickViewModal({ product, onClose, onAddToCart, isInCart }: Quic
 
         <div className="quick-view__image-wrap">
           <HandloomImage
+            key={product.id || product.slug}
             src={product.images?.[0]}
             alt={product.alt || product.name}
             fallbackCategory={product.category}

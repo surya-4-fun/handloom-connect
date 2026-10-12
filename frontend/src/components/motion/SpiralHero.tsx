@@ -29,7 +29,7 @@ interface CardData {
 
 const CARDS_DATA: CardData[] = [
   {
-    id: 'indigo-throw',
+    id: 'kanchipuram',
     title: 'Heritage Kanchipuram Silk',
     detail: 'Artisan Craft · Saraswathi Guild · Tamil Nadu',
     src: '/images/products/kanchipuram-korvai.jpg',
@@ -51,7 +51,7 @@ const CARDS_DATA: CardData[] = [
     h: 800
   },
   {
-    id: 'table-linen',
+    id: 'master-weaver',
     title: 'Master Weaver at Loom',
     detail: 'Loom Craftsmanship · Sutradhar Collective · Bengal',
     src: '/images/artisans/hero-artisan.jpg',
@@ -62,7 +62,7 @@ const CARDS_DATA: CardData[] = [
     h: 800
   },
   {
-    id: 'kanchipuram',
+    id: 'banarasi-saree',
     title: 'Banarasi Zari Heirloom',
     detail: 'Royal Brocade · Varanasi Weavers · UP',
     src: '/images/products/banarasi-zari-saree.jpg',
@@ -84,12 +84,12 @@ const CARDS_DATA: CardData[] = [
     h: 800
   },
   {
-    id: 'wool-carpet',
+    id: 'pashmina-shawl',
     title: 'Pure Kashmiri Pashmina',
     detail: 'Hand-spun Weave · Srinagar Artisans · Kashmir',
     src: '/images/products/pashmina-sozni-shawl.jpg',
     lg: '/images/products/pashmina-sozni-shawl.jpg',
-    to: '/artisans',
+    to: '/marketplace',
     accent: [0.684, 0.535, 0.498],
     w: 1200,
     h: 800
@@ -106,7 +106,7 @@ const CARDS_DATA: CardData[] = [
     h: 800
   },
   {
-    id: 'pashmina-shawl',
+    id: 'chanderi-saree',
     title: 'Chanderi Gold Textile',
     detail: 'Sheer Zari Weave · Chanderi Atelier · MP',
     src: '/images/products/chanderi-silk-saree.jpg',

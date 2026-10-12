@@ -41,6 +41,7 @@ export function ProductDetailPage() {
     const loadDetail = async () => {
       try {
         setIsLoading(true)
+        setActiveImageIdx(0)
         const res = await fetchProductDetail(productId)
         if (isMounted && res?.product) {
           setProductData(res.product)
