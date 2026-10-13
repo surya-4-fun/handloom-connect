@@ -122,6 +122,28 @@ export function AboutPage() {
           SCENE 1: THE BEGINNING — THE GENESIS
           =================================================================== */}
       <section id="scene-beginning" className="story-scene story-scene-pinned" style={{ minHeight: '100vh' }}>
+        {/* Oversized Background Storytelling Typography */}
+        <div className="story-bg-text-layer story-bg-text--scene-1" aria-hidden="true">
+          <motion.div
+            className="story-bg-num"
+            initial={{ opacity: 0, scale: 0.92 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: false, amount: 0.15 }}
+            transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
+          >
+            01
+          </motion.div>
+          <motion.div
+            className="story-bg-word"
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: false, amount: 0.15 }}
+            transition={{ duration: 1.4, ease: [0.16, 1, 0.3, 1] }}
+          >
+            GENESIS
+          </motion.div>
+        </div>
+
         <div className="story-content-wrap" style={{ textAlign: 'center' }}>
           <motion.div
             initial={{ opacity: 0, y: 30 }}
@@ -151,6 +173,28 @@ export function AboutPage() {
           SCENE 2: THE THREAD — FROM COCOON TO SPOOL
           =================================================================== */}
       <section id="scene-thread" className="story-scene">
+        {/* Oversized Background Storytelling Typography */}
+        <div className="story-bg-text-layer story-bg-text--scene-2" aria-hidden="true">
+          <motion.div
+            className="story-bg-num"
+            initial={{ opacity: 0, scale: 0.92 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: false, amount: 0.15 }}
+            transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
+          >
+            02
+          </motion.div>
+          <motion.div
+            className="story-bg-word"
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: false, amount: 0.15 }}
+            transition={{ duration: 1.4, ease: [0.16, 1, 0.3, 1] }}
+          >
+            THE THREAD
+          </motion.div>
+        </div>
+
         <div className="story-content-wrap">
           <div style={{ maxWidth: '640px' }}>
             <span className="story-eyebrow">
@@ -181,6 +225,28 @@ export function AboutPage() {
           SCENE 3: THE WEAVING — THE HARMONY OF THE PIT LOOM
           =================================================================== */}
       <section id="scene-weaving" className="story-scene">
+        {/* Oversized Background Storytelling Typography */}
+        <div className="story-bg-text-layer story-bg-text--scene-3" aria-hidden="true">
+          <motion.div
+            className="story-bg-num"
+            initial={{ opacity: 0, scale: 0.92 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: false, amount: 0.15 }}
+            transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
+          >
+            03
+          </motion.div>
+          <motion.div
+            className="story-bg-word"
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: false, amount: 0.15 }}
+            transition={{ duration: 1.4, ease: [0.16, 1, 0.3, 1] }}
+          >
+            WEAVING
+          </motion.div>
+        </div>
+
         <div className="story-content-wrap" style={{ display: 'flex', justifyContent: 'flex-end' }}>
           <div style={{ maxWidth: '640px' }}>
             <span className="story-eyebrow">
@@ -211,6 +277,28 @@ export function AboutPage() {
           SCENE 4: THE ARTISANS — GUARDIANS OF CULTURAL MEMORY
           =================================================================== */}
       <section id="scene-artisans" className="story-scene">
+        {/* Oversized Background Storytelling Typography */}
+        <div className="story-bg-text-layer story-bg-text--scene-4" aria-hidden="true">
+          <motion.div
+            className="story-bg-num"
+            initial={{ opacity: 0, scale: 0.92 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: false, amount: 0.15 }}
+            transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
+          >
+            04
+          </motion.div>
+          <motion.div
+            className="story-bg-word"
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: false, amount: 0.15 }}
+            transition={{ duration: 1.4, ease: [0.16, 1, 0.3, 1] }}
+          >
+            ARTISANS
+          </motion.div>
+        </div>
+
         <div className="story-content-wrap">
           <div style={{ textAlign: 'center', maxWidth: '780px', margin: '0 auto 3rem' }}>
             <span className="story-eyebrow" style={{ justifyContent: 'center' }}>
@@ -290,6 +378,28 @@ export function AboutPage() {
           SCENE 5: THE CONNECTION — TRIADIC PLATFORM ECOSYSTEM
           =================================================================== */}
       <section id="scene-connection" className="story-scene">
+        {/* Oversized Background Storytelling Typography */}
+        <div className="story-bg-text-layer story-bg-text--scene-5" aria-hidden="true">
+          <motion.div
+            className="story-bg-num"
+            initial={{ opacity: 0, scale: 0.92 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: false, amount: 0.15 }}
+            transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
+          >
+            05
+          </motion.div>
+          <motion.div
+            className="story-bg-word"
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: false, amount: 0.15 }}
+            transition={{ duration: 1.4, ease: [0.16, 1, 0.3, 1] }}
+          >
+            CONNECTION
+          </motion.div>
+        </div>
+
         <div className="story-content-wrap">
           <div style={{ textAlign: 'center', maxWidth: '800px', margin: '0 auto 2.5rem' }}>
             <span className="story-eyebrow" style={{ justifyContent: 'center' }}>
@@ -341,6 +451,28 @@ export function AboutPage() {
           SCENE 6: THE FUTURE — THE FINISHED HEIRLOOM & CALLS TO ACTION
           =================================================================== */}
       <section id="scene-future" className="story-scene" style={{ minHeight: '100vh', paddingBottom: '140px' }}>
+        {/* Oversized Background Storytelling Typography */}
+        <div className="story-bg-text-layer story-bg-text--scene-6" aria-hidden="true">
+          <motion.div
+            className="story-bg-num"
+            initial={{ opacity: 0, scale: 0.92 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: false, amount: 0.15 }}
+            transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
+          >
+            06
+          </motion.div>
+          <motion.div
+            className="story-bg-word"
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: false, amount: 0.15 }}
+            transition={{ duration: 1.4, ease: [0.16, 1, 0.3, 1] }}
+          >
+            HERITAGE
+          </motion.div>
+        </div>
+
         <div className="story-content-wrap" style={{ textAlign: 'center' }}>
           <div className="story-card" style={{ maxWidth: '860px', margin: '0 auto', padding: 'clamp(40px, 6vw, 70px)' }}>
             <span className="story-eyebrow" style={{ justifyContent: 'center' }}>

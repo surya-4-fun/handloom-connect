@@ -147,6 +147,7 @@
   justify-content: center;
   padding: clamp(60px, 10vh, 120px) clamp(20px, 6vw, 80px);
   z-index: 10;
+  overflow: hidden;
 }
 
 .story-scene-pinned {
@@ -158,6 +159,8 @@
   width: 100%;
   max-width: 1100px;
   margin: 0 auto;
+  position: relative;
+  z-index: 5;
 }
 
 .story-eyebrow {
@@ -485,4 +488,172 @@
   border-color: var(--gold);
   color: var(--gold);
   transform: translateY(-2px);
+}
+
+/* ==========================================================================
+   Oversized Background Backdrop Typography (Inspired by Avara Storytelling)
+   Theme-Adaptive Architectural Watermarks Across All 6 Chapters
+   ========================================================================== */
+
+.story-bg-text-layer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  user-select: none;
+  overflow: hidden;
+  z-index: 1; /* Sits behind foreground content (.story-content-wrap z-index: 5) */
+  contain: paint;
+}
+
+/* Common Background Typography Defaults */
+.story-bg-num,
+.story-bg-word {
+  position: absolute;
+  font-family: var(--font-display);
+  font-weight: 800;
+  line-height: 0.82;
+  text-transform: uppercase;
+  letter-spacing: -0.04em;
+  white-space: nowrap;
+  pointer-events: none;
+  user-select: none;
+  transition: color 0.3s ease, -webkit-text-stroke 0.3s ease, text-shadow 0.3s ease;
+  will-change: transform, opacity;
+}
+
+.story-bg-num {
+  font-size: clamp(9rem, 26vw, 24rem);
+  font-feature-settings: "tnum" 1, "zero" 1;
+}
+
+.story-bg-word {
+  font-size: clamp(4.5rem, 12vw, 13rem);
+  letter-spacing: 0.08em;
+  font-weight: 700;
+}
+
+/* ──────────────────────────────────────────────────────────────────────────
+   Dark Mode: Luminous Champagne Gold / Soft Ivory Silhouette on Deep Velvet
+   ────────────────────────────────────────────────────────────────────────── */
+:root[data-theme='dark'] .story-bg-num {
+  color: rgba(212, 175, 55, 0.04);
+  -webkit-text-stroke: 1.5px rgba(212, 175, 55, 0.18);
+  text-shadow: 0 0 60px rgba(212, 175, 55, 0.08);
+}
+
+:root[data-theme='dark'] .story-bg-word {
+  color: rgba(243, 229, 171, 0.035);
+  -webkit-text-stroke: 1.5px rgba(212, 175, 55, 0.16);
+  text-shadow: 0 0 45px rgba(212, 175, 55, 0.06);
+}
+
+/* ──────────────────────────────────────────────────────────────────────────
+   Light Mode: High-Contrast Antique Bronze / Deep Warm Umber Watermark
+   Crucial: Contrasts distinctly against #FBF9F5 parchment without disappearing
+   ────────────────────────────────────────────────────────────────────────── */
+:root[data-theme='light'] .story-bg-num {
+  color: rgba(112, 88, 20, 0.09);
+  -webkit-text-stroke: 1.8px rgba(112, 88, 20, 0.30);
+  text-shadow: 0 4px 20px rgba(154, 123, 35, 0.08);
+}
+
+:root[data-theme='light'] .story-bg-word {
+  color: rgba(90, 70, 16, 0.08);
+  -webkit-text-stroke: 1.8px rgba(112, 88, 20, 0.28);
+  text-shadow: 0 3px 18px rgba(154, 123, 35, 0.07);
+}
+
+/* ──────────────────────────────────────────────────────────────────────────
+   Positioning per Scene for Cinematic Composition
+   ────────────────────────────────────────────────────────────────────────── */
+/* Scene 1: The Genesis */
+.story-bg-text--scene-1 .story-bg-num {
+  top: 6%;
+  left: 3%;
+}
+.story-bg-text--scene-1 .story-bg-word {
+  top: 55%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  opacity: 0.85;
+}
+
+/* Scene 2: The Thread */
+.story-bg-text--scene-2 .story-bg-num {
+  top: 10%;
+  right: 5%;
+}
+.story-bg-text--scene-2 .story-bg-word {
+  bottom: 8%;
+  left: 4%;
+}
+
+/* Scene 3: The Weaving */
+.story-bg-text--scene-3 .story-bg-num {
+  top: 8%;
+  left: 5%;
+}
+.story-bg-text--scene-3 .story-bg-word {
+  bottom: 12%;
+  right: 4%;
+}
+
+/* Scene 4: The Artisans */
+.story-bg-text--scene-4 .story-bg-num {
+  top: 4%;
+  left: 50%;
+  transform: translateX(-50%);
+}
+.story-bg-text--scene-4 .story-bg-word {
+  bottom: 6%;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+/* Scene 5: The Connection */
+.story-bg-text--scene-5 .story-bg-num {
+  top: 8%;
+  right: 6%;
+}
+.story-bg-text--scene-5 .story-bg-word {
+  bottom: 10%;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+/* Scene 6: The Future */
+.story-bg-text--scene-6 .story-bg-num {
+  top: 6%;
+  left: 50%;
+  transform: translateX(-50%);
+}
+.story-bg-text--scene-6 .story-bg-word {
+  bottom: 8%;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+@media (max-width: 768px) {
+  .story-bg-num {
+    font-size: clamp(6rem, 28vw, 12rem);
+    opacity: 0.75;
+  }
+  .story-bg-word {
+    font-size: clamp(3rem, 14vw, 6rem);
+    letter-spacing: 0.04em;
+    opacity: 0.75;
+  }
+  
+  .story-bg-text--scene-1 .story-bg-num {
+    top: 4%;
+    left: 2%;
+  }
+  .story-bg-text--scene-2 .story-bg-num {
+    top: 6%;
+    right: 2%;
+  }
+  .story-bg-text--scene-3 .story-bg-num {
+    top: 6%;
+    left: 2%;
+  }
 }
