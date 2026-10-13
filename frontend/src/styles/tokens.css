@@ -47,6 +47,11 @@
   --radius-lg: 14px;
   --radius-xl: 24px;
   --ease: cubic-bezier(.22, 1, .36, 1);
+  --footer-bg: #0B0B0B;
+  --footer-ink: #FBF9F5;
+  --footer-muted: #A89F91;
+  --footer-border: rgba(212, 175, 55, 0.22);
+  --brand-ink: #0A0908;
 }
 
 :root[data-theme='dark'] {
@@ -67,6 +72,11 @@
   --border-strong: rgba(212, 175, 55, 0.45);
   --success: #2E8B57;
   --header-text: #FBF9F5;
+  --footer-bg: #0B0B0B;
+  --footer-ink: #FBF9F5;
+  --footer-muted: #A89F91;
+  --footer-border: rgba(212, 175, 55, 0.22);
+  --brand-ink: #0A0908;
   --shadow: 0 12px 40px rgba(0, 0, 0, 0.65), 0 0 0 1px rgba(212, 175, 55, 0.2);
 }
 
@@ -88,6 +98,11 @@
   --border-strong: rgba(154, 123, 35, 0.55);
   --success: #2E8B57;
   --header-text: #181614;
+  --footer-bg: #F3ECE1;          /* Warm Parchment Surface for Light Footer */
+  --footer-ink: #181614;         /* High Contrast Charcoal Ink for Footer */
+  --footer-muted: #575046;       /* Legible Antique Muted Footer Text */
+  --footer-border: rgba(154, 123, 35, 0.28);
+  --brand-ink: #0A0908;          /* High Contrast Dark Ebony on Gold */
   --shadow: 0 12px 36px rgba(0, 0, 0, 0.08), 0 0 0 1px rgba(154, 123, 35, 0.18);
   --shadow-gold: 0 4px 20px rgba(154, 123, 35, 0.12);
 }

@@ -54,7 +54,7 @@
   bottom: 30px;
   right: -20px;
   background-color: var(--brand); /* Brand color */
-  color: var(--canvas);
+  color: var(--brand-ink, #0A0908);
   padding: 10px 20px;
   border-radius: 4px;
   font-size: 11px;
@@ -303,7 +303,7 @@
 
 .button--gold-glow:hover {
   background-color: var(--gold);
-  color: var(--canvas);
+  color: var(--brand-ink, #0A0908);
   box-shadow: 0 10px 25px rgba(200, 162, 76, 0.35);
 }
 

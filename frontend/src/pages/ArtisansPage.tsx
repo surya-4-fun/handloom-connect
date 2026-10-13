@@ -201,7 +201,7 @@ export function ArtisansPage() {
 
                   <div style={{ position: 'absolute', bottom: '16px', left: '16px', right: '16px' }}>
                     <span style={{ color: 'var(--gold)', fontSize: '0.7rem', fontWeight: 800, letterSpacing: '0.14em', textTransform: 'uppercase' }}>{artisan.region}</span>
-                    <h3 style={{ fontFamily: 'var(--font-display)', fontSize: '1.6rem', color: 'var(--ink)', margin: '2px 0 0' }}>{artisan.name}</h3>
+                    <h3 style={{ fontFamily: 'var(--font-display)', fontSize: '1.6rem', color: '#ffffff', margin: '2px 0 0' }}>{artisan.name}</h3>
                     <small style={{ color: 'rgba(255,255,255,0.8)', fontSize: '0.82rem' }}>{artisan.title || artisan.craft}</small>
                   </div>
                 </div>

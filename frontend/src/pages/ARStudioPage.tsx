@@ -1094,7 +1094,7 @@ export function ARStudioPage() {
             style={{
               background: 'var(--surface)',
               borderRadius: '24px',
-              border: '1px solid rgba(255,255,255,0.1)',
+              border: '1px solid var(--border)',
               padding: '2rem'
             }}
           >
@@ -1145,9 +1145,9 @@ export function ARStudioPage() {
             {/* Authentic Artisan & Loom Specifications from DB */}
             <div
               style={{
-                background: 'rgba(255,255,255,0.04)',
+                background: 'var(--surface-soft)',
                 borderRadius: '14px',
-                border: '1px solid rgba(255,255,255,0.08)',
+                border: '1px solid var(--border)',
                 padding: '1.2rem',
                 marginBottom: '1.8rem',
                 display: 'grid',
@@ -1160,16 +1160,16 @@ export function ARStudioPage() {
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.85rem' }}>
                 <span style={{ color: 'var(--muted)' }}>Authentic Material</span>
-                <strong style={{ color: '#fff' }}>{selectedProduct.material}</strong>
+                <strong style={{ color: 'var(--ink)' }}>{selectedProduct.material}</strong>
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.85rem' }}>
                 <span style={{ color: 'var(--muted)' }}>Cluster Origin</span>
-                <strong style={{ color: '#fff' }}>{selectedProduct.region}</strong>
+                <strong style={{ color: 'var(--ink)' }}>{selectedProduct.region}</strong>
               </div>
               {selectedProduct.dimensions && (
                 <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.85rem' }}>
                   <span style={{ color: 'var(--muted)' }}>Dimensions</span>
-                  <strong style={{ color: '#fff' }}>{selectedProduct.dimensions}</strong>
+                  <strong style={{ color: 'var(--ink)' }}>{selectedProduct.dimensions}</strong>
                 </div>
               )}
             </div>

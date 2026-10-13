@@ -145,7 +145,7 @@ export function CartWishlistPage({ type }: { type: 'cart' | 'wishlist' }) {
             </div>
 
             <div style={{ background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: 'var(--radius-lg)', padding: '28px', height: 'fit-content' }}>
-              <h3 style={{ fontFamily: 'var(--font-display)', fontSize: '1.5rem', color: 'var(--ink)', marginBottom: '20px', borderBottom: '1px solid rgba(255,255,255,0.08)', paddingBottom: '12px' }}>
+              <h3 style={{ fontFamily: 'var(--font-display)', fontSize: '1.5rem', color: 'var(--ink)', marginBottom: '20px', borderBottom: '1px solid var(--border)', paddingBottom: '12px' }}>
                 {type === 'cart' ? 'Order Summary' : 'Wishlist Summary'}
               </h3>
               
@@ -155,7 +155,7 @@ export function CartWishlistPage({ type }: { type: 'cart' | 'wishlist' }) {
               </div>
 
               {type === 'cart' && (
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', margin: '16px 0', padding: '12px 0', borderTop: '1px solid rgba(255,255,255,0.08)', borderBottom: '1px solid rgba(255,255,255,0.08)' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', margin: '16px 0', padding: '12px 0', borderTop: '1px solid var(--border)', borderBottom: '1px solid var(--border)' }}>
                   <label style={{ fontSize: '0.85rem', color: 'var(--ink)', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px' }}>
                     <input type="checkbox" checked={giftBox} onChange={e => setGiftBox(e.target.checked)} />
                     Signature Wood Gift Box (+₹750)

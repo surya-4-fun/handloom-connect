@@ -195,7 +195,7 @@ export function SiteHeader() {
               {sec.label}
             </Link>
           ))}
-          <div style={{ height: '1px', background: 'rgba(255,255,255,0.08)', margin: '15px 0' }} />
+          <div style={{ height: '1px', background: 'var(--border)', margin: '15px 0' }} />
           <NavLink to="/marketplace">Shop the collection</NavLink>
           <NavLink to="/artisans">Master Artisans</NavLink>
 
@@ -211,6 +211,16 @@ export function SiteHeader() {
           ) : (
             <Link to="/login">Sign in</Link>
           )}
+          <button
+            type="button"
+            className="icon-button"
+            style={{ width: 'auto', borderRadius: '8px', padding: '0 8px', gap: '6px', display: 'inline-flex', alignItems: 'center' }}
+            onClick={() => setDark(v => !v)}
+            aria-label={`Use ${dark ? 'light' : 'dark'} theme`}
+          >
+            <Icon name={dark ? 'sun' : 'moon'} />
+            <span style={{ fontSize: '0.78rem' }}>{dark ? 'Light' : 'Dark'}</span>
+          </button>
           <Link to="/contact">Contact</Link>
         </div>
       </div>

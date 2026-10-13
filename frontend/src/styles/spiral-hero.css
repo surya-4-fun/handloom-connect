@@ -116,7 +116,7 @@
   font-weight: 700;
   font-size: 12px;
   letter-spacing: 1px;
-  color: rgba(255, 255, 255, 0.4);
+  color: var(--muted);
 }
 
 .slide-counter-num {
@@ -155,7 +155,8 @@
 }
 
 .slide-counter-total {
-  color: rgba(255, 255, 255, 0.22);
+  color: var(--muted);
+  opacity: 0.6;
 }
 
 /* Right Navigation list HUD */
@@ -173,7 +174,7 @@
 .spiral-overlay-link {
   background: none;
   border: none;
-  color: rgba(255, 255, 255, 0.45);
+  color: var(--muted);
   font-size: 11px;
   font-weight: 700;
   letter-spacing: 1.5px;
@@ -251,8 +252,8 @@
   top: 20px;
   right: 20px;
   background: rgba(0, 0, 0, 0.6);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  color: var(--ink);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #fff;
   width: 36px;
   height: 36px;
   border-radius: 50%;
@@ -275,7 +276,7 @@
   justify-content: space-between;
   align-items: center;
   width: 100%;
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  border-top: 1px solid var(--border);
   padding-top: 20px;
   will-change: transform, opacity;
 }

@@ -538,7 +538,8 @@
 
 .product-card__badge--new {
   background: var(--gold);
-  color: var(--canvas);
+  color: var(--brand-ink, #0A0908);
+  font-weight: 800;
 }
 
 .product-card__badge--bestseller {
@@ -580,20 +581,33 @@
   width: 36px;
   height: 36px;
   border-radius: 50%;
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  background: rgba(10, 9, 8, 0.7);
+  border: 1px solid var(--border);
+  background: var(--surface);
   backdrop-filter: blur(8px);
   color: var(--ink);
   cursor: pointer;
   display: grid;
   place-items: center;
   transition: all 0.2s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+}
+
+:root[data-theme='dark'] .product-card__action-btn {
+  background: rgba(10, 9, 8, 0.75);
+  border-color: rgba(255, 255, 255, 0.18);
+  color: #FBF9F5;
+}
+
+:root[data-theme='light'] .product-card__action-btn {
+  background: rgba(255, 255, 255, 0.92);
+  border-color: rgba(154, 123, 35, 0.25);
+  color: #181614;
 }
 
 .product-card__action-btn:hover {
   background: var(--gold);
   border-color: var(--gold);
-  color: var(--canvas);
+  color: var(--brand-ink, #0A0908);
 }
 
 .product-card__action-btn--wishlisted {
@@ -626,7 +640,7 @@
   width: 100%;
   padding: 10px;
   background: var(--gold);
-  color: var(--canvas);
+  color: var(--brand-ink, #0A0908);
   border: none;
   border-radius: var(--radius-md);
   font-size: 0.72rem;
@@ -640,6 +654,7 @@
 
 .product-card__add-cart:hover {
   background: var(--gold-deep);
+  color: #fff;
 }
 
 .product-card__add-cart--added {
@@ -792,20 +807,33 @@
   width: 38px;
   height: 38px;
   border-radius: 50%;
-  background: rgba(10, 9, 8, 0.7);
+  background: var(--surface);
   border: 1px solid var(--border);
   color: var(--ink);
   cursor: pointer;
   display: grid;
   place-items: center;
   z-index: 2;
-  transition: background 0.2s;
+  transition: background 0.2s, color 0.2s;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+:root[data-theme='dark'] .quick-view__close {
+  background: rgba(10, 9, 8, 0.75);
+  border-color: rgba(255, 255, 255, 0.2);
+  color: #FBF9F5;
+}
+
+:root[data-theme='light'] .quick-view__close {
+  background: rgba(255, 255, 255, 0.92);
+  border-color: rgba(154, 123, 35, 0.25);
+  color: #181614;
 }
 
 .quick-view__close:hover {
   background: var(--gold);
   border-color: var(--gold);
-  color: var(--canvas);
+  color: var(--brand-ink, #0A0908);
 }
 
 .quick-view__craft {

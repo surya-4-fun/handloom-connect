@@ -126,19 +126,19 @@ export function AboutPage() {
         <div className="story-bg-text-layer story-bg-text--scene-1" aria-hidden="true">
           <motion.div
             className="story-bg-num"
-            initial={{ opacity: 0, scale: 0.92 }}
+            initial={{ opacity: 0.7, scale: 0.96 }}
             whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: false, amount: 0.15 }}
-            transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
+            viewport={{ once: true, amount: 0.02 }}
+            transition={{ duration: 1.0, ease: [0.16, 1, 0.3, 1] }}
           >
             01
           </motion.div>
           <motion.div
             className="story-bg-word"
-            initial={{ opacity: 0, y: 30 }}
+            initial={{ opacity: 0.7, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: false, amount: 0.15 }}
-            transition={{ duration: 1.4, ease: [0.16, 1, 0.3, 1] }}
+            viewport={{ once: true, amount: 0.02 }}
+            transition={{ duration: 1.1, ease: [0.16, 1, 0.3, 1] }}
           >
             GENESIS
           </motion.div>
@@ -177,19 +177,19 @@ export function AboutPage() {
         <div className="story-bg-text-layer story-bg-text--scene-2" aria-hidden="true">
           <motion.div
             className="story-bg-num"
-            initial={{ opacity: 0, scale: 0.92 }}
+            initial={{ opacity: 0.7, scale: 0.96 }}
             whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: false, amount: 0.15 }}
-            transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
+            viewport={{ once: true, amount: 0.02 }}
+            transition={{ duration: 1.0, ease: [0.16, 1, 0.3, 1] }}
           >
             02
           </motion.div>
           <motion.div
             className="story-bg-word"
-            initial={{ opacity: 0, y: 30 }}
+            initial={{ opacity: 0.7, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: false, amount: 0.15 }}
-            transition={{ duration: 1.4, ease: [0.16, 1, 0.3, 1] }}
+            viewport={{ once: true, amount: 0.02 }}
+            transition={{ duration: 1.1, ease: [0.16, 1, 0.3, 1] }}
           >
             THE THREAD
           </motion.div>
@@ -229,19 +229,19 @@ export function AboutPage() {
         <div className="story-bg-text-layer story-bg-text--scene-3" aria-hidden="true">
           <motion.div
             className="story-bg-num"
-            initial={{ opacity: 0, scale: 0.92 }}
+            initial={{ opacity: 0.7, scale: 0.96 }}
             whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: false, amount: 0.15 }}
-            transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
+            viewport={{ once: true, amount: 0.02 }}
+            transition={{ duration: 1.0, ease: [0.16, 1, 0.3, 1] }}
           >
             03
           </motion.div>
           <motion.div
             className="story-bg-word"
-            initial={{ opacity: 0, y: 30 }}
+            initial={{ opacity: 0.7, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: false, amount: 0.15 }}
-            transition={{ duration: 1.4, ease: [0.16, 1, 0.3, 1] }}
+            viewport={{ once: true, amount: 0.02 }}
+            transition={{ duration: 1.1, ease: [0.16, 1, 0.3, 1] }}
           >
             WEAVING
           </motion.div>
@@ -281,19 +281,19 @@ export function AboutPage() {
         <div className="story-bg-text-layer story-bg-text--scene-4" aria-hidden="true">
           <motion.div
             className="story-bg-num"
-            initial={{ opacity: 0, scale: 0.92 }}
+            initial={{ opacity: 0.7, scale: 0.96 }}
             whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: false, amount: 0.15 }}
-            transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
+            viewport={{ once: true, amount: 0.02 }}
+            transition={{ duration: 1.0, ease: [0.16, 1, 0.3, 1] }}
           >
             04
           </motion.div>
           <motion.div
             className="story-bg-word"
-            initial={{ opacity: 0, y: 30 }}
+            initial={{ opacity: 0.7, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: false, amount: 0.15 }}
-            transition={{ duration: 1.4, ease: [0.16, 1, 0.3, 1] }}
+            viewport={{ once: true, amount: 0.02 }}
+            transition={{ duration: 1.1, ease: [0.16, 1, 0.3, 1] }}
           >
             ARTISANS
           </motion.div>
@@ -382,19 +382,19 @@ export function AboutPage() {
         <div className="story-bg-text-layer story-bg-text--scene-5" aria-hidden="true">
           <motion.div
             className="story-bg-num"
-            initial={{ opacity: 0, scale: 0.92 }}
+            initial={{ opacity: 0.7, scale: 0.96 }}
             whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: false, amount: 0.15 }}
-            transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
+            viewport={{ once: true, amount: 0.02 }}
+            transition={{ duration: 1.0, ease: [0.16, 1, 0.3, 1] }}
           >
             05
           </motion.div>
           <motion.div
             className="story-bg-word"
-            initial={{ opacity: 0, y: 30 }}
+            initial={{ opacity: 0.7, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: false, amount: 0.15 }}
-            transition={{ duration: 1.4, ease: [0.16, 1, 0.3, 1] }}
+            viewport={{ once: true, amount: 0.02 }}
+            transition={{ duration: 1.1, ease: [0.16, 1, 0.3, 1] }}
           >
             CONNECTION
           </motion.div>
@@ -455,19 +455,19 @@ export function AboutPage() {
         <div className="story-bg-text-layer story-bg-text--scene-6" aria-hidden="true">
           <motion.div
             className="story-bg-num"
-            initial={{ opacity: 0, scale: 0.92 }}
+            initial={{ opacity: 0.7, scale: 0.96 }}
             whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: false, amount: 0.15 }}
-            transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
+            viewport={{ once: true, amount: 0.02 }}
+            transition={{ duration: 1.0, ease: [0.16, 1, 0.3, 1] }}
           >
             06
           </motion.div>
           <motion.div
             className="story-bg-word"
-            initial={{ opacity: 0, y: 30 }}
+            initial={{ opacity: 0.7, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: false, amount: 0.15 }}
-            transition={{ duration: 1.4, ease: [0.16, 1, 0.3, 1] }}
+            viewport={{ once: true, amount: 0.02 }}
+            transition={{ duration: 1.1, ease: [0.16, 1, 0.3, 1] }}
           >
             HERITAGE
           </motion.div>

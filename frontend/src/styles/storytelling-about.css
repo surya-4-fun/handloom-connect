@@ -536,15 +536,15 @@
    Dark Mode: Luminous Champagne Gold / Soft Ivory Silhouette on Deep Velvet
    ────────────────────────────────────────────────────────────────────────── */
 :root[data-theme='dark'] .story-bg-num {
-  color: rgba(212, 175, 55, 0.04);
-  -webkit-text-stroke: 1.5px rgba(212, 175, 55, 0.18);
-  text-shadow: 0 0 60px rgba(212, 175, 55, 0.08);
+  color: rgba(212, 175, 55, 0.06);
+  -webkit-text-stroke: 1.6px rgba(212, 175, 55, 0.32);
+  text-shadow: 0 0 60px rgba(212, 175, 55, 0.12);
 }
 
 :root[data-theme='dark'] .story-bg-word {
-  color: rgba(243, 229, 171, 0.035);
-  -webkit-text-stroke: 1.5px rgba(212, 175, 55, 0.16);
-  text-shadow: 0 0 45px rgba(212, 175, 55, 0.06);
+  color: rgba(243, 229, 171, 0.05);
+  -webkit-text-stroke: 1.6px rgba(212, 175, 55, 0.28);
+  text-shadow: 0 0 45px rgba(212, 175, 55, 0.10);
 }
 
 /* ──────────────────────────────────────────────────────────────────────────
@@ -552,15 +552,15 @@
    Crucial: Contrasts distinctly against #FBF9F5 parchment without disappearing
    ────────────────────────────────────────────────────────────────────────── */
 :root[data-theme='light'] .story-bg-num {
-  color: rgba(112, 88, 20, 0.09);
-  -webkit-text-stroke: 1.8px rgba(112, 88, 20, 0.30);
-  text-shadow: 0 4px 20px rgba(154, 123, 35, 0.08);
+  color: rgba(85, 64, 16, 0.18);
+  -webkit-text-stroke: 2.2px rgba(55, 40, 10, 0.65);
+  text-shadow: 0 4px 25px rgba(154, 123, 35, 0.18);
 }
 
 :root[data-theme='light'] .story-bg-word {
-  color: rgba(90, 70, 16, 0.08);
-  -webkit-text-stroke: 1.8px rgba(112, 88, 20, 0.28);
-  text-shadow: 0 3px 18px rgba(154, 123, 35, 0.07);
+  color: rgba(75, 55, 14, 0.16);
+  -webkit-text-stroke: 2.2px rgba(55, 40, 10, 0.60);
+  text-shadow: 0 3px 22px rgba(154, 123, 35, 0.16);
 }
 
 /* ──────────────────────────────────────────────────────────────────────────

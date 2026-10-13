@@ -104,10 +104,10 @@ export function OrderTrackingPage() {
             style={{
               flex: 1,
               background: 'var(--surface)',
-              border: '1px solid rgba(255,255,255,0.15)',
+              border: '1px solid var(--border)',
               borderRadius: '12px',
               padding: '14px 18px',
-              color: '#fff',
+              color: 'var(--ink)',
               fontSize: '0.95rem',
             }}
           />
@@ -123,7 +123,7 @@ export function OrderTrackingPage() {
         <div className="container" style={{ display: 'grid', gridTemplateColumns: 'minmax(0, 1fr) minmax(0, 1.4fr)', gap: '3rem', alignItems: 'start' }}>
         
         {/* Left Column: Order & Artisan Card */}
-        <div style={{ background: 'var(--surface)', borderRadius: '24px', border: '1px solid rgba(255,255,255,0.1)', padding: '2rem' }}>
+        <div style={{ background: 'var(--surface)', borderRadius: '24px', border: '1px solid var(--border)', padding: '2rem' }}>
           
           <div style={{ position: 'relative', borderRadius: '16px', overflow: 'hidden', height: '260px', marginBottom: '1.5rem' }}>
             <HandloomImage
@@ -144,18 +144,18 @@ export function OrderTrackingPage() {
             {activeOrder.price}
           </p>
 
-          <div style={{ background: 'rgba(255,255,255,0.04)', borderRadius: '14px', border: '1px solid rgba(255,255,255,0.08)', padding: '1.2rem', display: 'grid', gap: '0.8rem', fontSize: '0.88rem' }}>
+          <div style={{ background: 'var(--surface-soft)', borderRadius: '14px', border: '1px solid var(--border)', padding: '1.2rem', display: 'grid', gap: '0.8rem', fontSize: '0.88rem' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between' }}>
               <span style={{ color: 'var(--muted)' }}>Master Weaver</span>
-              <strong style={{ color: '#fff' }}>{activeOrder.artisan}</strong>
+              <strong style={{ color: 'var(--ink)' }}>{activeOrder.artisan}</strong>
             </div>
             <div style={{ display: 'flex', justifyContent: 'space-between' }}>
               <span style={{ color: 'var(--muted)' }}>Cluster Origin</span>
-              <strong style={{ color: '#fff' }}>{activeOrder.cluster}</strong>
+              <strong style={{ color: 'var(--ink)' }}>{activeOrder.cluster}</strong>
             </div>
             <div style={{ display: 'flex', justifyContent: 'space-between' }}>
               <span style={{ color: 'var(--muted)' }}>Commission Date</span>
-              <strong style={{ color: '#fff' }}>{activeOrder.commissionDate}</strong>
+              <strong style={{ color: 'var(--ink)' }}>{activeOrder.commissionDate}</strong>
             </div>
             <div style={{ display: 'flex', justifyContent: 'space-between' }}>
               <span style={{ color: 'var(--muted)' }}>Est. Delivery</span>
@@ -169,7 +169,7 @@ export function OrderTrackingPage() {
               <span>Loom Hours Completed</span>
               <span>{activeOrder.completedHours} / {activeOrder.totalHours} hrs ({progressPercent}%)</span>
             </div>
-            <div style={{ height: '8px', background: 'rgba(255,255,255,0.1)', borderRadius: '100px', overflow: 'hidden' }}>
+            <div style={{ height: '8px', background: 'var(--surface-soft)', border: '1px solid var(--border)', borderRadius: '100px', overflow: 'hidden' }}>
               <div style={{ width: `${progressPercent}%`, height: '100%', background: 'var(--gold)', transition: 'width 0.6s ease' }} />
             </div>
           </div>
@@ -186,7 +186,7 @@ export function OrderTrackingPage() {
         </div>
 
         {/* Right Column: 6-Stage Timeline */}
-        <div style={{ background: 'var(--surface)', borderRadius: '24px', border: '1px solid rgba(255,255,255,0.1)', padding: '2rem' }}>
+        <div style={{ background: 'var(--surface)', borderRadius: '24px', border: '1px solid var(--border)', padding: '2rem' }}>
           
           <h3 style={{ fontFamily: 'var(--font-display)', fontSize: '1.4rem', margin: '0 0 1.8rem', fontWeight: 400 }}>
             Craft Progress Timeline
@@ -216,8 +216,8 @@ export function OrderTrackingPage() {
                       width: '40px',
                       height: '40px',
                       borderRadius: '50%',
-                      background: isDone ? 'var(--gold)' : isCurrent ? 'rgba(212,175,55,0.2)' : 'rgba(255,255,255,0.06)',
-                      border: isCurrent ? '2px solid var(--gold)' : '1px solid rgba(255,255,255,0.2)',
+                      background: isDone ? 'var(--gold)' : isCurrent ? 'rgba(212,175,55,0.2)' : 'var(--surface-soft)',
+                      border: isCurrent ? '2px solid var(--gold)' : '1px solid var(--border)',
                       color: isDone ? '#000' : isCurrent ? 'var(--gold)' : 'var(--muted)',
                       display: 'grid',
                       placeItems: 'center',
@@ -232,7 +232,7 @@ export function OrderTrackingPage() {
                   {/* Stage Details */}
                   <div style={{ background: isCurrent ? 'rgba(212,175,55,0.05)' : 'transparent', border: isCurrent ? '1px solid rgba(212,175,55,0.3)' : 'none', borderRadius: '12px', padding: isCurrent ? '1rem' : '0' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '0.8rem' }}>
-                      <h4 style={{ margin: 0, fontSize: '1rem', color: isCurrent ? 'var(--gold)' : '#fff', fontWeight: isCurrent ? 600 : 400 }}>
+                      <h4 style={{ margin: 0, fontSize: '1rem', color: isCurrent ? 'var(--gold)' : 'var(--ink)', fontWeight: isCurrent ? 600 : 400 }}>
                         {stage.title}
                       </h4>
                       {isCurrent && (
@@ -247,7 +247,7 @@ export function OrderTrackingPage() {
 
                     {/* Live Weaver Note Box on Current Stage */}
                     {isCurrent && (
-                      <div style={{ marginTop: '1rem', background: 'rgba(0,0,0,0.4)', borderRadius: '10px', padding: '0.8rem 1rem', borderLeft: '3px solid var(--gold)', fontSize: '0.82rem', color: 'rgba(255,255,255,0.85)' }}>
+                      <div style={{ marginTop: '1rem', background: 'var(--surface-soft)', border: '1px solid var(--border)', borderLeft: '3px solid var(--gold)', borderRadius: '10px', padding: '0.8rem 1rem', fontSize: '0.82rem', color: 'var(--ink)' }}>
                         💬 <strong>Master Weaver Note:</strong> &quot;Warp tension set for interlocking Korvai gold border. Hand-shuttle weaving progressing at ~3.5 cm per hour.&quot;
                       </div>
                     )}

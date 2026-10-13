@@ -228,7 +228,7 @@ export function RawMaterialsPage() {
 
                 <div style={{ position: 'absolute', bottom: '14px', left: '14px', right: '14px' }}>
                   <span style={{ color: 'var(--gold)', fontSize: '0.7rem', fontWeight: 800, letterSpacing: '0.12em', textTransform: 'uppercase' }}>{mat.origin}</span>
-                  <h3 style={{ fontFamily: 'var(--font-display)', fontSize: '1.4rem', color: 'var(--ink)', margin: '2px 0 0', fontWeight: 400 }}>{mat.name}</h3>
+                  <h3 style={{ fontFamily: 'var(--font-display)', fontSize: '1.4rem', color: '#ffffff', margin: '2px 0 0', fontWeight: 400 }}>{mat.name}</h3>
                 </div>
               </div>
 

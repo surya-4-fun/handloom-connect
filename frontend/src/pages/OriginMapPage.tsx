@@ -168,9 +168,9 @@ export function OriginMapPage() {
               type="button"
               onClick={() => setTypeFilter(f)}
               style={{
-                background: typeFilter === f ? 'var(--gold)' : 'rgba(255,255,255,0.06)',
-                color: typeFilter === f ? '#000' : '#fff',
-                border: '1px solid rgba(255,255,255,0.15)',
+                background: typeFilter === f ? 'var(--gold)' : 'var(--surface-soft)',
+                color: typeFilter === f ? '#0A0908' : 'var(--ink)',
+                border: typeFilter === f ? '1px solid var(--gold)' : '1px solid var(--border)',
                 borderRadius: '100px',
                 padding: '8px 20px',
                 fontSize: '0.82rem',
@@ -272,7 +272,7 @@ export function OriginMapPage() {
         </div>
 
         {/* Right Selected Cluster Drawer & Details */}
-        <div style={{ background: 'var(--surface)', borderRadius: '24px', border: '1px solid rgba(255,255,255,0.1)', padding: '2rem' }}>
+        <div style={{ background: 'var(--surface)', borderRadius: '24px', border: '1px solid var(--border)', padding: '2rem' }}>
           
           <div style={{ position: 'relative', height: '240px', borderRadius: '16px', overflow: 'hidden', marginBottom: '1.5rem' }}>
             <HandloomImage
@@ -298,10 +298,10 @@ export function OriginMapPage() {
             {selectedCluster.history}
           </p>
 
-          <div style={{ background: 'rgba(255,255,255,0.04)', borderRadius: '14px', border: '1px solid rgba(255,255,255,0.08)', padding: '1.2rem', display: 'grid', gap: '0.8rem', fontSize: '0.85rem', marginBottom: '1.8rem' }}>
+          <div style={{ background: 'var(--surface-soft)', borderRadius: '14px', border: '1px solid var(--border)', padding: '1.2rem', display: 'grid', gap: '0.8rem', fontSize: '0.85rem', marginBottom: '1.8rem' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between' }}>
               <span style={{ color: 'var(--muted)' }}>Signature Technique</span>
-              <strong style={{ color: '#fff', maxWidth: '240px', textAlign: 'right' }}>{selectedCluster.technique}</strong>
+              <strong style={{ color: 'var(--ink)', maxWidth: '240px', textAlign: 'right' }}>{selectedCluster.technique}</strong>
             </div>
             <div style={{ display: 'flex', justifyContent: 'space-between' }}>
               <span style={{ color: 'var(--muted)' }}>Key Motifs</span>
@@ -309,15 +309,15 @@ export function OriginMapPage() {
             </div>
             <div style={{ display: 'flex', justifyContent: 'space-between' }}>
               <span style={{ color: 'var(--muted)' }}>Active Master Artisans</span>
-              <strong style={{ color: '#fff' }}>{selectedCluster.artisanCount}+ Weavers</strong>
+              <strong style={{ color: 'var(--ink)' }}>{selectedCluster.artisanCount}+ Weavers</strong>
             </div>
           </div>
 
           {/* Featured Cluster Piece */}
-          <div style={{ borderTop: '1px solid rgba(255,255,255,0.1)', paddingTop: '1.2rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <div style={{ borderTop: '1px solid var(--border)', paddingTop: '1.2rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <div>
               <span style={{ fontSize: '0.7rem', color: 'var(--muted)', textTransform: 'uppercase', letterSpacing: '0.12em' }}>Cluster Piece</span>
-              <div style={{ fontSize: '0.95rem', fontWeight: 600, color: '#fff', marginTop: '2px' }}>{selectedCluster.productName}</div>
+              <div style={{ fontSize: '0.95rem', fontWeight: 600, color: 'var(--ink)', marginTop: '2px' }}>{selectedCluster.productName}</div>
               <div style={{ fontSize: '0.85rem', color: 'var(--gold)', fontWeight: 600 }}>{selectedCluster.productPrice}</div>
             </div>
             <ButtonLink to="/marketplace" variant="gold" style={{ padding: '10px 20px', fontSize: '0.82rem' }}>
