@@ -24,6 +24,12 @@ export function AboutPage() {
   const [scrollProgress, setScrollProgress] = useState<number>(0)
   const [activeChapterIndex, setActiveChapterIndex] = useState<number>(0)
   const [isReducedMotion, setIsReducedMotion] = useState<boolean>(false)
+  const [theme, setTheme] = useState<'light' | 'dark'>(() => {
+    if (typeof document !== 'undefined') {
+      return document.documentElement.dataset.theme === 'light' ? 'light' : 'dark'
+    }
+    return 'dark'
+  })
 
   // 1. Detect reduced motion preference
   useEffect(() => {
@@ -34,7 +40,24 @@ export function AboutPage() {
     return () => mediaQuery.removeEventListener('change', handler)
   }, [])
 
-  // 2. High-performance scroll tracking for 3D synchronization
+  // 2. Track theme changes from DOM attribute
+  useEffect(() => {
+    if (typeof document === 'undefined') return
+    const updateTheme = () => {
+      const current = document.documentElement.dataset.theme === 'light' ? 'light' : 'dark'
+      setTheme(current)
+    }
+    updateTheme()
+
+    const observer = new MutationObserver(updateTheme)
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ['data-theme']
+    })
+    return () => observer.disconnect()
+  }, [])
+
+  // 3. High-performance scroll tracking for 3D synchronization
   useEffect(() => {
     const handleScroll = () => {
       const scrollY = window.scrollY
@@ -68,6 +91,7 @@ export function AboutPage() {
       <Storytelling3DCanvas
         scrollProgress={scrollProgress}
         isReducedMotion={isReducedMotion}
+        theme={theme}
       />
 
       {/* Atmospheric Overlays */}
@@ -110,7 +134,7 @@ export function AboutPage() {
             <h1 className="story-title" style={{ maxWidth: '980px', margin: '0 auto 1.8rem' }}>
               Every Thread Tells <em>a Story.</em>
             </h1>
-            <p className="story-desc" style={{ margin: '0 auto 2.5rem', maxWidth: '620px' }}>
+            <p className="story-desc" style={{ margin: '0 auto 2.5rem', maxWidth: '640px' }}>
               Step into the living heritage of Indian handloom. Where sacred geometry, raw filament silk, and generations of master weavers converge into a modern digital renaissance.
             </p>
           </motion.div>
@@ -145,8 +169,8 @@ export function AboutPage() {
                   The Microscopic Canvas
                 </strong>
               </div>
-              <p style={{ margin: 0, fontSize: '0.92rem', color: '#c4bbb0', lineHeight: 1.65 }}>
-                A single heirloom Banarasi saree requires over <strong>forty thousand meters</strong> of continuous, unbroken zari and silk yarn. Each thread possesses tensile memory, tensioned by hand across the warp beam.
+              <p style={{ margin: 0, fontSize: '0.94rem', lineHeight: 1.68 }}>
+                A single heirloom Banarasi saree requires over <strong style={{ color: 'var(--ink)' }}>forty thousand meters</strong> of continuous, unbroken zari and silk yarn. Each thread possesses tensile memory, tensioned by hand across the warp beam.
               </p>
             </div>
           </div>
@@ -175,7 +199,7 @@ export function AboutPage() {
                   Sacred Binary Mathematics
                 </strong>
               </div>
-              <p style={{ margin: 0, fontSize: '0.92rem', color: '#c4bbb0', lineHeight: 1.65 }}>
+              <p style={{ margin: 0, fontSize: '0.94rem', lineHeight: 1.68 }}>
                 Centuries before binary computing, Jacquard and Naksha harness cords coded complex mythological brocades into punched paper cards—converting oral folklore into tactile woven poetry.
               </p>
             </div>
@@ -209,13 +233,13 @@ export function AboutPage() {
                 loading="lazy"
               />
               <div className="story-artisan-caption">
-                <span style={{ fontSize: '0.7rem', color: 'var(--gold)', letterSpacing: '0.14em', textTransform: 'uppercase' }}>
+                <span style={{ fontSize: '0.72rem', color: '#f3e5ab', fontWeight: 700, letterSpacing: '0.14em', textTransform: 'uppercase', display: 'block', marginBottom: '4px' }}>
                   Varanasi, Uttar Pradesh
                 </span>
-                <h3 style={{ fontSize: '1.15rem', margin: '4px 0 2px', fontFamily: 'var(--font-display)' }}>
+                <h3 style={{ fontSize: '1.2rem', margin: '2px 0 4px', fontFamily: 'var(--font-display)', color: '#ffffff' }}>
                   Rajeshwar Ansari
                 </h3>
-                <p style={{ fontSize: '0.8rem', color: '#a89f91', margin: 0 }}>
+                <p style={{ fontSize: '0.82rem', color: '#e2dad0', margin: 0, lineHeight: 1.4 }}>
                   4th Generation Master of Katan Silk &amp; Real Silver Zari
                 </p>
               </div>
@@ -228,13 +252,13 @@ export function AboutPage() {
                 loading="lazy"
               />
               <div className="story-artisan-caption">
-                <span style={{ fontSize: '0.7rem', color: 'var(--gold)', letterSpacing: '0.14em', textTransform: 'uppercase' }}>
+                <span style={{ fontSize: '0.72rem', color: '#f3e5ab', fontWeight: 700, letterSpacing: '0.14em', textTransform: 'uppercase', display: 'block', marginBottom: '4px' }}>
                   Srinagar, Kashmir
                 </span>
-                <h3 style={{ fontSize: '1.15rem', margin: '4px 0 2px', fontFamily: 'var(--font-display)' }}>
+                <h3 style={{ fontSize: '1.2rem', margin: '2px 0 4px', fontFamily: 'var(--font-display)', color: '#ffffff' }}>
                   Ghulam Rasool
                 </h3>
-                <p style={{ fontSize: '0.8rem', color: '#a89f91', margin: 0 }}>
+                <p style={{ fontSize: '0.82rem', color: '#e2dad0', margin: 0, lineHeight: 1.4 }}>
                   Pashmina Spinner &amp; Needle Sozni Artisan
                 </p>
               </div>
@@ -247,13 +271,13 @@ export function AboutPage() {
                 loading="lazy"
               />
               <div className="story-artisan-caption">
-                <span style={{ fontSize: '0.7rem', color: 'var(--gold)', letterSpacing: '0.14em', textTransform: 'uppercase' }}>
+                <span style={{ fontSize: '0.72rem', color: '#f3e5ab', fontWeight: 700, letterSpacing: '0.14em', textTransform: 'uppercase', display: 'block', marginBottom: '4px' }}>
                   Kanchipuram, Tamil Nadu
                 </span>
-                <h3 style={{ fontSize: '1.15rem', margin: '4px 0 2px', fontFamily: 'var(--font-display)' }}>
+                <h3 style={{ fontSize: '1.2rem', margin: '2px 0 4px', fontFamily: 'var(--font-display)', color: '#ffffff' }}>
                   Saraswathi Guild
                 </h3>
-                <p style={{ fontSize: '0.8rem', color: '#a89f91', margin: 0 }}>
+                <p style={{ fontSize: '0.82rem', color: '#e2dad0', margin: 0, lineHeight: 1.4 }}>
                   Interlocked Korvai Temple Border Weavers
                 </p>
               </div>
@@ -282,30 +306,30 @@ export function AboutPage() {
           <div className="story-triad-grid">
             <div className="story-triad-box">
               <div style={{ fontSize: '1.8rem', marginBottom: '12px' }}>🧑‍🎨</div>
-              <h3 style={{ fontSize: '1.2rem', color: '#fff', margin: '0 0 8px 0', fontFamily: 'var(--font-display)' }}>
+              <h3 style={{ fontSize: '1.22rem', margin: '0 0 8px 0', fontFamily: 'var(--font-display)' }}>
                 1. Master Artisans
               </h3>
-              <p style={{ fontSize: '0.88rem', color: '#c4bbb0', lineHeight: 1.6, margin: 0 }}>
+              <p style={{ fontSize: '0.9rem', lineHeight: 1.62, margin: 0 }}>
                 Direct digital storefronts, authentic artisan profiles, and fair remuneration without predatory middlemen margins.
               </p>
             </div>
 
             <div className="story-triad-box">
               <div style={{ fontSize: '1.8rem', marginBottom: '12px' }}>✨</div>
-              <h3 style={{ fontSize: '1.2rem', color: '#fff', margin: '0 0 8px 0', fontFamily: 'var(--font-display)' }}>
+              <h3 style={{ fontSize: '1.22rem', margin: '0 0 8px 0', fontFamily: 'var(--font-display)' }}>
                 2. Conscious Patrons
               </h3>
-              <p style={{ fontSize: '0.88rem', color: '#c4bbb0', lineHeight: 1.6, margin: 0 }}>
+              <p style={{ fontSize: '0.9rem', lineHeight: 1.62, margin: 0 }}>
                 Verified geographical provenance, 360° product traceability, AR Studio spatial drape preview, and cultural AI styling guidance.
               </p>
             </div>
 
             <div className="story-triad-box">
               <div style={{ fontSize: '1.8rem', marginBottom: '12px' }}>🌿</div>
-              <h3 style={{ fontSize: '1.2rem', color: '#fff', margin: '0 0 8px 0', fontFamily: 'var(--font-display)' }}>
+              <h3 style={{ fontSize: '1.22rem', margin: '0 0 8px 0', fontFamily: 'var(--font-display)' }}>
                 3. Raw Material Suppliers
               </h3>
-              <p style={{ fontSize: '0.88rem', color: '#c4bbb0', lineHeight: 1.6, margin: 0 }}>
+              <p style={{ fontSize: '0.9rem', lineHeight: 1.62, margin: 0 }}>
                 A dedicated B2B sourcing portal connecting silk rearers, organic cotton growers, and natural indigo vats directly to rural weaver clusters.
               </p>
             </div>
@@ -329,26 +353,23 @@ export function AboutPage() {
               By merging centuries of master hand craftsmanship with cutting-edge web technology, we ensure that the rhythmic sound of the Indian handloom echoes into tomorrow.
             </p>
 
-            {/* Functional Calls to Action with Verified Routes */}
-            <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', flexWrap: 'wrap' }}>
+            {/* Functional Calls to Action with Verified Routes & Theme-Adaptive Contrast */}
+            <div style={{ display: 'flex', gap: '1.2rem', justifyContent: 'center', flexWrap: 'wrap' }}>
               <Link
                 to="/marketplace"
-                className="button button--primary button--gold-glow"
-                style={{ padding: '16px 32px', fontSize: '0.9rem', textDecoration: 'none' }}
+                className="story-cta-primary"
               >
                 Explore Marketplace →
               </Link>
               <Link
                 to="/artisans"
-                className="button button--secondary"
-                style={{ padding: '16px 28px', fontSize: '0.9rem', textDecoration: 'none' }}
+                className="story-cta-secondary"
               >
                 Discover Artisans
               </Link>
               <Link
                 to="/raw-materials"
-                className="button button--ghost"
-                style={{ padding: '16px 28px', fontSize: '0.9rem', textDecoration: 'none' }}
+                className="story-cta-ghost"
               >
                 Raw Materials Portal
               </Link>
