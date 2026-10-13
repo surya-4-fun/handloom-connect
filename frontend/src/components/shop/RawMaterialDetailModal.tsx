@@ -24,7 +24,8 @@ export function RawMaterialDetailModal({
         <button
           type="button"
           onClick={onClose}
-          style={{ position: 'absolute', top: '1rem', right: '1rem', background: 'rgba(0,0,0,0.6)', border: 'none', color: '#fff', width: '32px', height: '32px', borderRadius: '50%', cursor: 'pointer', zIndex: 10, display: 'grid', placeItems: 'center' }}
+          style={{ position: 'absolute', top: '1rem', right: '1rem', background: 'var(--surface)', border: '1px solid var(--border)', color: 'var(--ink)', width: '36px', height: '36px', borderRadius: '50%', cursor: 'pointer', zIndex: 10, display: 'grid', placeItems: 'center', boxShadow: '0 4px 12px rgba(0,0,0,0.15)' }}
+          aria-label="Close raw material detail modal"
         >
           ✕
         </button>
@@ -32,7 +33,7 @@ export function RawMaterialDetailModal({
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1.2fr', alignItems: 'stretch' }}>
           
           {/* Image Left */}
-          <div style={{ position: 'relative', background: '#000' }}>
+          <div style={{ position: 'relative', background: 'var(--canvas-secondary)' }}>
             <HandloomImage
               src={material.images?.[0]}
               alt={material.name}
@@ -40,7 +41,7 @@ export function RawMaterialDetailModal({
               style={{ width: '100%', height: '100%', objectFit: 'cover' }}
             />
             {material.badge && (
-              <span style={{ position: 'absolute', top: '16px', left: '16px', background: 'var(--gold)', color: '#000', padding: '4px 10px', borderRadius: '100px', fontSize: '0.7rem', fontWeight: 800, letterSpacing: '0.12em' }}>
+              <span style={{ position: 'absolute', top: '16px', left: '16px', background: 'var(--gold)', color: 'var(--brand-ink, #0A0908)', padding: '4px 10px', borderRadius: '100px', fontSize: '0.7rem', fontWeight: 800, letterSpacing: '0.12em' }}>
                 {material.badge}
               </span>
             )}
@@ -60,7 +61,7 @@ export function RawMaterialDetailModal({
                   {material.displayPrice}
                 </strong>
                 <span style={{ color: 'var(--muted)', fontSize: '0.88rem' }}>/ {material.quantityUnit}</span>
-                <span style={{ marginLeft: 'auto', background: 'rgba(255,255,255,0.06)', border: '1px solid var(--border)', padding: '2px 8px', borderRadius: '4px', fontSize: '0.75rem', color: 'var(--ink)' }}>
+                <span style={{ marginLeft: 'auto', background: 'var(--surface-soft)', border: '1px solid var(--border)', padding: '3px 8px', borderRadius: '4px', fontSize: '0.75rem', color: 'var(--ink)' }}>
                   MOQ: {material.minOrderQty} {material.quantityUnit.split(' ')[0]}
                 </span>
               </div>

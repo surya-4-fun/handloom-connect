@@ -58,8 +58,14 @@
 .wizard-step.active .wizard-step-bubble {
   background: var(--gold);
   border-color: var(--gold);
-  color: #000;
+  color: var(--brand-ink, #0A0908);
   box-shadow: 0 0 16px rgba(212, 175, 55, 0.35);
+}
+
+:root[data-theme='light'] .wizard-step.active .wizard-step-bubble {
+  background: #9A7B23;
+  border-color: #705814;
+  color: #FFFFFF;
 }
 
 .wizard-step.completed .wizard-step-bubble {

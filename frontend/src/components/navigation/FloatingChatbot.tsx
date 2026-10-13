@@ -96,6 +96,7 @@ export function FloatingChatbot() {
           width: '60px',
           height: '60px',
           borderRadius: '50%',
+          backgroundColor: '#D4AF37',
           background: 'linear-gradient(135deg, #D4AF37 0%, #9A7B23 100%)',
           border: '1px solid rgba(255, 255, 255, 0.4)',
           color: '#0A0908',

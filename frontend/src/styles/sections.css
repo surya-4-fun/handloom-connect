@@ -369,20 +369,26 @@
   width: 32px;
   height: 32px;
   border-radius: 50%;
-  background-color: rgba(18, 16, 14, 0.6);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background-color: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--ink);
   display: grid;
   place-items: center;
-  transition: background-color 0.3s ease, border-color 0.3s ease;
+  transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+}
+
+.back-to-top__arrow path {
+  stroke: currentColor;
 }
 
 .back-to-top:hover .back-to-top__arrow-container {
   background-color: var(--gold);
   border-color: var(--gold);
+  color: var(--brand-ink, #0A0908);
 }
 
 .back-to-top:hover .back-to-top__arrow path {
-  stroke: var(--canvas);
+  stroke: currentColor;
 }
 
 /* Active Nav Bar Highlight Styles */

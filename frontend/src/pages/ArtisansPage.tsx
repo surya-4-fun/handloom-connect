@@ -168,7 +168,7 @@ export function ArtisansPage() {
                   <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(10,9,8,0.95) 0%, transparent 60%)' }} />
                   
                   {/* Badge */}
-                  <div style={{ position: 'absolute', top: '14px', left: '14px', background: 'rgba(0,0,0,0.65)', backdropFilter: 'blur(8px)', padding: '4px 10px', borderRadius: '100px', fontSize: '0.7rem', color: 'var(--gold)', letterSpacing: '0.12em', fontWeight: 700 }}>
+                  <div className="artisan-card-badge">
                     {artisan.isCollective ? 'GUILD' : 'MASTER'}
                   </div>
 
@@ -179,22 +179,8 @@ export function ArtisansPage() {
                       e.stopPropagation()
                       toggleFollow(artisan.id)
                     }}
-                    style={{
-                      position: 'absolute',
-                      top: '14px',
-                      right: '14px',
-                      width: '36px',
-                      height: '36px',
-                      borderRadius: '50%',
-                      background: 'rgba(0,0,0,0.65)',
-                      backdropFilter: 'blur(8px)',
-                      border: '1px solid rgba(255,255,255,0.2)',
-                      color: following ? 'var(--gold)' : '#fff',
-                      display: 'grid',
-                      placeItems: 'center',
-                      cursor: 'pointer'
-                    }}
-                    aria-label="Follow Artisan"
+                    className={`artisan-card-follow-btn ${following ? 'following' : ''}`}
+                    aria-label={following ? `Unfollow ${artisan.name}` : `Follow ${artisan.name}`}
                   >
                     <Icon name={following ? 'heart-filled' : 'heart'} size={16} />
                   </button>

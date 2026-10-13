@@ -266,21 +266,22 @@ export function OrderTrackingPage() {
       {/* Digital Loom Certificate Modal */}
       {showCertModal && activeOrder && (
         <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.85)', backdropFilter: 'blur(12px)', display: 'grid', placeItems: 'center', zIndex: 1000, padding: '1.5rem' }}>
-          <div style={{ background: '#171411', border: '2px solid var(--gold)', borderRadius: '24px', padding: '2.5rem', maxWidth: '600px', width: '100%', position: 'relative', boxShadow: '0 30px 100px rgba(0,0,0,0.9)' }}>
+          <div style={{ background: 'var(--surface)', border: '2px solid var(--gold)', borderRadius: '24px', padding: '2.5rem', maxWidth: '600px', width: '100%', position: 'relative', boxShadow: '0 30px 100px rgba(0,0,0,0.6)', color: 'var(--ink)' }}>
             
             <button
               type="button"
               onClick={() => setShowCertModal(false)}
-              style={{ position: 'absolute', top: '1.2rem', right: '1.2rem', background: 'none', border: 'none', color: '#fff', fontSize: '1.4rem', cursor: 'pointer' }}
+              style={{ position: 'absolute', top: '1.2rem', right: '1.2rem', background: 'none', border: 'none', color: 'var(--ink)', fontSize: '1.4rem', cursor: 'pointer' }}
+              aria-label="Close Certificate modal"
             >
               ✕
             </button>
 
-            <div style={{ textAlign: 'center', borderBottom: '1px solid rgba(212,175,55,0.3)', paddingBottom: '1.5rem', marginBottom: '1.5rem' }}>
+            <div style={{ textAlign: 'center', borderBottom: '1px solid var(--border)', paddingBottom: '1.5rem', marginBottom: '1.5rem' }}>
               <span style={{ fontSize: '0.7rem', letterSpacing: '0.2em', textTransform: 'uppercase', color: 'var(--gold)' }}>
                 Government Registered Authentic Handloom
               </span>
-              <h2 style={{ fontFamily: 'var(--font-display)', fontSize: '2.2rem', margin: '0.4rem 0 0.2rem', fontWeight: 400 }}>
+              <h2 style={{ fontFamily: 'var(--font-display)', fontSize: '2.2rem', margin: '0.4rem 0 0.2rem', fontWeight: 400, color: 'var(--ink)' }}>
                 Certificate of Loom Authenticity
               </h2>
               <p style={{ fontSize: '0.82rem', color: 'var(--muted)', margin: 0 }}>
@@ -289,21 +290,21 @@ export function OrderTrackingPage() {
             </div>
 
             <div style={{ display: 'grid', gap: '1rem', fontSize: '0.9rem', marginBottom: '2rem' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px dashed rgba(255,255,255,0.1)', paddingBottom: '0.5rem' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px dashed var(--border)', paddingBottom: '0.5rem' }}>
                 <span style={{ color: 'var(--muted)' }}>Product Name:</span>
-                <strong>{activeOrder.itemName}</strong>
+                <strong style={{ color: 'var(--ink)' }}>{activeOrder.itemName}</strong>
               </div>
-              <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px dashed rgba(255,255,255,0.1)', paddingBottom: '0.5rem' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px dashed var(--border)', paddingBottom: '0.5rem' }}>
                 <span style={{ color: 'var(--muted)' }}>Silk Mark Certification #:</span>
                 <strong style={{ color: 'var(--gold)' }}>{activeOrder.silkMarkNo}</strong>
               </div>
-              <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px dashed rgba(255,255,255,0.1)', paddingBottom: '0.5rem' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px dashed var(--border)', paddingBottom: '0.5rem' }}>
                 <span style={{ color: 'var(--muted)' }}>GI Tag Registry #:</span>
                 <strong style={{ color: 'var(--gold)' }}>{activeOrder.giTagNo}</strong>
               </div>
-              <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px dashed rgba(255,255,255,0.1)', paddingBottom: '0.5rem' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px dashed var(--border)', paddingBottom: '0.5rem' }}>
                 <span style={{ color: 'var(--muted)' }}>Master Weaver Signature:</span>
-                <strong>{activeOrder.artisan}</strong>
+                <strong style={{ color: 'var(--ink)' }}>{activeOrder.artisan}</strong>
               </div>
             </div>
 

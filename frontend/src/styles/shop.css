@@ -151,8 +151,21 @@
 
 .category-chip--active {
   border-color: var(--gold);
-  background: rgba(212, 175, 55, 0.1);
-  color: var(--gold-hover);
+  background: rgba(212, 175, 55, 0.15);
+  color: var(--gold-deep, #9A7B23);
+  font-weight: 700;
+}
+
+:root[data-theme='light'] .category-chip--active {
+  border-color: #9A7B23;
+  background: rgba(154, 123, 35, 0.14);
+  color: #5A430A;
+}
+
+:root[data-theme='dark'] .category-chip--active {
+  border-color: var(--gold);
+  background: rgba(212, 175, 55, 0.18);
+  color: var(--gold);
 }
 
 .category-chip__count {
@@ -555,8 +568,15 @@
 .product-card__badge--handwoven {
   background: rgba(10, 9, 8, 0.75);
   border: 1px solid rgba(212, 175, 55, 0.4);
-  color: var(--gold);
+  color: #F3D882;
   backdrop-filter: blur(4px);
+}
+
+:root[data-theme='light'] .product-card__badge--handwoven {
+  background: rgba(255, 255, 255, 0.94);
+  border: 1px solid rgba(154, 123, 35, 0.35);
+  color: #705814;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 }
 
 .product-card__actions {
@@ -1307,11 +1327,19 @@
 
 .ar-studio-viewport {
   position: relative;
-  background: #0e0c0a;
+  background: var(--surface);
   border-radius: 24px;
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  border: 1px solid var(--border);
   padding: 1.5rem;
   overflow: hidden;
+  box-shadow: var(--shadow);
+  color: var(--ink);
+}
+
+:root[data-theme='dark'] .ar-studio-viewport {
+  background: #0e0c0a;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: #FBF9F5;
   box-shadow: 0 30px 80px rgba(0, 0, 0, 0.6);
 }
 
@@ -1341,15 +1369,21 @@
 }
 
 .ar-studio-angle-btn {
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  color: #fff;
+  background: var(--surface-soft);
+  border: 1px solid var(--border);
+  color: var(--ink);
   border-radius: 8px;
   padding: 8px 12px;
   font-size: 0.75rem;
   cursor: pointer;
   transition: all 0.2s ease;
   white-space: nowrap;
+}
+
+:root[data-theme='dark'] .ar-studio-angle-btn {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.15);
+  color: #fff;
 }
 
 .ar-studio-angle-btn:hover {
@@ -1359,16 +1393,23 @@
 }
 
 .ar-studio-angle-btn.active {
+  background: rgba(154, 123, 35, 0.18);
+  border-color: #9A7B23;
+  color: #705814;
+  font-weight: 700;
+  box-shadow: 0 0 14px rgba(154, 123, 35, 0.25);
+}
+
+:root[data-theme='dark'] .ar-studio-angle-btn.active {
   background: rgba(212, 175, 55, 0.22);
   border-color: var(--gold);
   color: var(--gold);
-  font-weight: 700;
   box-shadow: 0 0 14px rgba(212, 175, 55, 0.3);
 }
 
 .ar-studio-backdrop-btn {
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: var(--surface-soft);
+  border: 1px solid var(--border);
   color: var(--muted);
   border-radius: 10px;
   padding: 8px 10px;
@@ -1380,15 +1421,33 @@
   transition: all 0.2s ease;
 }
 
+:root[data-theme='dark'] .ar-studio-backdrop-btn {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.12);
+  color: var(--muted);
+}
+
 .ar-studio-backdrop-btn:hover {
+  background: var(--surface);
+  color: var(--ink);
+}
+
+:root[data-theme='dark'] .ar-studio-backdrop-btn:hover {
   background: rgba(255, 255, 255, 0.1);
   color: #fff;
 }
 
 .ar-studio-backdrop-btn.active {
+  background: rgba(154, 123, 35, 0.18);
+  border-color: #9A7B23;
+  color: #705814;
+  font-weight: 700;
+  box-shadow: 0 0 16px rgba(154, 123, 35, 0.2);
+}
+
+:root[data-theme='dark'] .ar-studio-backdrop-btn.active {
   background: rgba(212, 175, 55, 0.18);
   border-color: var(--gold);
   color: var(--gold);
-  font-weight: 700;
   box-shadow: 0 0 16px rgba(212, 175, 55, 0.25);
 }

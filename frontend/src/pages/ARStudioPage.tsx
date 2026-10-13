@@ -513,9 +513,9 @@ export function ARStudioPage() {
                   type="button"
                   onClick={() => setStoryLensActive(prev => !prev)}
                   style={{
-                    background: storyLensActive ? 'rgba(212,175,55,0.25)' : 'rgba(255,255,255,0.1)',
-                    border: storyLensActive ? '1px solid var(--gold)' : '1px solid rgba(255,255,255,0.2)',
-                    color: storyLensActive ? 'var(--gold)' : '#fff',
+                    background: storyLensActive ? 'rgba(154,123,35,0.22)' : 'var(--surface-soft)',
+                    border: storyLensActive ? '1px solid var(--gold)' : '1px solid var(--border)',
+                    color: storyLensActive ? 'var(--gold)' : 'var(--ink)',
                     borderRadius: '100px',
                     padding: '6px 14px',
                     fontSize: '0.75rem',
@@ -883,13 +883,13 @@ export function ARStudioPage() {
                       onClick={() => setLightMode(mode)}
                       style={{
                         background:
-                          lightMode === mode ? 'var(--gold)' : 'rgba(255,255,255,0.06)',
-                        color: lightMode === mode ? '#000' : '#fff',
-                        border: '1px solid rgba(255,255,255,0.15)',
+                          lightMode === mode ? 'var(--gold)' : 'var(--surface-soft)',
+                        color: lightMode === mode ? 'var(--brand-ink, #0A0908)' : 'var(--ink)',
+                        border: lightMode === mode ? '1px solid var(--gold)' : '1px solid var(--border)',
                         borderRadius: '8px',
                         padding: '8px 4px',
                         fontSize: '0.72rem',
-                        fontWeight: lightMode === mode ? 600 : 400,
+                        fontWeight: lightMode === mode ? 700 : 500,
                         cursor: 'pointer',
                         textTransform: 'capitalize'
                       }}
@@ -922,17 +922,12 @@ export function ARStudioPage() {
                             type="button"
                             onClick={() => setSelectedBackdrop(bd.id)}
                             className={`ar-studio-backdrop-btn ${isSelected ? 'active' : ''}`}
-                            style={{
-                              border: isSelected ? '1px solid var(--gold)' : '1px solid rgba(255,255,255,0.12)',
-                              background: isSelected ? 'rgba(212,175,55,0.2)' : 'rgba(255,255,255,0.05)',
-                              color: isSelected ? 'var(--gold)' : 'var(--muted)'
-                            }}
                           >
                             <span style={{ fontSize: '1.1rem' }}>
                               {bd.id === 'heritage-palace' ? '🏛️' : bd.id === 'artisan-atelier' ? '🧵' : bd.id === 'minimal-gallery' ? '🖼️' : '🌌'}
                             </span>
                             <div style={{ textAlign: 'left', minWidth: 0 }}>
-                              <div style={{ fontSize: '0.74rem', fontWeight: isSelected ? 700 : 500, color: isSelected ? 'var(--gold)' : '#fff' }}>
+                              <div style={{ fontSize: '0.74rem', fontWeight: isSelected ? 700 : 500, color: 'inherit' }}>
                                 {bd.label}
                               </div>
                               <div style={{ fontSize: '0.62rem', color: 'var(--muted)', lineHeight: 1.2 }}>
@@ -1049,7 +1044,7 @@ export function ARStudioPage() {
                 >
                   <span style={{ fontSize: '1.1rem' }}>ℹ️</span>
                   <div>
-                    <strong style={{ color: '#fff', display: 'block', fontSize: '0.78rem' }}>
+                    <strong style={{ color: 'var(--ink)', display: 'block', fontSize: '0.78rem' }}>
                       Primary Photographic Perspective Cataloged
                     </strong>
                     <span>
@@ -1065,9 +1060,9 @@ export function ARStudioPage() {
                   type="button"
                   onClick={handleReset}
                   style={{
-                    background: 'rgba(255,255,255,0.08)',
-                    border: '1px solid rgba(255,255,255,0.2)',
-                    color: 'var(--gold)',
+                    background: 'var(--surface-soft)',
+                    border: '1px solid var(--border)',
+                    color: 'var(--ink)',
                     borderRadius: '6px',
                     padding: '6px 14px',
                     fontSize: '0.75rem',
@@ -1081,7 +1076,7 @@ export function ARStudioPage() {
                 <Button
                   variant="ghost"
                   onClick={handleTakeSnapshot}
-                  style={{ fontSize: '0.8rem', padding: '6px 16px' }}
+                  style={{ fontSize: '0.8rem', padding: '6px 16px', border: '1px solid var(--border)', color: 'var(--ink)' }}
                 >
                   📸 Capture Snapshot
                 </Button>
@@ -1210,11 +1205,11 @@ export function ARStudioPage() {
                           overflow: 'hidden',
                           border: isSelected
                             ? '2px solid var(--gold)'
-                            : '1px solid rgba(255,255,255,0.15)',
+                            : '1px solid var(--border)',
                           padding: 0,
                           cursor: 'pointer',
                           boxShadow: isSelected ? '0 0 20px rgba(212,175,55,0.35)' : 'none',
-                          background: '#000'
+                          background: 'var(--surface-soft)'
                         }}
                         aria-label={`Select ${item.name}`}
                       >
