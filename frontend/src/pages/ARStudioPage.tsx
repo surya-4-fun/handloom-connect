@@ -8,32 +8,14 @@ import { fetchArtisanStory, type ArtisanStoryResult } from '../services/artisanS
 import { QRCodeView } from '../components/primitives/QRCodeView'
 import type { ShopProduct } from '../types/shopTypes'
 import type { Product360Image } from '../types/product360'
-import type { CameraPermissionState, StudioBackdrop } from '../types/arPreview'
+import {
+  type CameraPermissionState,
+  type StudioBackdrop,
+  STUDIO_BACKDROPS,
+  getBackdropPreset
+} from '../types/arPreview'
 
 type LightMode = 'warm' | 'daylight' | 'gala' | 'interior'
-
-const BACKDROPS: Array<{ id: StudioBackdrop; label: string; bg: string }> = [
-  {
-    id: 'atelier',
-    label: 'Warm Atelier',
-    bg: 'radial-gradient(circle at 50% 40%, #262018 0%, #0d0b09 100%)'
-  },
-  {
-    id: 'interior',
-    label: 'Living Room',
-    bg: 'radial-gradient(circle at 50% 50%, #22272a 0%, #0a0e10 100%)'
-  },
-  {
-    id: 'daylight',
-    label: 'Daylight Gallery',
-    bg: 'radial-gradient(circle at 50% 40%, #2e2b26 0%, #131210 100%)'
-  },
-  {
-    id: 'gallery',
-    label: 'Museum Spotlight',
-    bg: 'radial-gradient(circle at 50% 40%, #1a1612 0%, #050505 100%)'
-  }
-]
 
 export function ARStudioPage() {
   const [searchParams, setSearchParams] = useSearchParams()
@@ -45,9 +27,11 @@ export function ARStudioPage() {
   const [isLoadingCatalog, setIsLoadingCatalog] = useState(true)
   const [catalogError, setCatalogError] = useState('')
 
-  // 360 images
+  // Multi-angle image sequence state
   const [frames, setFrames] = useState<Product360Image[]>([])
   const [currentFrameIdx, setCurrentFrameIdx] = useState(0)
+  const [isLoadingFrames, setIsLoadingFrames] = useState(false)
+  const [imageLoadFailed, setImageLoadFailed] = useState(false)
 
   // Spatial transformations
   const [posX, setPosX] = useState(0)
@@ -59,7 +43,7 @@ export function ARStudioPage() {
   const [lightMode, setLightMode] = useState<LightMode>('warm')
   const [cameraState, setCameraState] = useState<CameraPermissionState>('idle')
   const [cameraError, setCameraError] = useState('')
-  const [selectedBackdrop, setSelectedBackdrop] = useState<StudioBackdrop>('atelier')
+  const [selectedBackdrop, setSelectedBackdrop] = useState<StudioBackdrop>('heritage-palace')
   const [snapshotToast, setSnapshotToast] = useState(false)
 
   // Story Lens state
@@ -147,6 +131,13 @@ export function ARStudioPage() {
     setCurrentFrameIdx(0)
   }, [])
 
+  // Clean unmount camera teardown
+  useEffect(() => {
+    return () => {
+      stopCameraStream()
+    }
+  }, [stopCameraStream])
+
   // Fetch genuine catalog products from backend API
   useEffect(() => {
     let isMounted = true
@@ -195,30 +186,47 @@ export function ARStudioPage() {
 
     return () => {
       isMounted = false
-      stopCameraStream()
     }
-  }, [paramProductId, stopCameraStream])
+  }, [paramProductId])
 
-  // Fetch 360 assets whenever selected product changes
+  // Fetch authentic multi-angle assets whenever selected product changes
   useEffect(() => {
     if (!selectedProduct) {
       setFrames([])
+      setIsLoadingFrames(false)
       return
     }
 
-    handleReset()
+    let isMounted = true
+    setIsLoadingFrames(true)
+    setImageLoadFailed(false)
+    setCurrentFrameIdx(0)
+
     fetchProduct360(selectedProduct.id || selectedProduct.slug)
       .then(res => {
+        if (!isMounted) return
         if (res?.has360 && Array.isArray(res.images) && res.images.length > 0) {
           setFrames(res.images)
+          // Preload all genuine angle images for instantaneous switching
+          res.images.forEach(img => {
+            const preload = new Image()
+            preload.src = img.url
+          })
         } else {
           setFrames([])
         }
       })
       .catch(() => {
-        setFrames([])
+        if (isMounted) setFrames([])
       })
-  }, [selectedProduct, handleReset])
+      .finally(() => {
+        if (isMounted) setIsLoadingFrames(false)
+      })
+
+    return () => {
+      isMounted = false
+    }
+  }, [selectedProduct])
 
   // Fetch artisan story whenever selected product changes
   useEffect(() => {
@@ -337,22 +345,28 @@ export function ARStudioPage() {
   }
 
   const handleSelectProduct = (prod: ShopProduct) => {
+    if (selectedProduct?.id === prod.id) return
     setSelectedProduct(prod)
-    setSearchParams({ productId: prod.id })
+    setFrames([]) // Instantly clear frames so no stale image persists
+    setCurrentFrameIdx(0)
+    setIsLoadingFrames(true)
+    setImageLoadFailed(false)
+    setPosX(0)
+    setPosY(0)
+    setScale(1.0)
+    setRotationDeg(0)
+    setSearchParams({ productId: prod.id }, { replace: true })
     setCatalogError('')
   }
 
-  const hasRotational360 = frames.length > 0
-  const activeImage = selectedProduct
-    ? hasRotational360
-      ? frames[currentFrameIdx]?.url || selectedProduct.images[0]
-      : selectedProduct.images && selectedProduct.images.length > 0
-      ? selectedProduct.images[0]
-      : ''
-    : ''
+  const hasMultipleAngles = frames.length > 1
+  const activeFrame = hasMultipleAngles ? frames[currentFrameIdx] : (frames.length === 1 ? frames[0] : null)
+  const defaultProductImage = selectedProduct?.images && selectedProduct.images.length > 0
+    ? selectedProduct.images[0]
+    : '/images/fallbacks/saree-fallback.jpg'
+  const activeImage = activeFrame?.url || defaultProductImage
 
-  const currentBackdropBg =
-    BACKDROPS.find(b => b.id === selectedBackdrop)?.bg || BACKDROPS[0].bg
+  const currentPreset = getBackdropPreset(selectedBackdrop)
 
   return (
     <div
@@ -452,27 +466,9 @@ export function ARStudioPage() {
 
       {/* Main Studio Viewport */}
       {!isLoadingCatalog && selectedProduct && (
-        <div
-          className="container"
-          style={{
-            display: 'grid',
-            gridTemplateColumns: 'minmax(0, 1.4fr) minmax(0, 1fr)',
-            gap: '2.5rem',
-            alignItems: 'start'
-          }}
-        >
+        <div className="container ar-studio-layout">
           {/* Left: Spatial Viewport Frame */}
-          <div
-            style={{
-              position: 'relative',
-              background: '#0e0c0a',
-              borderRadius: '24px',
-              border: '1px solid rgba(255,255,255,0.12)',
-              padding: '1.5rem',
-              overflow: 'hidden',
-              boxShadow: '0 30px 80px rgba(0,0,0,0.6)'
-            }}
-          >
+          <div className="ar-studio-viewport">
             {/* Top Bar Controls */}
             <div
               style={{
@@ -507,7 +503,7 @@ export function ARStudioPage() {
                 >
                   {cameraState === 'active'
                     ? 'Camera Viewfinder Active'
-                    : 'Studio Virtual Canvas'}
+                    : `Backdrop: ${currentPreset.label}`}
                 </span>
               </div>
 
@@ -593,8 +589,9 @@ export function ARStudioPage() {
               </div>
             )}
 
-            {/* Viewport Canvas */}
+            {/* Viewport Canvas with Authentic Backdrop Photo */}
             <div
+              className="ar-studio-canvas"
               onMouseDown={handleMouseDown}
               onMouseMove={handleMouseMove}
               onMouseUp={handleMouseUp}
@@ -603,17 +600,8 @@ export function ARStudioPage() {
               onTouchMove={handleTouchMove}
               onTouchEnd={handleTouchEnd}
               style={{
-                position: 'relative',
-                height: '520px',
-                borderRadius: '16px',
-                overflow: 'hidden',
-                background: cameraState === 'active' ? '#000' : currentBackdropBg,
-                display: 'grid',
-                placeItems: 'center',
-                cursor: isDraggingRef.current ? 'grabbing' : 'grab',
-                userSelect: 'none',
-                touchAction: 'none',
-                boxShadow: 'inset 0 0 50px rgba(0,0,0,0.8)'
+                background: cameraState === 'active' ? '#000' : '#12100d',
+                cursor: isDraggingRef.current ? 'grabbing' : 'grab'
               }}
             >
               {/* Local camera stream */}
@@ -629,9 +617,38 @@ export function ARStudioPage() {
                   height: '100%',
                   objectFit: 'cover',
                   display: cameraState === 'active' ? 'block' : 'none',
-                  pointerEvents: 'none'
+                  pointerEvents: 'none',
+                  zIndex: 1
                 }}
               />
+
+              {/* Polished Architectural Studio Backdrop Layer */}
+              {cameraState !== 'active' && (
+                <>
+                  <div
+                    style={{
+                      position: 'absolute',
+                      inset: 0,
+                      backgroundImage: `url(${currentPreset.imageUrl})`,
+                      backgroundSize: 'cover',
+                      backgroundPosition: 'center',
+                      transition: 'background-image 0.5s ease',
+                      pointerEvents: 'none',
+                      zIndex: 1
+                    }}
+                  />
+                  {/* Subtle Contrast & Lighting Scrim */}
+                  <div
+                    style={{
+                      position: 'absolute',
+                      inset: 0,
+                      background: currentPreset.overlayGradient,
+                      pointerEvents: 'none',
+                      zIndex: 2
+                    }}
+                  />
+                </>
+              )}
 
               {/* Viewfinder Reticle Overlay */}
               <div
@@ -652,31 +669,56 @@ export function ARStudioPage() {
                     fontSize: '0.7rem',
                     color: 'var(--gold)',
                     letterSpacing: '0.12em',
-                    background: 'rgba(0,0,0,0.6)',
+                    background: 'rgba(0,0,0,0.65)',
+                    backdropFilter: 'blur(8px)',
                     padding: '3px 8px',
                     borderRadius: '6px',
                     alignSelf: 'flex-start'
                   }}
                 >
-                  [VIRTUAL DRAPE PREVIEW]
+                  [2D SPATIAL DRAPE PREVIEW]
                 </span>
                 <span
                   style={{
                     fontSize: '0.7rem',
                     color: 'var(--gold)',
                     letterSpacing: '0.12em',
-                    background: 'rgba(0,0,0,0.6)',
+                    background: 'rgba(0,0,0,0.65)',
+                    backdropFilter: 'blur(8px)',
                     padding: '3px 8px',
                     borderRadius: '6px',
                     alignSelf: 'flex-start'
                   }}
                 >
-                  SCALE {Math.round(scale * 100)}%
+                  SCALE {Math.round(scale * 100)}% {hasMultipleAngles ? `· ${activeFrame?.angleLabel || `ANGLE ${currentFrameIdx + 1}`}` : '· PRIMARY VIEW'}
                 </span>
               </div>
 
+              {/* Loading frames indicator */}
+              {isLoadingFrames && (
+                <div
+                  style={{
+                    position: 'absolute',
+                    top: '20px',
+                    left: '50%',
+                    transform: 'translateX(-50%)',
+                    background: 'rgba(15,13,11,0.88)',
+                    border: '1px solid var(--gold)',
+                    borderRadius: '100px',
+                    padding: '4px 14px',
+                    fontSize: '0.75rem',
+                    color: 'var(--gold)',
+                    zIndex: 10,
+                    boxShadow: '0 4px 20px rgba(0,0,0,0.6)',
+                    pointerEvents: 'none'
+                  }}
+                >
+                  ⏳ Loading authentic craft angles...
+                </div>
+              )}
+
               {/* Product Visual Overlay */}
-              {activeImage ? (
+              {activeImage && !imageLoadFailed ? (
                 <div
                   style={{
                     width: '100%',
@@ -691,27 +733,33 @@ export function ARStudioPage() {
                 >
                   <img
                     src={activeImage}
-                    alt={selectedProduct.name}
+                    alt={`${selectedProduct.name}${activeFrame?.angleLabel ? ` - ${activeFrame.angleLabel}` : ''}`}
                     onError={(e) => {
                       const target = e.currentTarget
-                      if (!target.src.includes('/images/fallbacks/')) {
-                        target.src = selectedProduct?.images?.[0] || '/images/fallbacks/saree-fallback.jpg'
+                      if (!target.src.includes(defaultProductImage) && defaultProductImage) {
+                        target.src = defaultProductImage
+                      } else if (!target.src.includes('/images/fallbacks/')) {
+                        target.src = '/images/fallbacks/saree-fallback.jpg'
+                      } else {
+                        setImageLoadFailed(true)
                       }
                     }}
                     style={{
-                      maxHeight: '400px',
+                      maxHeight: '410px',
                       maxWidth: '85%',
                       objectFit: 'contain',
                       borderRadius: '16px',
-                      boxShadow: '0 30px 90px rgba(0,0,0,0.7)',
+                      filter: currentPreset.isLight
+                        ? 'drop-shadow(0 20px 45px rgba(0,0,0,0.55)) drop-shadow(0 6px 12px rgba(0,0,0,0.3))'
+                        : 'drop-shadow(0 30px 90px rgba(0,0,0,0.8))',
                       userSelect: 'none',
                       pointerEvents: 'none'
                     }}
                   />
                 </div>
               ) : (
-                <div style={{ zIndex: 6, textAlign: 'center', color: 'var(--muted)' }}>
-                  ⚠️ No catalog image available for this piece.
+                <div style={{ zIndex: 6, textAlign: 'center', color: 'var(--muted)', padding: '24px', background: 'rgba(15,13,11,0.8)', borderRadius: '16px' }}>
+                  ⚠️ Craft catalog image currently unavailable for this piece.
                 </div>
               )}
 
@@ -852,7 +900,7 @@ export function ARStudioPage() {
                 </div>
 
                 {cameraState !== 'active' && (
-                  <div style={{ marginTop: '0.6rem' }}>
+                  <div style={{ marginTop: '0.8rem' }}>
                     <label
                       style={{
                         display: 'block',
@@ -860,35 +908,40 @@ export function ARStudioPage() {
                         textTransform: 'uppercase',
                         letterSpacing: '0.14em',
                         color: 'var(--muted)',
-                        marginBottom: '0.4rem'
+                        marginBottom: '0.5rem'
                       }}
                     >
-                      Studio Backdrop
+                      Studio Backdrop Presets
                     </label>
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '6px' }}>
-                      {BACKDROPS.map(bd => (
-                        <button
-                          key={bd.id}
-                          type="button"
-                          onClick={() => setSelectedBackdrop(bd.id)}
-                          style={{
-                            background:
-                              selectedBackdrop === bd.id ? 'rgba(212,175,55,0.2)' : 'rgba(255,255,255,0.06)',
-                            border:
-                              selectedBackdrop === bd.id
-                                ? '1px solid var(--gold)'
-                                : '1px solid rgba(255,255,255,0.15)',
-                            color: selectedBackdrop === bd.id ? 'var(--gold)' : 'var(--muted)',
-                            borderRadius: '8px',
-                            padding: '6px 4px',
-                            fontSize: '0.7rem',
-                            fontWeight: selectedBackdrop === bd.id ? 700 : 400,
-                            cursor: 'pointer'
-                          }}
-                        >
-                          {bd.label}
-                        </button>
-                      ))}
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '8px' }}>
+                      {STUDIO_BACKDROPS.map(bd => {
+                        const isSelected = selectedBackdrop === bd.id
+                        return (
+                          <button
+                            key={bd.id}
+                            type="button"
+                            onClick={() => setSelectedBackdrop(bd.id)}
+                            className={`ar-studio-backdrop-btn ${isSelected ? 'active' : ''}`}
+                            style={{
+                              border: isSelected ? '1px solid var(--gold)' : '1px solid rgba(255,255,255,0.12)',
+                              background: isSelected ? 'rgba(212,175,55,0.2)' : 'rgba(255,255,255,0.05)',
+                              color: isSelected ? 'var(--gold)' : 'var(--muted)'
+                            }}
+                          >
+                            <span style={{ fontSize: '1.1rem' }}>
+                              {bd.id === 'heritage-palace' ? '🏛️' : bd.id === 'artisan-atelier' ? '🧵' : bd.id === 'minimal-gallery' ? '🖼️' : '🌌'}
+                            </span>
+                            <div style={{ textAlign: 'left', minWidth: 0 }}>
+                              <div style={{ fontSize: '0.74rem', fontWeight: isSelected ? 700 : 500, color: isSelected ? 'var(--gold)' : '#fff' }}>
+                                {bd.label}
+                              </div>
+                              <div style={{ fontSize: '0.62rem', color: 'var(--muted)', lineHeight: 1.2 }}>
+                                {bd.sublabel}
+                              </div>
+                            </div>
+                          </button>
+                        )
+                      })}
                     </div>
                   </div>
                 )}
@@ -925,56 +978,89 @@ export function ARStudioPage() {
               </div>
             </div>
 
-            {/* Rotation & Reset Row */}
+            {/* Multi-Angle Viewing & Perspective Row */}
             <div
               style={{
-                marginTop: '1rem',
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center',
+                marginTop: '1.2rem',
                 borderTop: '1px solid rgba(255,255,255,0.1)',
                 paddingTop: '1rem',
-                flexWrap: 'wrap',
-                gap: '10px'
+                display: 'grid',
+                gap: '12px'
               }}
             >
-              <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-                {hasRotational360 && (
-                  <>
+              {hasMultipleAngles ? (
+                <div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px', flexWrap: 'wrap', gap: '6px' }}>
+                    <span style={{ fontSize: '0.7rem', textTransform: 'uppercase', letterSpacing: '0.12em', color: 'var(--gold)', fontWeight: 700 }}>
+                      Authentic Viewing Perspectives ({frames.length} Documented Angles)
+                    </span>
+                    <span style={{ fontSize: '0.7rem', color: 'var(--muted)' }}>
+                      Active: {activeFrame?.angleLabel || `Angle ${currentFrameIdx + 1}`}
+                    </span>
+                  </div>
+
+                  {/* Discrete Perspective Buttons */}
+                  <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', alignItems: 'center', marginBottom: '8px' }}>
                     <button
                       type="button"
                       onClick={() =>
                         setCurrentFrameIdx(prev => (prev - 1 + frames.length) % frames.length)
                       }
-                      style={{
-                        background: 'rgba(255,255,255,0.08)',
-                        border: '1px solid rgba(255,255,255,0.2)',
-                        color: '#fff',
-                        borderRadius: '6px',
-                        padding: '6px 12px',
-                        fontSize: '0.75rem',
-                        cursor: 'pointer'
-                      }}
+                      className="ar-studio-angle-btn"
+                      aria-label="Previous viewing angle"
                     >
-                      ◀ Angle
+                      ◀ Previous
                     </button>
+
+                    {frames.map((f, idx) => (
+                      <button
+                        key={idx}
+                        type="button"
+                        onClick={() => setCurrentFrameIdx(idx)}
+                        className={`ar-studio-angle-btn ${currentFrameIdx === idx ? 'active' : ''}`}
+                      >
+                        {f.angleLabel || `Angle ${idx + 1}`}
+                      </button>
+                    ))}
+
                     <button
                       type="button"
                       onClick={() => setCurrentFrameIdx(prev => (prev + 1) % frames.length)}
-                      style={{
-                        background: 'rgba(255,255,255,0.08)',
-                        border: '1px solid rgba(255,255,255,0.2)',
-                        color: '#fff',
-                        borderRadius: '6px',
-                        padding: '6px 12px',
-                        fontSize: '0.75rem',
-                        cursor: 'pointer'
-                      }}
+                      className="ar-studio-angle-btn"
+                      aria-label="Next viewing angle"
                     >
-                      Angle ▶
+                      Next ▶
                     </button>
-                  </>
-                )}
+                  </div>
+                </div>
+              ) : (
+                <div
+                  style={{
+                    background: 'rgba(255,255,255,0.03)',
+                    border: '1px solid rgba(255,255,255,0.08)',
+                    borderRadius: '10px',
+                    padding: '10px 14px',
+                    fontSize: '0.74rem',
+                    color: 'var(--muted)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '10px'
+                  }}
+                >
+                  <span style={{ fontSize: '1.1rem' }}>ℹ️</span>
+                  <div>
+                    <strong style={{ color: '#fff', display: 'block', fontSize: '0.78rem' }}>
+                      Primary Photographic Perspective Cataloged
+                    </strong>
+                    <span>
+                      Additional studio angles are currently in documentation for this handcrafted piece. Multi-angle viewing is enabled exclusively for heirloom pieces with verified multi-angle photography sets.
+                    </span>
+                  </div>
+                </div>
+              )}
+
+              {/* Viewport Action Tools */}
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '10px' }}>
                 <button
                   type="button"
                   onClick={handleReset}
@@ -989,17 +1075,17 @@ export function ARStudioPage() {
                     cursor: 'pointer'
                   }}
                 >
-                  ↺ Reset View
+                  ↺ Reset Drape Position
                 </button>
-              </div>
 
-              <Button
-                variant="ghost"
-                onClick={handleTakeSnapshot}
-                style={{ fontSize: '0.8rem', padding: '6px 16px' }}
-              >
-                📸 Capture Snapshot
-              </Button>
+                <Button
+                  variant="ghost"
+                  onClick={handleTakeSnapshot}
+                  style={{ fontSize: '0.8rem', padding: '6px 16px' }}
+                >
+                  📸 Capture Snapshot
+                </Button>
+              </div>
             </div>
           </div>
 

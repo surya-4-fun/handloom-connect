@@ -2,6 +2,8 @@ export interface Product360Image {
   sequence: number
   url: string
   angleLabel?: string
+  angleDegrees?: number
+  viewType?: 'front' | 'side' | 'rear' | 'detail' | 'fold' | 'texture'
 }
 
 export interface CraftHotspot {
@@ -18,6 +20,9 @@ export interface Product360Data {
   productName: string
   slug?: string
   has360: boolean
+  isMultiAngle?: boolean
+  totalAngles?: number
+  statusMessage?: string
   images: Product360Image[]
   craftDetails?: {
     weave: string

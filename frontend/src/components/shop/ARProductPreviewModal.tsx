@@ -1,7 +1,12 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
 import { Link } from 'react-router-dom'
 import type { ShopProduct } from '../../types/shopTypes'
-import type { CameraPermissionState, StudioBackdrop } from '../../types/arPreview'
+import {
+  type CameraPermissionState,
+  type StudioBackdrop,
+  STUDIO_BACKDROPS,
+  getBackdropPreset
+} from '../../types/arPreview'
 import type { Product360Image } from '../../types/product360'
 import { fetchProduct360 } from '../../services/product360Service'
 import { fetchArtisanStory, type ArtisanStoryResult } from '../../services/artisanService'
@@ -13,29 +18,6 @@ interface ARProductPreviewModalProps {
   isOpen: boolean
   onClose: () => void
 }
-
-const BACKDROPS: Array<{ id: StudioBackdrop; label: string; bg: string }> = [
-  {
-    id: 'atelier',
-    label: 'Warm Atelier',
-    bg: 'radial-gradient(circle at 50% 40%, #262018 0%, #0d0b09 100%)'
-  },
-  {
-    id: 'interior',
-    label: 'Living Room',
-    bg: 'radial-gradient(circle at 50% 50%, #22272a 0%, #0a0e10 100%)'
-  },
-  {
-    id: 'daylight',
-    label: 'Daylight Gallery',
-    bg: 'radial-gradient(circle at 50% 40%, #2e2b26 0%, #131210 100%)'
-  },
-  {
-    id: 'gallery',
-    label: 'Museum Spotlight',
-    bg: 'radial-gradient(circle at 50% 40%, #1a1612 0%, #050505 100%)'
-  }
-]
 
 export function ARProductPreviewModal({
   product,
@@ -51,12 +33,13 @@ export function ARProductPreviewModal({
   // Camera & backdrop state
   const [cameraState, setCameraState] = useState<CameraPermissionState>('idle')
   const [cameraError, setCameraError] = useState<string>('')
-  const [selectedBackdrop, setSelectedBackdrop] = useState<StudioBackdrop>('atelier')
+  const [selectedBackdrop, setSelectedBackdrop] = useState<StudioBackdrop>('heritage-palace')
 
-  // 360 Assets state
+  // Multi-angle image sequence state
   const [frames, setFrames] = useState<Product360Image[]>([])
   const [currentFrameIdx, setCurrentFrameIdx] = useState(0)
   const [isLoadingAssets, setIsLoadingAssets] = useState(false)
+  const [imageLoadFailed, setImageLoadFailed] = useState(false)
 
   // Story Lens state
   const [storyLensActive, setStoryLensActive] = useState(false)
@@ -163,29 +146,44 @@ export function ARProductPreviewModal({
     setCurrentFrameIdx(0)
   }, [])
 
-  // Load product 360 assets and reset states on open
+  // Load product multi-angle assets and reset states on open
   useEffect(() => {
     if (isOpen && product) {
       handleReset()
+      setFrames([]) // Instant wipe - no stale frames
+      setCurrentFrameIdx(0)
+      setImageLoadFailed(false)
       setCameraState('idle')
       setCameraError('')
       setIsLoadingAssets(true)
 
+      let isMounted = true
       fetchProduct360(product.id || product.slug)
         .then(res => {
+          if (!isMounted) return
           if (res?.has360 && Array.isArray(res.images) && res.images.length > 0) {
             setFrames(res.images)
+            // Preload genuine angle images for instantaneous switching
+            res.images.forEach(img => {
+              const preload = new Image()
+              preload.src = img.url
+            })
           } else {
             setFrames([])
           }
         })
         .catch(() => {
-          setFrames([])
+          if (isMounted) setFrames([])
         })
         .finally(() => {
-          setIsLoadingAssets(false)
+          if (isMounted) setIsLoadingAssets(false)
         })
+
+      return () => {
+        isMounted = false
+      }
     } else if (!isOpen) {
+      setFrames([])
       stopCameraStream()
     }
   }, [isOpen, product, handleReset, stopCameraStream])
@@ -282,15 +280,13 @@ export function ARProductPreviewModal({
   if (!isOpen || !product) return null
 
   // Authentic product images (authoritative backend source)
-  const hasRotational360 = frames.length > 0
-  const activeImage = hasRotational360
-    ? frames[currentFrameIdx]?.url || product.images[0]
-    : product.images && product.images.length > 0
+  const hasMultipleAngles = frames.length > 1
+  const activeFrame = hasMultipleAngles ? frames[currentFrameIdx] : (frames.length === 1 ? frames[0] : null)
+  const defaultProductImage = product.images && product.images.length > 0
     ? product.images[0]
-    : ''
-
-  const currentBackdropBg =
-    BACKDROPS.find(b => b.id === selectedBackdrop)?.bg || BACKDROPS[0].bg
+    : '/images/fallbacks/saree-fallback.jpg'
+  const activeImage = activeFrame?.url || defaultProductImage
+  const currentPreset = getBackdropPreset(selectedBackdrop)
 
   return (
     <div
@@ -412,7 +408,7 @@ export function ARProductPreviewModal({
             borderRadius: 'var(--radius-md)',
             overflow: 'hidden',
             border: '1px solid var(--border)',
-            background: cameraState === 'active' ? '#000' : currentBackdropBg,
+            background: cameraState === 'active' ? '#000' : '#12100d',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
@@ -435,23 +431,36 @@ export function ARProductPreviewModal({
               height: '100%',
               objectFit: 'cover',
               display: cameraState === 'active' ? 'block' : 'none',
-              pointerEvents: 'none'
+              pointerEvents: 'none',
+              zIndex: 1
             }}
           />
 
-          {/* Fallback Ambient Grid if camera is not active */}
+          {/* Polished Architectural Studio Backdrop Layer */}
           {cameraState !== 'active' && (
-            <div
-              style={{
-                position: 'absolute',
-                inset: 0,
-                backgroundImage:
-                  'radial-gradient(rgba(212,175,55,0.08) 1px, transparent 1px)',
-                backgroundSize: '32px 32px',
-                pointerEvents: 'none',
-                opacity: 0.7
-              }}
-            />
+            <>
+              <div
+                style={{
+                  position: 'absolute',
+                  inset: 0,
+                  backgroundImage: `url(${currentPreset.imageUrl})`,
+                  backgroundSize: 'cover',
+                  backgroundPosition: 'center',
+                  transition: 'background-image 0.5s ease',
+                  pointerEvents: 'none',
+                  zIndex: 1
+                }}
+              />
+              <div
+                style={{
+                  position: 'absolute',
+                  inset: 0,
+                  background: currentPreset.overlayGradient,
+                  pointerEvents: 'none',
+                  zIndex: 2
+                }}
+              />
+            </>
           )}
 
           {/* AR Reticle / Viewfinder Frame Overlay */}
@@ -462,7 +471,7 @@ export function ARProductPreviewModal({
               border: '1px dashed rgba(212,175,55,0.3)',
               borderRadius: '12px',
               pointerEvents: 'none',
-              zIndex: 2,
+              zIndex: 3,
               display: 'flex',
               flexDirection: 'column',
               justifyContent: 'space-between',
@@ -483,7 +492,7 @@ export function ARProductPreviewModal({
               >
                 {cameraState === 'active'
                   ? '📷 Camera Viewfinder Active'
-                  : `🎨 Studio Canvas: ${selectedBackdrop.toUpperCase()}`}
+                  : `🎨 Studio Backdrop: ${currentPreset.label}`}
               </span>
               <span
                 style={{
@@ -521,13 +530,13 @@ export function ARProductPreviewModal({
                   borderRadius: '6px'
                 }}
               >
-                {hasRotational360 ? `Angle: ${currentFrameIdx * 45}°` : 'Front Drape View'}
+                {hasMultipleAngles ? (activeFrame?.angleLabel || `Angle ${currentFrameIdx + 1}`) : 'Primary Drape View'}
               </span>
             </div>
           </div>
 
           {/* Product Drape Visual Element */}
-          {activeImage ? (
+          {activeImage && !imageLoadFailed ? (
             <div
               style={{
                 transform: `translate(${posX}px, ${posY}px) scale(${scale}) rotate(${rotationDeg}deg)`,
@@ -537,16 +546,22 @@ export function ARProductPreviewModal({
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                filter: 'drop-shadow(0 20px 35px rgba(0,0,0,0.65))'
+                filter: currentPreset.isLight
+                  ? 'drop-shadow(0 20px 40px rgba(0,0,0,0.5)) drop-shadow(0 4px 10px rgba(0,0,0,0.3))'
+                  : 'drop-shadow(0 25px 50px rgba(0,0,0,0.75))'
               }}
             >
               <img
                 src={activeImage}
-                alt={product.name}
+                alt={`${product.name}${activeFrame?.angleLabel ? ` - ${activeFrame.angleLabel}` : ''}`}
                 onError={(e) => {
                   const target = e.currentTarget
-                  if (!target.src.includes('/images/fallbacks/')) {
-                    target.src = product.images?.[0] || '/images/fallbacks/saree-fallback.jpg'
+                  if (!target.src.includes(defaultProductImage) && defaultProductImage) {
+                    target.src = defaultProductImage
+                  } else if (!target.src.includes('/images/fallbacks/')) {
+                    target.src = '/images/fallbacks/saree-fallback.jpg'
+                  } else {
+                    setImageLoadFailed(true)
                   }
                 }}
                 style={{
@@ -733,7 +748,7 @@ export function ARProductPreviewModal({
 
               {/* Backdrop selector buttons */}
               {cameraState !== 'active' &&
-                BACKDROPS.map(bd => (
+                STUDIO_BACKDROPS.map(bd => (
                   <button
                     key={bd.id}
                     type="button"
@@ -809,11 +824,11 @@ export function ARProductPreviewModal({
             </div>
           </div>
 
-          {/* Section 3: Rotation & Reset Controls */}
+          {/* Section 3: Multi-Angle Viewing & Reset Controls */}
           <div style={{ gridColumn: '1 / -1', display: 'flex', gap: '10px', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between', borderTop: '1px solid var(--border)', paddingTop: '12px' }}>
             <div style={{ display: 'flex', gap: '8px', alignItems: 'center', flexWrap: 'wrap' }}>
-              {/* 360-degree turntable stepping if assets exist */}
-              {hasRotational360 && (
+              {/* Multi-angle perspective controls if authentic frames exist */}
+              {hasMultipleAngles ? (
                 <>
                   <button
                     type="button"
@@ -823,26 +838,51 @@ export function ARProductPreviewModal({
                     className="button button--secondary"
                     style={{ padding: '6px 12px', fontSize: '0.78rem' }}
                   >
-                    ◀ Rotate Angle
+                    ◀ Prev Angle
                   </button>
+                  {frames.map((f, idx) => (
+                    <button
+                      key={idx}
+                      type="button"
+                      onClick={() => setCurrentFrameIdx(idx)}
+                      style={{
+                        background: currentFrameIdx === idx ? 'rgba(212,175,55,0.25)' : 'var(--surface)',
+                        border: currentFrameIdx === idx ? '1px solid var(--gold)' : '1px solid var(--border)',
+                        color: currentFrameIdx === idx ? 'var(--gold)' : 'var(--muted)',
+                        padding: '6px 10px',
+                        fontSize: '0.75rem',
+                        borderRadius: 'var(--radius-sm)',
+                        cursor: 'pointer',
+                        fontWeight: currentFrameIdx === idx ? 700 : 400
+                      }}
+                    >
+                      {f.angleLabel || `Angle ${idx + 1}`}
+                    </button>
+                  ))}
                   <button
                     type="button"
                     onClick={() => setCurrentFrameIdx(prev => (prev + 1) % frames.length)}
                     className="button button--secondary"
                     style={{ padding: '6px 12px', fontSize: '0.78rem' }}
                   >
-                    Rotate Angle ▶
+                    Next Angle ▶
                   </button>
                 </>
+              ) : (
+                <div style={{ fontSize: '0.74rem', color: 'var(--muted)', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                  <span>📷</span>
+                  <span>Primary authentic perspective (additional studio angles in curation)</span>
+                </div>
               )}
 
-              {/* Manual rotation nudges */}
+              {/* Canvas 2D alignment nudge */}
               <button
                 type="button"
                 onClick={() => setRotationDeg(r => (r - 15) % 360)}
                 className="button button--ghost"
-                style={{ padding: '6px 12px', fontSize: '0.78rem', borderColor: 'var(--border)' }}
-                aria-label="Rotate left 15 degrees"
+                style={{ padding: '6px 10px', fontSize: '0.75rem', borderColor: 'var(--border)' }}
+                aria-label="Tilt drape counter-clockwise"
+                title="Tilt 2D drape -15 degrees"
               >
                 ↺ -15°
               </button>
@@ -850,8 +890,9 @@ export function ARProductPreviewModal({
                 type="button"
                 onClick={() => setRotationDeg(r => (r + 15) % 360)}
                 className="button button--ghost"
-                style={{ padding: '6px 12px', fontSize: '0.78rem', borderColor: 'var(--border)' }}
-                aria-label="Rotate right 15 degrees"
+                style={{ padding: '6px 10px', fontSize: '0.75rem', borderColor: 'var(--border)' }}
+                aria-label="Tilt drape clockwise"
+                title="Tilt 2D drape +15 degrees"
               >
                 ↻ +15°
               </button>
