@@ -146,6 +146,7 @@ export function AboutPage() {
 
         <div className="story-content-wrap" style={{ textAlign: 'center' }}>
           <motion.div
+            className="story-text-block"
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
@@ -196,7 +197,7 @@ export function AboutPage() {
         </div>
 
         <div className="story-content-wrap">
-          <div style={{ maxWidth: '640px' }}>
+          <div className="story-text-block" style={{ maxWidth: '640px' }}>
             <span className="story-eyebrow">
               Scene 02 / 06 · Material Provenance
             </span>
@@ -248,7 +249,7 @@ export function AboutPage() {
         </div>
 
         <div className="story-content-wrap" style={{ display: 'flex', justifyContent: 'flex-end' }}>
-          <div style={{ maxWidth: '640px' }}>
+          <div className="story-text-block" style={{ maxWidth: '640px' }}>
             <span className="story-eyebrow">
               Scene 03 / 06 · The Rhythmic Loom
             </span>
@@ -300,7 +301,7 @@ export function AboutPage() {
         </div>
 
         <div className="story-content-wrap">
-          <div style={{ textAlign: 'center', maxWidth: '780px', margin: '0 auto 3rem' }}>
+          <div className="story-text-block" style={{ textAlign: 'center', maxWidth: '780px', margin: '0 auto 3rem' }}>
             <span className="story-eyebrow" style={{ justifyContent: 'center' }}>
               Scene 04 / 06 · Human Mastery
             </span>
@@ -401,7 +402,7 @@ export function AboutPage() {
         </div>
 
         <div className="story-content-wrap">
-          <div style={{ textAlign: 'center', maxWidth: '800px', margin: '0 auto 2.5rem' }}>
+          <div className="story-text-block" style={{ textAlign: 'center', maxWidth: '800px', margin: '0 auto 2.5rem' }}>
             <span className="story-eyebrow" style={{ justifyContent: 'center' }}>
               Scene 05 / 06 · The Digital Bridge
             </span>

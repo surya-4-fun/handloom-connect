@@ -36,8 +36,9 @@
   background: radial-gradient(circle at 50% 50%, transparent 40%, rgba(10, 9, 8, 0.75) 100%);
 }
 
+/* Light mode: stronger center-fill vignette so threads don't compete with text */
 :root[data-theme='light'] .story-vignette {
-  background: radial-gradient(circle at 50% 50%, transparent 45%, rgba(243, 236, 225, 0.65) 100%);
+  background: radial-gradient(ellipse at 50% 50%, rgba(251, 249, 245, 0.72) 0%, rgba(251, 249, 245, 0.58) 38%, rgba(243, 236, 225, 0.82) 100%);
 }
 
 /* Fixed Floating Chapter Indicator (Right side HUD) */
@@ -175,6 +176,25 @@
   z-index: 5;
 }
 
+/* Light-mode text backplate: subtle glassmorphic surface behind bare text blocks
+   that sit directly over the animated canvas (Scenes 1, 2, 3 non-card text).
+   Invisible in dark mode — a purely additive light-mode affordance. */
+.story-text-block {
+  /* No effect in dark mode */
+}
+
+:root[data-theme='light'] .story-text-block {
+  background: rgba(251, 249, 245, 0.72);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border-radius: 16px;
+  padding: clamp(22px, 3vw, 36px) clamp(24px, 4vw, 44px);
+  border: 1px solid rgba(154, 123, 35, 0.14);
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.06),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9);
+}
+
 .story-eyebrow {
   display: inline-flex;
   align-items: center;
@@ -187,12 +207,23 @@
   margin-bottom: 1.2rem;
 }
 
+:root[data-theme='light'] .story-eyebrow {
+  color: #705814;
+  text-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.9),
+    0 2px 8px rgba(255, 255, 255, 0.75);
+}
+
 .story-eyebrow::before {
   content: '';
   display: inline-block;
   width: 24px;
   height: 1px;
   background: var(--gold);
+}
+
+:root[data-theme='light'] .story-eyebrow::before {
+  background: #705814;
 }
 
 .story-title {
@@ -205,9 +236,24 @@
   margin: 0 0 1.6rem 0;
 }
 
+:root[data-theme='light'] .story-title {
+  color: #181614;
+  text-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.9),
+    0 2px 8px rgba(255, 255, 255, 0.75),
+    0 0 24px rgba(251, 249, 245, 0.6);
+}
+
 .story-title em {
   font-style: italic;
   color: var(--gold);
+}
+
+:root[data-theme='light'] .story-title em {
+  color: #705814;
+  text-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.85),
+    0 2px 8px rgba(255, 255, 255, 0.65);
 }
 
 .story-desc {
@@ -225,8 +271,11 @@
 }
 
 :root[data-theme='light'] .story-desc {
-  color: var(--muted); /* High contrast #575046 on light parchment */
-  text-shadow: 0 1px 2px rgba(255, 255, 255, 0.85);
+  color: #3d3428; /* Deeper charcoal-umber for maximum contrast over parchment */
+  text-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.95),
+    0 2px 12px rgba(255, 255, 255, 0.8),
+    0 4px 20px rgba(251, 249, 245, 0.7);
 }
 
 /* Theme-Adaptive Glassmorphism Narrative Card */
@@ -287,6 +336,11 @@
   z-index: 15;
   opacity: 0.85;
   animation: storyBob 2.4s ease-in-out infinite;
+}
+
+:root[data-theme='light'] .story-scroll-hint {
+  color: #4a3a10;
+  text-shadow: 0 1px 4px rgba(255, 255, 255, 0.85);
 }
 
 .story-scroll-mouse {
@@ -517,6 +571,11 @@
   contain: paint;
 }
 
+/* Light mode: reduce watermark opacity so they do not compete with foreground text */
+:root[data-theme='light'] .story-bg-text-layer {
+  opacity: 0.55;
+}
+
 /* Common Background Typography Defaults */
 .story-bg-num,
 .story-bg-word {
@@ -564,15 +623,15 @@
    Crucial: Contrasts distinctly against #FBF9F5 parchment without disappearing
    ────────────────────────────────────────────────────────────────────────── */
 :root[data-theme='light'] .story-bg-num {
-  color: rgba(85, 64, 16, 0.18);
-  -webkit-text-stroke: 2.2px rgba(55, 40, 10, 0.65);
-  text-shadow: 0 4px 25px rgba(154, 123, 35, 0.18);
+  color: rgba(85, 64, 16, 0.10);
+  -webkit-text-stroke: 1.8px rgba(55, 40, 10, 0.38);
+  text-shadow: 0 4px 25px rgba(154, 123, 35, 0.10);
 }
 
 :root[data-theme='light'] .story-bg-word {
-  color: rgba(75, 55, 14, 0.16);
-  -webkit-text-stroke: 2.2px rgba(55, 40, 10, 0.60);
-  text-shadow: 0 3px 22px rgba(154, 123, 35, 0.16);
+  color: rgba(75, 55, 14, 0.09);
+  -webkit-text-stroke: 1.8px rgba(55, 40, 10, 0.34);
+  text-shadow: 0 3px 22px rgba(154, 123, 35, 0.09);
 }
 
 /* ──────────────────────────────────────────────────────────────────────────

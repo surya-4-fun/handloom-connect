@@ -93,46 +93,46 @@ export function Storytelling3DCanvas({
     const mats = materialsRef.current
 
     if (isLight) {
-      // Light mode: warm ivory/pearl parchment fog
-      scene.fog = new THREE.FogExp2(0xfbf9f5, 0.022)
+      // Light mode: warm ivory/pearl parchment fog — denser to fade threads quickly
+      scene.fog = new THREE.FogExp2(0xfbf9f5, 0.045)
 
       if (mats.threadMaterial) {
         mats.threadMaterial.color.setHex(0x8a6d1e)
         mats.threadMaterial.emissive.setHex(0x281c04)
-        mats.threadMaterial.emissiveIntensity = 0.2
-        mats.threadMaterial.roughness = 0.32
-        mats.threadMaterial.metalness = 0.55
+        mats.threadMaterial.emissiveIntensity = 0.1
+        mats.threadMaterial.roughness = 0.45
+        mats.threadMaterial.metalness = 0.38
       }
       if (mats.coreMaterial) {
         mats.coreMaterial.color.setHex(0x9a7b23)
         mats.coreMaterial.emissive.setHex(0x61480f)
-        mats.coreMaterial.emissiveIntensity = 0.3
+        mats.coreMaterial.emissiveIntensity = 0.15
       }
       if (mats.weaveMaterial) {
         mats.weaveMaterial.color.setHex(0x8a6d1e)
-        mats.weaveMaterial.roughness = 0.38
-        mats.weaveMaterial.metalness = 0.5
+        mats.weaveMaterial.roughness = 0.52
+        mats.weaveMaterial.metalness = 0.32
       }
       if (mats.nodeMaterial) {
         mats.nodeMaterial.color.setHex(0x8a6d1e)
         mats.nodeMaterial.emissive.setHex(0x5a410b)
-        mats.nodeMaterial.emissiveIntensity = 0.35
+        mats.nodeMaterial.emissiveIntensity = 0.18
       }
       if (mats.ringMaterial) {
         mats.ringMaterial.color.setHex(0x9a7b23)
-        mats.ringMaterial.opacity = 0.45
+        mats.ringMaterial.opacity = 0.28
       }
       if (mats.dustMaterial) {
         mats.dustMaterial.color.setHex(0x9a7b23)
-        mats.dustMaterial.opacity = 0.35
+        mats.dustMaterial.opacity = 0.15
       }
       if (mats.ambientLight) {
         mats.ambientLight.color.setHex(0xfaf5ec)
-        mats.ambientLight.intensity = 1.6
+        mats.ambientLight.intensity = 1.8
       }
       if (mats.mainGoldLight) {
         mats.mainGoldLight.color.setHex(0xa8862a)
-        mats.mainGoldLight.intensity = 2.8
+        mats.mainGoldLight.intensity = 1.6
       }
     } else {
       // Dark mode: obsidian velvet fog
