@@ -3,7 +3,6 @@ import { Link, useNavigate, useLocation } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useAuth } from '../../context/AuthContext'
 import { Icon } from '../primitives/Icon'
-import { RingCanvas3D } from './RingCanvas3D'
 import handloomEmblem from '../../assets/images/handloom-logo-emblem.png'
 
 interface AuthExperienceProps {
@@ -62,7 +61,7 @@ export function AuthExperience({ initialMode = 'login' }: AuthExperienceProps) {
     }
   }, [navigate])
 
-  // Keyboard shortcut (Escape to close) and body scroll lock
+  // Keyboard shortcut (Escape to close)
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
@@ -70,12 +69,8 @@ export function AuthExperience({ initialMode = 'login' }: AuthExperienceProps) {
       }
     }
     window.addEventListener('keydown', handleKeyDown)
-    const prevOverflow = document.body.style.overflow
-    document.body.style.overflow = 'hidden'
-
     return () => {
       window.removeEventListener('keydown', handleKeyDown)
-      document.body.style.overflow = prevOverflow
     }
   }, [handleClose])
 
@@ -97,7 +92,7 @@ export function AuthExperience({ initialMode = 'login' }: AuthExperienceProps) {
     setSuccessMsg('')
 
     if (!loginEmail.trim() || !loginPassword) {
-      setError('Please provide your email and password.')
+      setError('Please provide both your patron email and security password.')
       return
     }
 
@@ -105,7 +100,7 @@ export function AuthExperience({ initialMode = 'login' }: AuthExperienceProps) {
       await login({ email: loginEmail.trim(), password: loginPassword })
       navigate(from, { replace: true })
     } catch (err: unknown) {
-      setError(err instanceof Error ? err.message : 'Invalid credentials. Please verify and try again.')
+      setError(err instanceof Error ? err.message : 'Invalid credentials. Please verify your email and password.')
     }
   }
 
@@ -116,22 +111,22 @@ export function AuthExperience({ initialMode = 'login' }: AuthExperienceProps) {
     setSuccessMsg('')
 
     if (!fullName.trim() || !regEmail.trim() || !regPassword || !regConfirmPassword) {
-      setError('Please complete all fields.')
+      setError('Please complete all required fields.')
       return
     }
 
     if (regPassword !== regConfirmPassword) {
-      setError('Passwords do not match.')
+      setError('Passwords do not match. Please verify.')
       return
     }
 
     if (regPassword.length < 8) {
-      setError('Password must be at least 8 characters.')
+      setError('Security key must be at least 8 characters long.')
       return
     }
 
     if (!acceptTerms) {
-      setError('Please accept the Direct Trade Atelier Terms.')
+      setError('Please accept the Direct Trade Atelier Terms to proceed.')
       return
     }
 
@@ -155,16 +150,16 @@ export function AuthExperience({ initialMode = 'login' }: AuthExperienceProps) {
     setSuccessMsg('')
 
     if (!resetEmail.trim()) {
-      setError('Please provide your email address.')
+      setError('Please enter your email address to receive recovery instructions.')
       return
     }
 
     try {
       await resetPassword(resetEmail.trim())
       setResetSent(true)
-      setSuccessMsg('Recovery instructions sent to your email.')
+      setSuccessMsg(`Recovery instructions dispatched to ${resetEmail.trim()}. Check your inbox.`)
     } catch (err: unknown) {
-      setError(err instanceof Error ? err.message : 'Failed to send reset instructions.')
+      setError(err instanceof Error ? err.message : 'Failed to dispatch reset instructions.')
     }
   }
 
@@ -188,516 +183,680 @@ export function AuthExperience({ initialMode = 'login' }: AuthExperienceProps) {
   }
 
   return (
-    <div className="auth-immersive-container" role="dialog" aria-modal="true" aria-label="Account and Authentication Experience">
-      {/* 3D WebGL Organic Ring Canvas Layer (DOMINATING VISUAL ELEMENT) */}
-      <RingCanvas3D className="auth-immersive-ring-canvas" />
-
-      {/* Radial Shadow Aperture to frame central text and guarantee 100% legibility */}
-      <div className="auth-immersive-aperture" aria-hidden="true" />
-
-      {/* PERIPHERAL MINIMAL INTERFACE (Directly matching Jesper Landberg reference layout) */}
-      {/* Upper-Left: Minimal Brand Lockup */}
-      <div className="auth-peripheral-brand">
-        <Link to="/" className="auth-peripheral-brand-link" onClick={handleClose}>
-          <img src={handloomEmblem} alt="Handloom Connect Emblem" className="auth-peripheral-emblem" />
-          <div className="auth-peripheral-titles">
-            <span className="auth-peripheral-title-main">HANDLOOM CONNECT</span>
-            <span className="auth-peripheral-title-sub">ATELIER DIRECT TRADE</span>
-          </div>
-        </Link>
+    <div
+      className="glass-auth-viewport auth-immersive-container"
+      role="dialog"
+      aria-modal="true"
+      aria-label="Handloom Connect Atelier Authentication"
+    >
+      {/* =========================================================================
+          ATMOSPHERIC EDITORIAL BACKGROUND (Banarasi Silk & Ambient Light Blooms)
+          ========================================================================= */}
+      <div className="glass-bg-layer" aria-hidden="true">
+        {/* Genuine Banarasi zari silk photography with slow ambient zoom */}
+        <div
+          className="glass-bg-image"
+          style={{ backgroundImage: `url('/images/products/banarasi-zari-saree.jpg')` }}
+        />
+        {/* Multi-layered luxury color gradients (Burgundy, Plum, Deep Onyx) */}
+        <div className="glass-bg-vignette" />
+        {/* Ambient atmospheric light blooms */}
+        <div className="glass-bloom glass-bloom--gold" />
+        <div className="glass-bloom glass-bloom--burgundy" />
+        <div className="glass-bloom glass-bloom--plum" />
+        {/* Subtle woven textile texture grid */}
+        <div className="glass-bg-texture" />
       </div>
 
-      {/* Upper-Right: Clean Minimal Close Button */}
-      <button
-        type="button"
-        className="auth-peripheral-close-btn"
-        onClick={handleClose}
-        aria-label="Close Account Experience (Esc)"
-        title="Close (Esc)"
-      >
-        <span>CLOSE</span>
-        <span className="close-btn-cross" aria-hidden="true">✕</span>
-      </button>
+      {/* =========================================================================
+          TOP PERIPHERAL EDITORIAL NAVIGATION BAR
+          ========================================================================= */}
+      <header className="glass-top-nav">
+        <div className="glass-nav-left">
+          <Link
+            to="/"
+            className="glass-brand-lockup auth-peripheral-brand-link"
+            onClick={handleClose}
+            aria-label="Handloom Connect Atelier Home"
+          >
+            <div className="glass-emblem-wrap">
+              <img
+                src={handloomEmblem}
+                alt="Handloom Connect Golden Emblem"
+                className="glass-brand-emblem auth-peripheral-emblem"
+              />
+            </div>
+            <div className="glass-brand-text">
+              <span className="glass-brand-title auth-peripheral-title-main">HANDLOOM CONNECT</span>
+              <span className="glass-brand-tagline auth-peripheral-title-sub">ATELIER DIRECT TRADE</span>
+            </div>
+          </Link>
+        </div>
 
-      {/* Lower-Left Contextual Indicator */}
-      <div className="auth-peripheral-meta auth-peripheral-meta--left">
-        <span className="meta-accent">DIRECT TRADE</span>
-        <span className="meta-sep">/</span>
-        <span>GI-CERTIFIED WEAVES</span>
-      </div>
+        <div className="glass-nav-center">
+          <span className="glass-nav-pill">
+            <span className="glass-nav-pill-dot" />
+            <span>AUTHENTIC INDIAN TEXTILE HERITAGE</span>
+          </span>
+        </div>
 
-      {/* Lower-Right Contextual Indicator */}
-      <div className="auth-peripheral-meta auth-peripheral-meta--right">
-        <span>HERITAGE ATELIER</span>
-        <span className="meta-sep">•</span>
-        <span>EST. 2024</span>
-      </div>
+        <div className="glass-nav-right">
+          <Link to="/marketplace" className="glass-nav-link" onClick={handleClose}>
+            Marketplace
+          </Link>
+          <Link to="/artisans" className="glass-nav-link" onClick={handleClose}>
+            Master Weavers
+          </Link>
+          <button
+            type="button"
+            className="glass-close-btn auth-peripheral-close-btn"
+            onClick={handleClose}
+            aria-label="Return to Store (Esc)"
+            title="Return to Store (Esc)"
+          >
+            <span className="glass-close-text">Return to Store</span>
+            <span className="glass-close-icon" aria-hidden="true">✕</span>
+          </button>
+        </div>
+      </header>
 
-      {/* CENTRAL CONTENT AREA (Centered horizontally & vertically inside the large ring opening) */}
-      <div className="auth-immersive-center">
-        <div className="auth-inner-stage">
-          {isAuthenticated && user ? (
-            /* --- SIGNED-IN ACCOUNT BEHAVIOR --- */
-            <motion.div
-              key="signed-in-profile"
-              initial={{ opacity: 0, scale: 0.94 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.94 }}
-              transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
-              className="auth-profile-stage"
-            >
-              <div className="profile-stage-avatar-wrap">
-                {user.avatarUrl ? (
-                  <img src={user.avatarUrl} alt={user.fullName} className="profile-stage-avatar" />
-                ) : (
-                  <div className="profile-stage-avatar-placeholder">
-                    {getInitials(user.fullName)}
-                  </div>
-                )}
-                <span className="profile-stage-badge-dot" title="Authenticated Patron" />
-              </div>
+      {/* =========================================================================
+          MAIN EDITORIAL STAGE (Two-Part Split on Desktop, Refined Stack on Mobile)
+          ========================================================================= */}
+      <main className="glass-editorial-stage">
+        <div className="glass-stage-container">
+          {/* ---------------------------------------------------------------------
+              LEFT SECTION: BRAND STORYTELLING & HERITAGE IDENTITY
+              --------------------------------------------------------------------- */}
+          <section className="glass-story-panel" aria-label="Brand Storytelling">
+            <div className="glass-story-badge">
+              <Icon name="sparkles" size={14} className="gold-icon" />
+              <span>DIRECT TRADE WEAVERS GUILD</span>
+              <span className="story-badge-sep">•</span>
+              <span>EST. 2024</span>
+            </div>
 
-              <div className="profile-stage-header">
-                <span className="profile-stage-tagline">ATELIER PATRON</span>
-                <h2 className="profile-stage-name">{user.fullName}</h2>
-                <p className="profile-stage-email">{user.email}</p>
-              </div>
+            <h1 className="glass-story-heading">
+              Where <span className="glass-gold-gradient">Heritage</span>
+              <br />
+              Meets Tomorrow.
+            </h1>
 
-              <div className="profile-stage-actions">
-                <Link to="/order-tracking" className="profile-stage-action-btn profile-stage-action-btn--primary">
-                  <Icon name="bag" size={16} />
-                  <span>Order Tracking & History</span>
-                </Link>
+            <p className="glass-story-lead">
+              Discover extraordinary handloom creations, connect directly with master artisans,
+              and explore the sacred stories woven into every thread.
+            </p>
 
-                <Link to="/wishlist" className="profile-stage-action-btn">
-                  <Icon name="heart" size={16} />
-                  <span>Saved Heirlooms</span>
-                </Link>
-
-                <Link to="/profile" className="profile-stage-action-btn">
-                  <Icon name="user" size={16} />
-                  <span>Detailed Account Settings</span>
-                </Link>
-
-                <button
-                  type="button"
-                  onClick={handleLogout}
-                  className="profile-stage-logout-btn"
-                  disabled={isLoading}
-                >
-                  <Icon name="logout" size={15} />
-                  <span>Sign Out</span>
-                </button>
-              </div>
-            </motion.div>
-          ) : (
-            /* --- AUTHENTICATION INTERACTION (Sign In / Register / Reset) --- */
-            <div className="auth-stage-content">
-              {/* Mode Tabs (Sign In / Create Account) */}
-              {mode !== 'forgot-password' && (
-                <div className="auth-stage-tabs" role="tablist" aria-label="Sign in or register">
-                  <button
-                    type="button"
-                    role="tab"
-                    id="tab-signin"
-                    aria-selected={mode === 'login'}
-                    className={`auth-tab-btn ${mode === 'login' ? 'is-active' : ''}`}
-                    onClick={() => switchMode('login')}
-                  >
-                    <span>SIGN IN</span>
-                    {mode === 'login' && (
-                      <motion.span
-                        layoutId="auth-tab-active-indicator"
-                        className="auth-tab-active-line"
-                        transition={{ type: 'spring', stiffness: 450, damping: 35 }}
-                      />
-                    )}
-                  </button>
-
-                  <button
-                    type="button"
-                    role="tab"
-                    id="tab-register"
-                    aria-selected={mode === 'register'}
-                    className={`auth-tab-btn ${mode === 'register' ? 'is-active' : ''}`}
-                    onClick={() => switchMode('register')}
-                  >
-                    <span>CREATE ACCOUNT</span>
-                    {mode === 'register' && (
-                      <motion.span
-                        layoutId="auth-tab-active-indicator"
-                        className="auth-tab-active-line"
-                        transition={{ type: 'spring', stiffness: 450, damping: 35 }}
-                      />
-                    )}
-                  </button>
+            {/* Artisanal Value Credential Cards */}
+            <div className="glass-credentials-grid">
+              <div className="glass-credential-card">
+                <div className="credential-icon-wrap">
+                  <Icon name="shield-check" size={18} />
                 </div>
-              )}
+                <div className="credential-info">
+                  <h3 className="credential-title">GI-Certified Authenticity</h3>
+                  <p className="credential-desc">Varanasi, Kanchipuram, Chanderi & Patola weaves authenticated at source.</p>
+                </div>
+              </div>
 
-              {/* Status Alert Notification */}
-              <AnimatePresence mode="wait">
-                {error && (
-                  <motion.div
-                    key="auth-error-banner"
-                    initial={{ opacity: 0, y: -6, height: 0 }}
-                    animate={{ opacity: 1, y: 0, height: 'auto' }}
-                    exit={{ opacity: 0, y: -6, height: 0 }}
-                    className="auth-alert auth-alert--error"
-                    role="alert"
-                  >
-                    <Icon name="info" size={15} />
-                    <span>{error}</span>
-                  </motion.div>
-                )}
+              <div className="glass-credential-card">
+                <div className="credential-icon-wrap">
+                  <Icon name="sparkles" size={18} />
+                </div>
+                <div className="credential-info">
+                  <h3 className="credential-title">Direct Artisan Revenue</h3>
+                  <p className="credential-desc">Transparent pricing model with 100% fair return to master looms.</p>
+                </div>
+              </div>
 
-                {successMsg && (
-                  <motion.div
-                    key="auth-success-banner"
-                    initial={{ opacity: 0, y: -6, height: 0 }}
-                    animate={{ opacity: 1, y: 0, height: 'auto' }}
-                    exit={{ opacity: 0, y: -6, height: 0 }}
-                    className="auth-alert auth-alert--success"
-                    role="status"
-                  >
-                    <Icon name="check" size={15} />
-                    <span>{successMsg}</span>
-                  </motion.div>
-                )}
-              </AnimatePresence>
+              <div className="glass-credential-card">
+                <div className="credential-icon-wrap">
+                  <Icon name="leaf" size={18} />
+                </div>
+                <div className="credential-info">
+                  <h3 className="credential-title">Pure Natural Fibers</h3>
+                  <p className="credential-desc">Mulberry silk, desi tussar, and heritage handspun khadi cotton.</p>
+                </div>
+              </div>
+            </div>
 
-              {/* Dynamic Forms Animated Container */}
-              <AnimatePresence mode="wait">
-                {mode === 'login' && (
-                  /* ================= SIGN IN FORM ================= */
-                  <motion.form
-                    key="form-login"
-                    onSubmit={handleLoginSubmit}
-                    initial={{ opacity: 0, y: 8 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -8 }}
-                    transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
-                    className="auth-form"
-                    noValidate
-                  >
-                    <div className="auth-form-field">
-                      <label htmlFor="login-email" className="auth-form-label">
-                        Email Address
-                      </label>
-                      <div className="auth-input-shell">
-                        <input
-                          id="login-email"
-                          type="email"
-                          name="email"
-                          autoComplete="email"
-                          required
-                          value={loginEmail}
-                          onChange={e => setLoginEmail(e.target.value)}
-                          placeholder="patron@handloom.art"
-                          className="auth-text-input"
-                          disabled={isLoading}
-                        />
-                      </div>
-                    </div>
+            {/* Master Artisan Quote Card */}
+            <div className="glass-artisan-quote-card">
+              <div className="artisan-quote-avatar-wrap">
+                <img
+                  src="/images/artisans/ghulam-rasool.jpg"
+                  alt="Master Weaver Ghulam Rasool"
+                  className="artisan-quote-avatar"
+                  onError={(e) => {
+                    const target = e.currentTarget
+                    target.src = '/images/fallbacks/artisan-fallback.jpg'
+                  }}
+                />
+              </div>
+              <div className="artisan-quote-body">
+                <p className="artisan-quote-text">
+                  &ldquo;Every warp and weft carries centuries of prayers, patience, and the memory of ancient looms.&rdquo;
+                </p>
+                <div className="artisan-quote-author">
+                  <span className="author-name">Ghulam Rasool</span>
+                  <span className="author-title">Master Weaver • Varanasi Silk Guild</span>
+                </div>
+              </div>
+            </div>
+          </section>
 
-                    <div className="auth-form-field">
-                      <div className="auth-label-row">
-                        <label htmlFor="login-password" className="auth-form-label">
-                          Password
-                        </label>
-                        <button
-                          type="button"
-                          className="auth-link-btn"
-                          onClick={() => setMode('forgot-password')}
-                        >
-                          Forgot?
-                        </button>
-                      </div>
-                      <div className="auth-input-shell">
-                        <input
-                          id="login-password"
-                          type={loginShowPassword ? 'text' : 'password'}
-                          name="password"
-                          autoComplete="current-password"
-                          required
-                          value={loginPassword}
-                          onChange={e => setLoginPassword(e.target.value)}
-                          placeholder="••••••••••••"
-                          className="auth-text-input"
-                          disabled={isLoading}
-                        />
-                        <button
-                          type="button"
-                          className="auth-eye-btn"
-                          onClick={() => setLoginShowPassword(v => !v)}
-                          aria-label={loginShowPassword ? 'Hide password' : 'Show password'}
-                          tabIndex={-1}
-                        >
-                          <Icon name={loginShowPassword ? 'eye-off' : 'eye'} size={15} />
-                        </button>
-                      </div>
-                    </div>
+          {/* ---------------------------------------------------------------------
+              RIGHT SECTION: FLOATING TRANSLUCENT GLASS LOGIN CARD
+              --------------------------------------------------------------------- */}
+          <section className="glass-card-column" aria-label="Atelier Patron Access">
+            <motion.div
+              className="glass-card"
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+            >
+              {/* Upper Edge Light Reflection Highlight */}
+              <div className="glass-card-reflection" aria-hidden="true" />
 
-                    <div className="auth-form-meta-row">
-                      <label className="auth-checkbox-label">
-                        <input
-                          type="checkbox"
-                          checked={rememberMe}
-                          onChange={e => setRememberMe(e.target.checked)}
-                          className="auth-checkbox"
-                        />
-                        <span>Remember credentials</span>
-                      </label>
-                    </div>
+              {/* Card Header Emblem & Heading */}
+              <div className="glass-card-header">
+                <div className="glass-card-emblem-badge">
+                  <img src={handloomEmblem} alt="" className="glass-card-emblem-icon" aria-hidden="true" />
+                </div>
+                <div className="glass-card-title-group">
+                  <span className="glass-card-eyebrow">
+                    {mode === 'login' ? 'PATRON SIGN IN' : mode === 'register' ? 'ATELIER REGISTRATION' : 'SECURITY RECOVERY'}
+                  </span>
+                  <h2 className="glass-card-title">
+                    {mode === 'login' && 'Welcome to the Atelier'}
+                    {mode === 'register' && 'Join the Artisan Guild'}
+                    {mode === 'forgot-password' && 'Recover Security Key'}
+                  </h2>
+                  <p className="glass-card-subtitle">
+                    {mode === 'login' && 'Enter your credentials to access your commissions & curated heirlooms.'}
+                    {mode === 'register' && 'Create your patron profile to support master handloom weavers.'}
+                    {mode === 'forgot-password' && 'Provide your registered email to receive access recovery details.'}
+                  </p>
+                </div>
+              </div>
 
-                    <button
-                      type="submit"
-                      disabled={isLoading}
-                      className="auth-submit-btn"
-                    >
-                      {isLoading ? (
-                        <span className="auth-btn-spinner-wrap">
-                          <span className="auth-spinner" />
-                          <span>Verifying...</span>
-                        </span>
+              {/* If Authenticated: Show Patron Account Overview */}
+              {isAuthenticated && user ? (
+                <div className="glass-patron-overview">
+                  <div className="patron-avatar-row">
+                    <div className="patron-avatar-circle">
+                      {user.avatarUrl ? (
+                        <img src={user.avatarUrl} alt={user.fullName} className="patron-avatar-img" />
                       ) : (
-                        <span>Sign In to Atelier</span>
+                        <span>{getInitials(user.fullName)}</span>
                       )}
-                    </button>
+                    </div>
+                    <div className="patron-meta">
+                      <span className="patron-badge">AUTHENTICATED PATRON</span>
+                      <h3 className="patron-name">{user.fullName}</h3>
+                      <p className="patron-email">{user.email}</p>
+                    </div>
+                  </div>
 
-                    <p className="auth-switch-prompt">
-                      <span>New to Handloom Connect?</span>
+                  <div className="patron-actions">
+                    <Link to="/order-tracking" className="glass-btn glass-btn-primary" onClick={handleClose}>
+                      <Icon name="package" size={16} />
+                      <span>Track Loom Commissions</span>
+                    </Link>
+                    <Link to="/wishlist" className="glass-btn glass-btn-secondary" onClick={handleClose}>
+                      <Icon name="heart" size={16} />
+                      <span>Saved Heirlooms</span>
+                    </Link>
+                    <Link to="/profile" className="glass-btn glass-btn-secondary" onClick={handleClose}>
+                      <Icon name="user" size={16} />
+                      <span>Patron Profile & Settings</span>
+                    </Link>
+                    <button
+                      type="button"
+                      className="glass-logout-btn"
+                      onClick={handleLogout}
+                      disabled={isLoading}
+                    >
+                      <Icon name="logout" size={15} />
+                      <span>Sign Out from Atelier</span>
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <>
+                  {/* Mode Tabs (Sign In vs Create Account) */}
+                  {mode !== 'forgot-password' && (
+                    <div className="glass-mode-tabs" role="tablist" aria-label="Authentication modes">
                       <button
                         type="button"
-                        onClick={() => switchMode('register')}
-                        className="auth-switch-btn"
+                        id="tab-signin"
+                        role="tab"
+                        aria-selected={mode === 'login'}
+                        className={`glass-tab ${mode === 'login' ? 'active' : ''}`}
+                        onClick={() => switchMode('login')}
                       >
-                        Create an account
+                        <span>SIGN IN</span>
+                        {mode === 'login' && <motion.div layoutId="tab-indicator" className="glass-tab-active-pill" />}
                       </button>
-                    </p>
-                  </motion.form>
-                )}
 
-                {mode === 'register' && (
-                  /* ================= CREATE ACCOUNT FORM ================= */
-                  <motion.form
-                    key="form-register"
-                    onSubmit={handleRegisterSubmit}
-                    initial={{ opacity: 0, y: 8 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -8 }}
-                    transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
-                    className="auth-form"
-                    noValidate
-                  >
-                    <div className="auth-form-field">
-                      <label htmlFor="reg-fullname" className="auth-form-label">
-                        Full Name
-                      </label>
-                      <div className="auth-input-shell">
-                        <input
-                          id="reg-fullname"
-                          type="text"
-                          name="name"
-                          autoComplete="name"
-                          required
-                          value={fullName}
-                          onChange={e => setFullName(e.target.value)}
-                          placeholder="Your Full Name"
-                          className="auth-text-input"
-                          disabled={isLoading}
-                        />
-                      </div>
+                      <button
+                        type="button"
+                        id="tab-register"
+                        role="tab"
+                        aria-selected={mode === 'register'}
+                        className={`glass-tab ${mode === 'register' ? 'active' : ''}`}
+                        onClick={() => switchMode('register')}
+                      >
+                        <span>CREATE ACCOUNT</span>
+                        {mode === 'register' && <motion.div layoutId="tab-indicator" className="glass-tab-active-pill" />}
+                      </button>
                     </div>
+                  )}
 
-                    <div className="auth-form-field">
-                      <label htmlFor="reg-email" className="auth-form-label">
-                        Email Address
-                      </label>
-                      <div className="auth-input-shell">
-                        <input
-                          id="reg-email"
-                          type="email"
-                          name="email"
-                          autoComplete="email"
-                          required
-                          value={regEmail}
-                          onChange={e => setRegEmail(e.target.value)}
-                          placeholder="patron@handloom.art"
-                          className="auth-text-input"
-                          disabled={isLoading}
-                        />
-                      </div>
-                    </div>
+                  {/* Feedback Banners (Glass alerts) */}
+                  <AnimatePresence mode="wait">
+                    {error && (
+                      <motion.div
+                        key="auth-error-banner"
+                        initial={{ opacity: 0, y: -6, height: 0 }}
+                        animate={{ opacity: 1, y: 0, height: 'auto' }}
+                        exit={{ opacity: 0, y: -6, height: 0 }}
+                        className="glass-alert glass-alert--error auth-alert--error"
+                        role="alert"
+                      >
+                        <Icon name="info" size={16} className="alert-icon" />
+                        <span className="alert-text">{error}</span>
+                      </motion.div>
+                    )}
 
-                    <div className="auth-form-row">
-                      <div className="auth-form-field">
-                        <label htmlFor="reg-password" className="auth-form-label">
-                          Password
+                    {successMsg && (
+                      <motion.div
+                        key="auth-success-banner"
+                        initial={{ opacity: 0, y: -6, height: 0 }}
+                        animate={{ opacity: 1, y: 0, height: 'auto' }}
+                        exit={{ opacity: 0, y: -6, height: 0 }}
+                        className="glass-alert glass-alert--success auth-alert--success"
+                        role="status"
+                      >
+                        <Icon name="check" size={16} className="alert-icon" />
+                        <span className="alert-text">{successMsg}</span>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+
+                  {/* -------------------------------------------------------------
+                      MODE 1: SIGN IN FORM
+                      ------------------------------------------------------------- */}
+                  {mode === 'login' && (
+                    <form onSubmit={handleLoginSubmit} className="glass-form" noValidate>
+                      {/* Email Input */}
+                      <div className="glass-field-group">
+                        <label htmlFor="login-email" className="glass-field-label">
+                          PATRON EMAIL
                         </label>
-                        <div className="auth-input-shell">
+                        <div className="glass-input-wrapper">
+                          <span className="glass-input-icon">
+                            <Icon name="mail" size={16} />
+                          </span>
                           <input
-                            id="reg-password"
-                            type={regShowPassword ? 'text' : 'password'}
-                            name="new-password"
-                            autoComplete="new-password"
+                            id="login-email"
+                            name="email"
+                            type="email"
+                            autoComplete="email"
                             required
-                            value={regPassword}
-                            onChange={e => setRegPassword(e.target.value)}
-                            placeholder="8+ characters"
-                            className="auth-text-input"
+                            placeholder="patron@handloomconnect.com"
+                            className="glass-input"
+                            value={loginEmail}
+                            onChange={(e) => setLoginEmail(e.target.value)}
                             disabled={isLoading}
                           />
                         </div>
                       </div>
 
-                      <div className="auth-form-field">
-                        <label htmlFor="reg-confirm" className="auth-form-label">
-                          Confirm
-                        </label>
-                        <div className="auth-input-shell">
+                      {/* Password Input with Visibility Toggle */}
+                      <div className="glass-field-group">
+                        <div className="glass-label-row">
+                          <label htmlFor="login-password" className="glass-field-label">
+                            SECURITY KEY
+                          </label>
+                          <button
+                            type="button"
+                            className="glass-text-link auth-link-btn"
+                            onClick={() => switchMode('forgot-password')}
+                          >
+                            Forgot Key?
+                          </button>
+                        </div>
+                        <div className="glass-input-wrapper">
+                          <span className="glass-input-icon">
+                            <Icon name="shield" size={16} />
+                          </span>
                           <input
-                            id="reg-confirm"
-                            type={regShowPassword ? 'text' : 'password'}
-                            name="confirm-password"
-                            autoComplete="new-password"
+                            id="login-password"
+                            name="password"
+                            type={loginShowPassword ? 'text' : 'password'}
+                            autoComplete="current-password"
                             required
-                            value={regConfirmPassword}
-                            onChange={e => setRegConfirmPassword(e.target.value)}
-                            placeholder="Confirm password"
-                            className="auth-text-input"
+                            placeholder="••••••••••••"
+                            className="glass-input"
+                            value={loginPassword}
+                            onChange={(e) => setLoginPassword(e.target.value)}
                             disabled={isLoading}
                           />
                           <button
                             type="button"
-                            className="auth-eye-btn"
-                            onClick={() => setRegShowPassword(v => !v)}
-                            aria-label={regShowPassword ? 'Hide password' : 'Show password'}
-                            tabIndex={-1}
+                            className="glass-visibility-toggle"
+                            onClick={() => setLoginShowPassword(prev => !prev)}
+                            aria-label={loginShowPassword ? 'Hide security key' : 'Show security key'}
+                            title={loginShowPassword ? 'Hide security key' : 'Show security key'}
                           >
-                            <Icon name={regShowPassword ? 'eye-off' : 'eye'} size={15} />
+                            <Icon name={loginShowPassword ? 'eye-off' : 'eye'} size={16} />
                           </button>
                         </div>
                       </div>
-                    </div>
 
-                    <label className="auth-checkbox-label">
-                      <input
-                        type="checkbox"
-                        checked={acceptTerms}
-                        onChange={e => setAcceptTerms(e.target.checked)}
-                        className="auth-checkbox"
-                        required
-                      />
-                      <span>I pledge support for Direct Trade & GI Authentic Craft</span>
-                    </label>
+                      {/* Remember Device Checkbox */}
+                      <div className="glass-options-row">
+                        <label className="glass-checkbox-label">
+                          <input
+                            type="checkbox"
+                            checked={rememberMe}
+                            onChange={(e) => setRememberMe(e.target.checked)}
+                            className="glass-checkbox"
+                          />
+                          <span className="glass-checkbox-custom" aria-hidden="true">
+                            {rememberMe && <Icon name="check" size={12} />}
+                          </span>
+                          <span className="glass-checkbox-text">Remember this workstation</span>
+                        </label>
+                      </div>
 
-                    <button
-                      type="submit"
-                      disabled={isLoading}
-                      className="auth-submit-btn"
-                    >
-                      {isLoading ? (
-                        <span className="auth-btn-spinner-wrap">
-                          <span className="auth-spinner" />
-                          <span>Creating Atelier Account...</span>
-                        </span>
-                      ) : (
-                        <span>Join the Handloom Atelier</span>
-                      )}
-                    </button>
-
-                    <p className="auth-switch-prompt">
-                      <span>Already a patron?</span>
+                      {/* Primary Sign In Button */}
                       <button
-                        type="button"
-                        onClick={() => switchMode('login')}
-                        className="auth-switch-btn"
+                        type="submit"
+                        className="glass-btn glass-btn-primary auth-submit-btn"
+                        disabled={isLoading}
                       >
-                        Sign in
+                        {isLoading ? (
+                          <span className="glass-btn-spinner-content">
+                            <span className="glass-spinner" />
+                            <span>Authenticating Patron...</span>
+                          </span>
+                        ) : (
+                          <span className="glass-btn-text-content">
+                            <span>Access Atelier</span>
+                            <Icon name="arrow-right" size={16} />
+                          </span>
+                        )}
                       </button>
-                    </p>
-                  </motion.form>
-                )}
 
-                {mode === 'forgot-password' && (
-                  /* ================= FORGOT PASSWORD FORM ================= */
-                  <motion.form
-                    key="form-reset"
-                    onSubmit={handleResetSubmit}
-                    initial={{ opacity: 0, y: 8 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -8 }}
-                    transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
-                    className="auth-form"
-                    noValidate
-                  >
-                    <div className="auth-reset-heading">
-                      <h3 className="auth-reset-title">Recover Password</h3>
-                      <p className="auth-reset-desc">
-                        Provide the email associated with your atelier account and we will send recovery instructions.
-                      </p>
-                    </div>
+                      {/* Switch to Registration */}
+                      <div className="glass-switch-mode">
+                        <span>New to the Atelier guild?</span>{' '}
+                        <button
+                          type="button"
+                          className="glass-switch-link"
+                          onClick={() => switchMode('register')}
+                        >
+                          Create an account
+                        </button>
+                      </div>
+                    </form>
+                  )}
 
-                    {!resetSent ? (
-                      <>
-                        <div className="auth-form-field">
-                          <label htmlFor="reset-email" className="auth-form-label">
-                            Email Address
+                  {/* -------------------------------------------------------------
+                      MODE 2: REGISTRATION FORM
+                      ------------------------------------------------------------- */}
+                  {mode === 'register' && (
+                    <form onSubmit={handleRegisterSubmit} className="glass-form" noValidate>
+                      {/* Full Name */}
+                      <div className="glass-field-group">
+                        <label htmlFor="reg-fullname" className="glass-field-label">
+                          FULL LEGAL NAME
+                        </label>
+                        <div className="glass-input-wrapper">
+                          <span className="glass-input-icon">
+                            <Icon name="user" size={16} />
+                          </span>
+                          <input
+                            id="reg-fullname"
+                            name="fullName"
+                            type="text"
+                            autoComplete="name"
+                            required
+                            placeholder="Ananya Sharma"
+                            className="glass-input"
+                            value={fullName}
+                            onChange={(e) => setFullName(e.target.value)}
+                            disabled={isLoading}
+                          />
+                        </div>
+                      </div>
+
+                      {/* Email */}
+                      <div className="glass-field-group">
+                        <label htmlFor="reg-email" className="glass-field-label">
+                          PATRON EMAIL
+                        </label>
+                        <div className="glass-input-wrapper">
+                          <span className="glass-input-icon">
+                            <Icon name="mail" size={16} />
+                          </span>
+                          <input
+                            id="reg-email"
+                            name="email"
+                            type="email"
+                            autoComplete="email"
+                            required
+                            placeholder="ananya@atelier.com"
+                            className="glass-input"
+                            value={regEmail}
+                            onChange={(e) => setRegEmail(e.target.value)}
+                            disabled={isLoading}
+                          />
+                        </div>
+                      </div>
+
+                      {/* Password & Confirm Password (Grid) */}
+                      <div className="glass-form-row">
+                        <div className="glass-field-group">
+                          <label htmlFor="reg-password" className="glass-field-label">
+                            CREATE KEY
                           </label>
-                          <div className="auth-input-shell">
+                          <div className="glass-input-wrapper">
+                            <span className="glass-input-icon">
+                              <Icon name="shield" size={16} />
+                            </span>
                             <input
-                              id="reset-email"
-                              type="email"
-                              name="email"
-                              autoComplete="email"
+                              id="reg-password"
+                              name="password"
+                              type={regShowPassword ? 'text' : 'password'}
+                              autoComplete="new-password"
                               required
-                              value={resetEmail}
-                              onChange={e => setResetEmail(e.target.value)}
-                              placeholder="patron@handloom.art"
-                              className="auth-text-input"
+                              placeholder="Min. 8 chars"
+                              className="glass-input"
+                              value={regPassword}
+                              onChange={(e) => setRegPassword(e.target.value)}
+                              disabled={isLoading}
+                            />
+                            <button
+                              type="button"
+                              className="glass-visibility-toggle"
+                              onClick={() => setRegShowPassword(prev => !prev)}
+                              aria-label={regShowPassword ? 'Hide security key' : 'Show security key'}
+                            >
+                              <Icon name={regShowPassword ? 'eye-off' : 'eye'} size={15} />
+                            </button>
+                          </div>
+                        </div>
+
+                        <div className="glass-field-group">
+                          <label htmlFor="reg-confirm" className="glass-field-label">
+                            CONFIRM KEY
+                          </label>
+                          <div className="glass-input-wrapper">
+                            <span className="glass-input-icon">
+                              <Icon name="shield-check" size={16} />
+                            </span>
+                            <input
+                              id="reg-confirm"
+                              name="confirmPassword"
+                              type={regShowPassword ? 'text' : 'password'}
+                              autoComplete="new-password"
+                              required
+                              placeholder="Confirm key"
+                              className="glass-input"
+                              value={regConfirmPassword}
+                              onChange={(e) => setRegConfirmPassword(e.target.value)}
                               disabled={isLoading}
                             />
                           </div>
                         </div>
-
-                        <button
-                          type="submit"
-                          disabled={isLoading}
-                          className="auth-submit-btn"
-                        >
-                          {isLoading ? (
-                            <span className="auth-btn-spinner-wrap">
-                              <span className="auth-spinner" />
-                              <span>Sending Instructions...</span>
-                            </span>
-                          ) : (
-                            <span>Send Recovery Instructions</span>
-                          )}
-                        </button>
-                      </>
-                    ) : (
-                      <div className="auth-reset-success-note">
-                        <Icon name="check" size={24} />
-                        <p>If an account exists for {resetEmail}, instructions have been dispatched.</p>
                       </div>
-                    )}
 
-                    <div className="auth-reset-footer">
+                      {/* Direct Trade Terms Checkbox */}
+                      <div className="glass-options-row">
+                        <label className="glass-checkbox-label">
+                          <input
+                            type="checkbox"
+                            checked={acceptTerms}
+                            onChange={(e) => setAcceptTerms(e.target.checked)}
+                            className="glass-checkbox"
+                          />
+                          <span className="glass-checkbox-custom" aria-hidden="true">
+                            {acceptTerms && <Icon name="check" size={12} />}
+                          </span>
+                          <span className="glass-checkbox-text">
+                            I accept the{' '}
+                            <Link to="/about" className="glass-inline-link">
+                              Direct Trade Atelier Charter
+                            </Link>{' '}
+                            and Patron Ethics.
+                          </span>
+                        </label>
+                      </div>
+
+                      {/* Primary Register Button */}
                       <button
-                        type="button"
-                        onClick={() => switchMode('login')}
-                        className="auth-back-link-btn"
+                        type="submit"
+                        className="glass-btn glass-btn-primary auth-submit-btn"
+                        disabled={isLoading}
                       >
-                        <span>← Return to Sign In</span>
+                        {isLoading ? (
+                          <span className="glass-btn-spinner-content">
+                            <span className="glass-spinner" />
+                            <span>Creating Patron Guild Access...</span>
+                          </span>
+                        ) : (
+                          <span className="glass-btn-text-content">
+                            <span>Register Atelier Membership</span>
+                            <Icon name="arrow-right" size={16} />
+                          </span>
+                        )}
                       </button>
-                    </div>
-                  </motion.form>
-                )}
-              </AnimatePresence>
-            </div>
-          )}
+
+                      {/* Switch to Sign In */}
+                      <div className="glass-switch-mode">
+                        <span>Already registered as a patron?</span>{' '}
+                        <button
+                          type="button"
+                          className="glass-switch-link"
+                          onClick={() => switchMode('login')}
+                        >
+                          Sign in
+                        </button>
+                      </div>
+                    </form>
+                  )}
+
+                  {/* -------------------------------------------------------------
+                      MODE 3: FORGOT PASSWORD FORM
+                      ------------------------------------------------------------- */}
+                  {mode === 'forgot-password' && (
+                    <form onSubmit={handleResetSubmit} className="glass-form" noValidate>
+                      <div className="glass-field-group">
+                        <label htmlFor="reset-email" className="glass-field-label">
+                          REGISTERED PATRON EMAIL
+                        </label>
+                        <div className="glass-input-wrapper">
+                          <span className="glass-input-icon">
+                            <Icon name="mail" size={16} />
+                          </span>
+                          <input
+                            id="reset-email"
+                            name="email"
+                            type="email"
+                            autoComplete="email"
+                            required
+                            placeholder="patron@handloomconnect.com"
+                            className="glass-input"
+                            value={resetEmail}
+                            onChange={(e) => setResetEmail(e.target.value)}
+                            disabled={isLoading || resetSent}
+                          />
+                        </div>
+                      </div>
+
+                      <button
+                        type="submit"
+                        className="glass-btn glass-btn-primary auth-submit-btn"
+                        disabled={isLoading || resetSent}
+                      >
+                        {isLoading ? (
+                          <span className="glass-btn-spinner-content">
+                            <span className="glass-spinner" />
+                            <span>Dispatching Recovery Key...</span>
+                          </span>
+                        ) : (
+                          <span className="glass-btn-text-content">
+                            <span>Send Recovery Instructions</span>
+                            <Icon name="arrow-right" size={16} />
+                          </span>
+                        )}
+                      </button>
+
+                      <div className="glass-switch-mode">
+                        <button
+                          type="button"
+                          className="glass-back-link auth-back-link-btn"
+                          onClick={() => switchMode('login')}
+                        >
+                          <Icon name="arrow-right" size={14} className="icon-flip" />
+                          <span>Return to Atelier Sign In</span>
+                        </button>
+                      </div>
+                    </form>
+                  )}
+                </>
+              )}
+
+              {/* Card Footer Security Seal */}
+              <div className="glass-card-footer">
+                <div className="glass-security-seal">
+                  <Icon name="shield-check" size={13} className="seal-icon" />
+                  <span>256-Bit Encrypted Patron Gateway • Supabase Secure Auth</span>
+                </div>
+              </div>
+            </motion.div>
+          </section>
         </div>
-      </div>
+      </main>
+
+      {/* =========================================================================
+          BOTTOM PERIPHERAL SUBTLE CONTEXTUAL METRICS
+          ========================================================================= */}
+      <footer className="glass-bottom-metrics" aria-hidden="true">
+        <div className="metric-tag auth-peripheral-meta auth-peripheral-meta--left">
+          <span className="metric-accent meta-accent">DIRECT TRADE</span>
+          <span className="metric-sep meta-sep">/</span>
+          <span>14 WEAVING CLUSTERS</span>
+        </div>
+        <div className="metric-tag auth-peripheral-meta auth-peripheral-meta--right">
+          <span>HERITAGE ATELIER</span>
+          <span className="metric-sep meta-sep">•</span>
+          <span>EST. 2024</span>
+        </div>
+      </footer>
     </div>
   )
 }
