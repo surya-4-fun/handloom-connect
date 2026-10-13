@@ -145,9 +145,9 @@ UPDATE public.raw_materials
 SET images = '["/images/raw-materials/raw-silk-filament-hank.jpg"]'::jsonb
 WHERE id = 'b1111111-1111-1111-1111-111111111111';
 
--- Material 2: Wild Forest Golden Muga/Tussar Silk Hanks
+-- Material 2: Wild Forest Golden Muga Silk Hanks
 UPDATE public.raw_materials
-SET images = '["/images/raw-materials/tussar-silk-yarn.jpg"]'::jsonb
+SET images = '["/images/raw-materials/muga-silk-hank.jpg"]'::jsonb
 WHERE id = 'b2222222-2222-2222-2222-222222222222';
 
 -- Material 3: Desi Organic Khadi Cotton Hanks

@@ -36,7 +36,7 @@ export function RawMaterialDetailModal({
             <HandloomImage
               src={material.images?.[0]}
               alt={material.name}
-              fallbackCategory="raw_material"
+              fallbackCategory={material.category || "raw_material"}
               style={{ width: '100%', height: '100%', objectFit: 'cover' }}
             />
             {material.badge && (

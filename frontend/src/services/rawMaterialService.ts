@@ -1,6 +1,7 @@
 import { supabase } from '../lib/supabase'
 import type { RawMaterial, BulkRequestForm, RawMaterialCategory, MaterialQuality } from '../types/rawMaterial'
-import { normalizeImageArray } from '../utils/imageUtils'
+import { getAuthoritativeRawMaterialImages } from '../utils/imageUtils'
+import { RAW_MATERIALS } from '../utils/mocks/rawMaterialData'
 
 interface SupabaseRawMaterialRecord {
   id: string
@@ -51,7 +52,7 @@ function mapRawMaterial(m: SupabaseRawMaterialRecord): RawMaterial {
     inStock: m.in_stock,
     sustainabilityInfo: m.sustainability_info || '',
     description: m.description || '',
-    images: normalizeImageArray(m.images),
+    images: getAuthoritativeRawMaterialImages(m.id, m.name, m.images),
     badge: m.badge,
     denierOrCount: m.denier_or_count
   }
@@ -79,17 +80,63 @@ export async function fetchRawMaterials(filters: {
   }
   
   const { data, error } = await query
-  if (error) {
-    console.error('Error fetching raw materials from Supabase:', error)
-    return []
+  const dbMaterials = !error && data ? data.map(mapRawMaterial) : []
+
+  // Map mock materials with authoritative verified image resolver
+  const mockMapped: RawMaterial[] = RAW_MATERIALS.map(m => ({
+    ...m,
+    images: getAuthoritativeRawMaterialImages(m.id, m.name, m.images)
+  }))
+
+  // If Supabase returns records, merge any mock materials that do not exist in the database
+  let allMaterials: RawMaterial[] = dbMaterials
+  if (dbMaterials.length > 0) {
+    const existingNames = new Set(dbMaterials.map(d => d.name.toLowerCase().trim()))
+    const additional = mockMapped.filter(m => !existingNames.has(m.name.toLowerCase().trim()))
+    allMaterials = [...dbMaterials, ...additional]
+  } else {
+    allMaterials = mockMapped
   }
-  return (data || []).map(mapRawMaterial)
+
+  // Apply in-memory filters for merged/mock items
+  let filtered = allMaterials
+  if (filters.category && filters.category !== 'all') {
+    filtered = filtered.filter(m => m.category === filters.category)
+  }
+  if (filters.origin && filters.origin !== 'all') {
+    filtered = filtered.filter(m => m.origin.toLowerCase().includes(filters.origin!.toLowerCase()))
+  }
+  if (filters.quality && filters.quality !== 'all') {
+    filtered = filtered.filter(m => m.quality === filters.quality)
+  }
+  if (filters.inStockOnly) {
+    filtered = filtered.filter(m => m.inStock)
+  }
+  if (filters.search) {
+    const q = filters.search.toLowerCase()
+    filtered = filtered.filter(m => m.name.toLowerCase().includes(q) || m.description.toLowerCase().includes(q))
+  }
+  if (filters.sort) {
+    if (filters.sort === 'price-asc') filtered.sort((a, b) => a.price - b.price)
+    else if (filters.sort === 'price-desc') filtered.sort((a, b) => b.price - a.price)
+    else if (filters.sort === 'min-order') filtered.sort((a, b) => a.minOrderQty - b.minOrderQty)
+  }
+
+  return filtered
 }
 
 export async function fetchRawMaterialById(id: string): Promise<RawMaterial | null> {
-  const { data, error } = await supabase.from('raw_materials').select('*, material_suppliers(*)').eq('id', id).single()
-  if (error || !data) return null
-  return mapRawMaterial(data)
+  const { data, error } = await supabase.from('raw_materials').select('*, material_suppliers(*)').eq('id', id).maybeSingle()
+  if (!error && data) return mapRawMaterial(data)
+  
+  const mock = RAW_MATERIALS.find(m => m.id === id)
+  if (mock) {
+    return {
+      ...mock,
+      images: getAuthoritativeRawMaterialImages(mock.id, mock.name, mock.images)
+    }
+  }
+  return null
 }
 
 export async function submitBulkRequest(form: BulkRequestForm): Promise<{ referenceNo: string }> {

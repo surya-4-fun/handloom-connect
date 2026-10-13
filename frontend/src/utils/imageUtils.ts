@@ -42,6 +42,13 @@ export const CATEGORY_FALLBACKS: Record<string, string> = {
   raw_material: '/images/fallbacks/fabric.jpg',
   fabric: '/images/fallbacks/fabric.jpg',
   'raw-material-fallback': '/images/fallbacks/fabric.jpg',
+  'silk yarn': '/images/raw-materials/raw-silk-filament-hank.jpg',
+  'cotton yarn': '/images/raw-materials/khadi-charkha-yarn.jpg',
+  wool: '/images/raw-materials/ladakhi-pashm-wool-top.jpg',
+  indigo: '/images/raw-materials/indigo-dye-extract.jpg',
+  'natural dyes': '/images/raw-materials/madder-dye.jpg',
+  'weaving materials': '/images/raw-materials/gold-zari-spool.jpg',
+  'craft accessories': '/images/raw-materials/teakwood-printing-blocks.jpg',
   artisan: '/images/fallbacks/artisan.jpg',
   artisans: '/images/fallbacks/artisan.jpg',
   'artisan-fallback': '/images/fallbacks/artisan.jpg',
@@ -209,6 +216,141 @@ export function getAuthoritativeArtisanImage(artisanId?: string, rawImage?: unkn
 }
 
 /**
+ * Authoritative mapping of raw materials by stable UUID, slug, or normalized identifier
+ * to verified authentic local photography assets in /images/raw-materials/.
+ */
+export const VERIFIED_RAW_MATERIAL_IMAGES: Record<string, string[]> = {
+  // 1. Grade AAA Mulberry Silk Filament Yarn / Hank
+  'b1111111-1111-1111-1111-111111111111': ['/images/raw-materials/raw-silk-filament-hank.jpg', '/images/raw-materials/mulberry-cocoons.jpg'],
+  'mulberry-silk-hank-20-22': ['/images/raw-materials/raw-silk-filament-hank.jpg', '/images/raw-materials/mulberry-cocoons.jpg'],
+  'mulberry-silk-hank': ['/images/raw-materials/raw-silk-filament-hank.jpg', '/images/raw-materials/mulberry-cocoons.jpg'],
+  'grade-aaa-mulberry-silk-filament-yarn': ['/images/raw-materials/raw-silk-filament-hank.jpg', '/images/raw-materials/mulberry-cocoons.jpg'],
+  'mulberry-cocoons': ['/images/raw-materials/mulberry-cocoons.jpg'],
+
+  // 2. Wild Forest Golden Muga Silk Hanks
+  'b2222222-2222-2222-2222-222222222222': ['/images/raw-materials/muga-silk-hank.jpg'],
+  'wild-forest-golden-muga-silk-hanks': ['/images/raw-materials/muga-silk-hank.jpg'],
+  'muga-silk-hanks': ['/images/raw-materials/muga-silk-hank.jpg'],
+  'muga-silk-hank': ['/images/raw-materials/muga-silk-hank.jpg'],
+
+  // 3. Desi Organic Khadi Cotton Hanks / Kala Cotton
+  'b3333333-3333-3333-3333-333333333333': ['/images/raw-materials/khadi-charkha-yarn.jpg'],
+  'kala-organic-cotton-40s': ['/images/raw-materials/khadi-charkha-yarn.jpg'],
+  'desi-organic-khadi-cotton-hanks': ['/images/raw-materials/khadi-charkha-yarn.jpg'],
+  'khadi-cotton-yarn': ['/images/raw-materials/khadi-charkha-yarn.jpg'],
+
+  // 4. Raw Changthangi Cashmere (Pashm) Fiber / Wool Top
+  'b4444444-4444-4444-4444-444444444444': ['/images/raw-materials/ladakhi-pashm-wool-top.jpg'],
+  'ladakhi-pashm-wool-top': ['/images/raw-materials/ladakhi-pashm-wool-top.jpg'],
+  'raw-changthangi-cashmere-fiber': ['/images/raw-materials/ladakhi-pashm-wool-top.jpg'],
+  'raw-pashm-fiber': ['/images/raw-materials/ladakhi-pashm-wool-top.jpg'],
+
+  // 5. Pure Organic Indigofera Tinctoria Cakes / Extract
+  'b5555555-5555-5555-5555-555555555555': ['/images/raw-materials/indigo-dye-extract.jpg'],
+  'organic-indigo-vat-extract': ['/images/raw-materials/indigo-dye-extract.jpg'],
+  'pure-organic-indigofera-tinctoria-cakes': ['/images/raw-materials/indigo-dye-extract.jpg'],
+  'indigo-dye-cakes': ['/images/raw-materials/indigo-dye-extract.jpg'],
+
+  // 6. Madder Root (Manjistha) Sun-Dried Chunks / Powder
+  'b6666666-6666-6666-6666-666666666666': ['/images/raw-materials/madder-dye.jpg'],
+  'madder-root-natural-dye': ['/images/raw-materials/madder-dye.jpg'],
+  'madder-root-manjistha-sun-dried-chunks': ['/images/raw-materials/madder-dye.jpg'],
+  'manjistha-madder-root': ['/images/raw-materials/madder-dye.jpg'],
+
+  // 7. 24K Electroplated Silver-Gold Zari Spool
+  'b7777777-7777-7777-7777-777777777777': ['/images/raw-materials/gold-zari-spool.jpg'],
+  'pure-gold-zari-spool': ['/images/raw-materials/gold-zari-spool.jpg'],
+  '24k-electroplated-silver-gold-zari-spool': ['/images/raw-materials/gold-zari-spool.jpg'],
+  'gold-zari-spool': ['/images/raw-materials/gold-zari-spool.jpg'],
+
+  // 8. Hand-Carved Teakwood Block Print Blocks
+  'b8888888-8888-8888-8888-888888888888': ['/images/raw-materials/teakwood-printing-blocks.jpg'],
+  'teakwood-hand-block-carving': ['/images/raw-materials/teakwood-printing-blocks.jpg'],
+  'hand-carved-teakwood-block-print-blocks': ['/images/raw-materials/teakwood-printing-blocks.jpg'],
+  'teakwood-printing-blocks': ['/images/raw-materials/teakwood-printing-blocks.jpg'],
+
+  // 9. Wild Tussar Slub Silk Yarn
+  'wild-tussar-slub-yarn': ['/images/raw-materials/tussar-silk-yarn.jpg'],
+  'tussar-silk-yarn': ['/images/raw-materials/tussar-silk-yarn.jpg'],
+
+  // 10. Gossamer Fine Muslin Cotton Yarn
+  'fine-muslin-cotton-100s': ['/images/raw-materials/fine-muslin-cotton-yarn.jpg'],
+  'fine-muslin-cotton-yarn': ['/images/raw-materials/fine-muslin-cotton-yarn.jpg'],
+
+  // 11. Solar Marigold Flower Petal Dye Extract
+  'marigold-yellow-dye': ['/images/raw-materials/marigold-yellow-dye.jpg'],
+  'marigold-dye': ['/images/raw-materials/marigold-yellow-dye.jpg'],
+
+  // 12. Balanced Teak & Bamboo Loom Fly Shuttles
+  'pit-loom-bamboo-shuttles': ['/images/raw-materials/pit-loom-shuttle.jpg'],
+  'pit-loom-shuttle': ['/images/raw-materials/pit-loom-shuttle.jpg'],
+
+  // 13. Hand-drawn Jacquard Naksha Design Punch Cards
+  'jacquard-naksha-cards': ['/images/raw-materials/jacquard-naksha-cards.jpg'],
+  'naksha-cards': ['/images/raw-materials/jacquard-naksha-cards.jpg'],
+}
+
+/**
+ * Resolves authoritative verified images for a raw material entity.
+ * Always prioritizes verified local handloom raw material assets over stale/remote Unsplash URLs.
+ */
+export function getAuthoritativeRawMaterialImages(
+  idOrSlug?: string,
+  nameOrCategory?: string,
+  rawImages?: unknown
+): string[] {
+  // 1. Direct ID / slug lookup
+  if (idOrSlug) {
+    const key = idOrSlug.toLowerCase().trim()
+    if (VERIFIED_RAW_MATERIAL_IMAGES[key]) {
+      return [...VERIFIED_RAW_MATERIAL_IMAGES[key]]
+    }
+  }
+
+  // 2. Name or Category heuristic matching
+  if (nameOrCategory) {
+    const text = nameOrCategory.toLowerCase().trim()
+    for (const [k, paths] of Object.entries(VERIFIED_RAW_MATERIAL_IMAGES)) {
+      if (text.includes(k) || k.includes(text)) {
+        return [...paths]
+      }
+    }
+
+    if (text.includes('muga')) return ['/images/raw-materials/muga-silk-hank.jpg']
+    if (text.includes('mulberry') || (text.includes('silk') && (text.includes('filament') || text.includes('hank')))) {
+      return ['/images/raw-materials/raw-silk-filament-hank.jpg', '/images/raw-materials/mulberry-cocoons.jpg']
+    }
+    if (text.includes('tussar') || text.includes('tasar')) return ['/images/raw-materials/tussar-silk-yarn.jpg']
+    if (text.includes('khadi') || text.includes('kala') || (text.includes('cotton') && text.includes('hank'))) {
+      return ['/images/raw-materials/khadi-charkha-yarn.jpg']
+    }
+    if (text.includes('muslin') || text.includes('100s')) return ['/images/raw-materials/fine-muslin-cotton-yarn.jpg']
+    if (text.includes('pashm') || text.includes('wool') || text.includes('cashmere')) {
+      return ['/images/raw-materials/ladakhi-pashm-wool-top.jpg']
+    }
+    if (text.includes('indigo')) return ['/images/raw-materials/indigo-dye-extract.jpg']
+    if (text.includes('madder') || text.includes('manjistha')) return ['/images/raw-materials/madder-dye.jpg']
+    if (text.includes('marigold')) return ['/images/raw-materials/marigold-yellow-dye.jpg']
+    if (text.includes('zari') || text.includes('metallic')) return ['/images/raw-materials/gold-zari-spool.jpg']
+    if (text.includes('block') || text.includes('teak')) return ['/images/raw-materials/teakwood-printing-blocks.jpg']
+    if (text.includes('shuttle') || text.includes('loom fly')) return ['/images/raw-materials/pit-loom-shuttle.jpg']
+    if (text.includes('naksha') || text.includes('punch card') || text.includes('jacquard')) {
+      return ['/images/raw-materials/jacquard-naksha-cards.jpg']
+    }
+  }
+
+  // 3. Keep local verified asset paths if present
+  const normalized = normalizeImageArray(rawImages)
+  const localPaths = normalized.filter(url => url.startsWith('/images/'))
+  if (localPaths.length > 0) {
+    return localPaths
+  }
+
+  // 4. Return category-specific fallback
+  return [getRawMaterialFallbackImage(nameOrCategory)]
+}
+
+/**
  * Returns a category-specific fallback image path when a product image is missing.
  */
 export function getCategoryFallbackImage(category?: unknown): string {
@@ -237,17 +379,19 @@ export function getArtisanFallbackImage(): string {
  * Returns a raw material fallback image path based on raw material category.
  */
 export function getRawMaterialFallbackImage(category?: unknown): string {
-  if (!category || typeof category !== 'string') return CATEGORY_FALLBACKS['raw-materials']
+  if (!category || typeof category !== 'string') return '/images/fallbacks/fabric.jpg'
   const key = category.toLowerCase().trim()
   if (CATEGORY_FALLBACKS[key]) return CATEGORY_FALLBACKS[key]
 
-  for (const [k, fallback] of Object.entries(CATEGORY_FALLBACKS)) {
-    if (k !== 'general' && (key.includes(k) || k.includes(key))) {
-      return fallback
-    }
-  }
+  if (key.includes('silk')) return '/images/raw-materials/raw-silk-filament-hank.jpg'
+  if (key.includes('cotton')) return '/images/raw-materials/khadi-charkha-yarn.jpg'
+  if (key.includes('wool') || key.includes('pashm')) return '/images/raw-materials/ladakhi-pashm-wool-top.jpg'
+  if (key.includes('indigo')) return '/images/raw-materials/indigo-dye-extract.jpg'
+  if (key.includes('dye') || key.includes('madder')) return '/images/raw-materials/madder-dye.jpg'
+  if (key.includes('weaving') || key.includes('zari') || key.includes('shuttle')) return '/images/raw-materials/gold-zari-spool.jpg'
+  if (key.includes('craft') || key.includes('block') || key.includes('card')) return '/images/raw-materials/teakwood-printing-blocks.jpg'
 
-  return CATEGORY_FALLBACKS['raw-materials']
+  return '/images/fallbacks/fabric.jpg'
 }
 
 export function normalizeImageArray(raw: unknown): string[] {

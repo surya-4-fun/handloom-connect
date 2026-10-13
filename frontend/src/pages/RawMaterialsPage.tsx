@@ -215,7 +215,7 @@ export function RawMaterialsPage() {
                 <HandloomImage
                   src={mat.images?.[0]}
                   alt={mat.name}
-                  fallbackCategory="raw_material"
+                  fallbackCategory={mat.category || "raw_material"}
                   style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                 />
                 <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to top, rgba(10,9,8,0.9) 0%, transparent 60%)' }} />
@@ -277,6 +277,7 @@ export function RawMaterialsPage() {
 
       {/* Inspect Detail Modal */}
       <RawMaterialDetailModal
+        key={inspectMaterial?.id || 'none'}
         material={inspectMaterial}
         onClose={() => setInspectMaterial(null)}
         onAddToCart={(id) => addToCart(id, 1)}
