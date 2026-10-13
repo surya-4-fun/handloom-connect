@@ -1,11 +1,12 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react'
 import { User, LoginCredentials, RegisterData, AuthState } from '../types/auth'
-import { loginUser, registerUser, logoutUser, getCurrentUser } from '../services/authService'
+import { loginUser, registerUser, logoutUser, getCurrentUser, requestPasswordReset } from '../services/authService'
 
 interface AuthContextType extends AuthState {
   login: (credentials: LoginCredentials) => Promise<void>
   register: (data: RegisterData) => Promise<void>
   logout: () => Promise<void>
+  resetPassword: (email: string) => Promise<void>
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined)
@@ -66,8 +67,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   }
 
+  const resetPassword = async (email: string) => {
+    setIsLoading(true)
+    try {
+      await requestPasswordReset(email)
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
   return (
-    <AuthContext.Provider value={{ user, isAuthenticated, isLoading, login, register, logout }}>
+    <AuthContext.Provider value={{ user, isAuthenticated, isLoading, login, register, logout, resetPassword }}>
       {children}
     </AuthContext.Provider>
   )

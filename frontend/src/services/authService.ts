@@ -69,3 +69,11 @@ export async function getCurrentUser(): Promise<User | null> {
 export async function logoutUser(): Promise<void> {
   await supabase.auth.signOut()
 }
+
+export async function requestPasswordReset(email: string): Promise<void> {
+  const { error } = await supabase.auth.resetPasswordForEmail(email, {
+    redirectTo: `${window.location.origin}/login`,
+  })
+  if (error) throw error
+}
+

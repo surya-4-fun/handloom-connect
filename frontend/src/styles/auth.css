@@ -1,100 +1,668 @@
-/* Auth & Profile Styles */
-.auth-page {
-  min-height: 100vh;
+/* ==========================================================================
+   HANDLOOM CONNECT — INTERACTIVE BUBBLE AUTHENTICATION & STORYTELLING
+   Inspired by Jesper Landberg organic fluid portal architecture
+   ========================================================================== */
+
+/* --- Theme Tokens for Interactive Bubble Portal --- */
+:root[data-theme='dark'] {
+  --bubble-fill-top: rgba(30, 26, 22, 0.82);
+  --bubble-fill-mid: rgba(22, 19, 16, 0.90);
+  --bubble-fill-bot: rgba(14, 12, 10, 0.95);
+  --bubble-card-bg: rgba(27, 24, 21, 0.55);
+  --bubble-card-border: rgba(212, 175, 55, 0.35);
+  --bubble-tab-bg: rgba(14, 12, 10, 0.65);
+  --bubble-tab-active-bg: rgba(212, 175, 55, 0.18);
+  --bubble-input-bg: rgba(10, 9, 8, 0.65);
+  --bubble-input-border: rgba(212, 175, 55, 0.25);
+  --bubble-input-border-focus: #D4AF37;
+  --bubble-sparkle-color: rgba(212, 175, 55, 0.7);
+  --bubble-shadow: 0 24px 70px rgba(0, 0, 0, 0.65), 0 0 45px rgba(212, 175, 55, 0.12);
+  --story-vignette-h: linear-gradient(to right, rgba(10,9,8,0.4) 0%, rgba(10,9,8,0.75) 60%, rgba(10,9,8,0.96) 100%);
+  --story-vignette-v: linear-gradient(to top, rgba(10,9,8,0.95) 0%, rgba(10,9,8,0.2) 50%, rgba(10,9,8,0.75) 100%);
+  --story-card-bg: rgba(14, 12, 10, 0.65);
+}
+
+:root[data-theme='light'] {
+  --bubble-fill-top: rgba(255, 255, 255, 0.90);
+  --bubble-fill-mid: rgba(250, 247, 240, 0.94);
+  --bubble-fill-bot: rgba(244, 238, 228, 0.98);
+  --bubble-card-bg: rgba(255, 255, 255, 0.75);
+  --bubble-card-border: rgba(154, 123, 35, 0.32);
+  --bubble-tab-bg: rgba(239, 232, 218, 0.75);
+  --bubble-tab-active-bg: rgba(154, 123, 35, 0.15);
+  --bubble-input-bg: rgba(255, 255, 255, 0.9);
+  --bubble-input-border: rgba(154, 123, 35, 0.3);
+  --bubble-input-border-focus: #9A7B23;
+  --bubble-sparkle-color: rgba(154, 123, 35, 0.55);
+  --bubble-shadow: 0 20px 50px rgba(0, 0, 0, 0.08), 0 0 30px rgba(154, 123, 35, 0.12);
+  --story-vignette-h: linear-gradient(to right, rgba(251,249,245,0.45) 0%, rgba(251,249,245,0.78) 60%, rgba(251,249,245,0.98) 100%);
+  --story-vignette-v: linear-gradient(to top, rgba(251,249,245,0.95) 0%, rgba(251,249,245,0.2) 50%, rgba(251,249,245,0.75) 100%);
+  --story-card-bg: rgba(255, 255, 255, 0.85);
+}
+
+/* --- Full-Screen 2-Column Auth Experience Container --- */
+.auth-experience-root {
+  min-height: calc(100vh - 85px);
+  display: grid;
+  grid-template-columns: minmax(380px, 1fr) minmax(460px, 1.15fr);
+  background: var(--canvas);
+  color: var(--ink);
+  position: relative;
+  overflow: hidden;
+}
+
+.auth-column {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ==========================================================================
+   LEFT COLUMN — HANDLOOM CONNECT VISUAL STORYTELLING
+   ========================================================================== */
+.auth-column--story {
+  height: 100%;
+  min-height: 640px;
+  overflow: hidden;
+  border-right: 1px solid var(--border);
+}
+
+.storytelling-auth-panel {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  min-height: 640px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: clamp(28px, 4vw, 56px);
+  overflow: hidden;
+}
+
+.storytelling-bg-container {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.storytelling-bg-slide {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.storytelling-bg-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  transform: scale(1.02);
+}
+
+.storytelling-vignette {
+  position: absolute;
+  inset: 0;
+  background: var(--story-vignette-h), var(--story-vignette-v);
+  pointer-events: none;
+}
+
+.storytelling-weave-overlay {
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(var(--gold) 0.75px, transparent 0.75px);
+  background-size: 24px 24px;
+  opacity: 0.12;
+  pointer-events: none;
+}
+
+.storytelling-content {
+  position: relative;
+  z-index: 2;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 2rem;
+}
+
+/* Brand Lockup */
+.storytelling-brand-lockup {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.storytelling-brand-emblem-wrap {
+  position: relative;
+  width: 44px;
+  height: 44px;
+  flex-shrink: 0;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: var(--canvas-secondary);
-  color: var(--ink);
-  padding: clamp(32px, 5vw, 64px) var(--spacing-md);
 }
 
-.auth-card {
+.storytelling-emblem {
   width: 100%;
-  max-width: 460px;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-xl);
-  padding: clamp(24px, 5vw, 40px);
-  box-shadow: var(--shadow, 0 12px 40px rgba(0, 0, 0, 0.3));
+  height: 100%;
+  object-fit: contain;
+  position: relative;
+  z-index: 2;
+  filter: drop-shadow(0 2px 8px rgba(212, 175, 55, 0.4));
 }
 
-.auth-card__header {
-  text-align: center;
-  margin-bottom: var(--spacing-lg);
+.storytelling-emblem-halo {
+  position: absolute;
+  inset: -4px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(212, 175, 55, 0.35) 0%, transparent 70%);
+  pointer-events: none;
 }
 
-.auth-card__header h1 {
+.storytelling-brand-meta {
+  display: flex;
+  flex-direction: column;
+}
+
+.storytelling-eyebrow {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  color: var(--gold);
+}
+
+.storytelling-brand-name {
   font-family: var(--font-display);
-  font-size: clamp(2rem, 4vw, 2.4rem);
-  font-weight: 400;
-  margin-bottom: var(--spacing-xs);
-  line-height: 1.15;
+  font-size: 1.35rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+  line-height: 1.1;
 }
 
-.auth-card__header p {
-  color: var(--muted);
+/* Story Narrative Center */
+.storytelling-narrative {
+  margin-block: auto;
+  max-width: 520px;
+}
+
+.storytelling-narrative-card {
+  background: var(--story-card-bg);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: clamp(20px, 3.5vw, 32px);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.15);
+}
+
+.storytelling-craft-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(212, 175, 55, 0.12);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 5px 14px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--gold);
+  margin-bottom: 1rem;
+}
+
+.craft-badge-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--gold);
+  box-shadow: 0 0 8px var(--gold);
+}
+
+.craft-badge-sep {
+  opacity: 0.5;
+}
+
+.craft-badge-region {
+  color: var(--ink);
+  opacity: 0.85;
+}
+
+.storytelling-headline {
+  font-family: var(--font-display);
+  font-size: clamp(2.2rem, 3.8vw, 3.2rem);
+  font-weight: 400;
+  line-height: 1.1;
+  color: var(--ink);
+  margin: 0 0 0.5rem;
+  letter-spacing: -0.02em;
+}
+
+.storytelling-tagline {
+  font-family: var(--font-display);
+  font-size: clamp(1.05rem, 1.8vw, 1.35rem);
+  color: var(--gold);
+  font-style: italic;
+  margin: 0 0 1.25rem;
+  line-height: 1.35;
+}
+
+.storytelling-quote {
+  font-family: var(--font-ui);
   font-size: 0.95rem;
-  line-height: 1.5;
+  line-height: 1.6;
+  color: var(--muted);
+  border-left: 2px solid var(--gold);
+  padding-left: 14px;
   margin: 0;
 }
 
-.auth-form {
+/* Storytelling Footer */
+.storytelling-footer {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-md);
+  gap: 1.25rem;
 }
 
-.auth-form-group {
+.storytelling-stats-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border);
+  gap: 12px;
+}
+
+.storytelling-stat {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 2px;
 }
 
-.auth-form-group label {
-  font-size: 0.82rem;
+.stat-number {
+  font-family: var(--font-display);
+  font-size: 1.45rem;
   font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  color: var(--muted);
-  line-height: 1.2;
+  color: var(--gold);
+  line-height: 1;
 }
 
-.auth-input-wrapper {
+.stat-label {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--muted);
+}
+
+.storytelling-stat-divider {
+  width: 1px;
+  height: 28px;
+  background: var(--border);
+}
+
+/* Carousel Navigator Pills */
+.storytelling-carousel-nav {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.storytelling-nav-pill {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 6px 14px;
+  color: var(--muted);
+  font-size: 0.78rem;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.storytelling-nav-pill:hover {
+  border-color: var(--gold);
+  color: var(--ink);
+}
+
+.storytelling-nav-pill.is-active {
+  background: rgba(212, 175, 55, 0.15);
+  border-color: var(--gold);
+  color: var(--gold);
+  font-weight: 600;
+}
+
+.pill-bar {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+  opacity: 0.7;
+}
+
+.storytelling-nav-pill.is-active .pill-bar {
+  opacity: 1;
+  box-shadow: 0 0 6px currentColor;
+}
+
+/* ==========================================================================
+   RIGHT COLUMN — INTERACTIVE BUBBLE AUTHENTICATION
+   ========================================================================== */
+.auth-column--interactive {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(24px, 4vw, 56px);
+  position: relative;
+  z-index: 2;
+  overflow: hidden;
+}
+
+.auth-bubble-viewport {
+  width: 100%;
+  max-width: 530px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+/* Outer Interactive Bubble Wrapper */
+.interactive-bubble-wrapper {
+  position: relative;
+  width: 100%;
+  min-height: 520px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 42px;
+  transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: transform;
+}
+
+/* SVG Liquid Portal Layer */
+.interactive-bubble-svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1;
+  overflow: visible;
+  filter: drop-shadow(var(--bubble-shadow));
+}
+
+.bubble-fluid-body {
+  backdrop-filter: blur(28px) saturate(180%);
+  -webkit-backdrop-filter: blur(28px) saturate(180%);
+  transition: filter 0.3s ease;
+}
+
+/* Floating Golden Silk Micro-Particles */
+.bubble-sparkles-layer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 2;
+  overflow: hidden;
+  border-radius: inherit;
+}
+
+.bubble-sparkle {
+  position: absolute;
+  border-radius: 50%;
+  background: var(--bubble-sparkle-color);
+  box-shadow: 0 0 8px var(--bubble-sparkle-color);
+  pointer-events: none;
+  animation: bubbleSparkleFloat linear infinite alternate;
+}
+
+@keyframes bubbleSparkleFloat {
+  0% { transform: translate(0, 0) scale(0.8); opacity: 0.3; }
+  50% { opacity: 0.85; }
+  100% { transform: translate(8px, -14px) scale(1.2); opacity: 0.2; }
+}
+
+/* Form Container Inside the Bubble */
+.bubble-content-container {
+  position: relative;
+  z-index: 3;
+  width: 100%;
+  padding: clamp(28px, 4.5vw, 44px);
+  display: flex;
+  flex-direction: column;
+}
+
+.auth-bubble-card {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+/* --- Bubble Pill Mode Switcher --- */
+.bubble-mode-tabs {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  background: var(--bubble-tab-bg);
+  border: 1px solid var(--bubble-card-border);
+  border-radius: 999px;
+  padding: 4px;
+  gap: 4px;
+  margin-bottom: 0.5rem;
+}
+
+.bubble-tab-btn {
+  position: relative;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 9px 18px;
+  background: transparent;
+  border: none;
+  border-radius: 999px;
+  font-family: var(--font-ui);
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--muted);
+  cursor: pointer;
+  transition: color 0.2s ease;
+  z-index: 2;
+}
+
+.bubble-tab-btn:hover {
+  color: var(--ink);
+}
+
+.bubble-tab-btn.is-active {
+  color: var(--ink);
+}
+
+:root[data-theme='dark'] .bubble-tab-btn.is-active {
+  color: #FFFFFF;
+}
+
+:root[data-theme='light'] .bubble-tab-btn.is-active {
+  color: #0A0908;
+}
+
+.bubble-tab-active-pill {
+  position: absolute;
+  inset: 0;
+  background: var(--bubble-tab-active-bg);
+  border: 1px solid var(--gold);
+  border-radius: 999px;
+  z-index: -1;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* --- Feedback Banners (Error / Success) --- */
+.bubble-feedback-banner {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  border-radius: var(--radius-md);
+  font-size: 0.88rem;
+  line-height: 1.4;
+  overflow: hidden;
+}
+
+.bubble-feedback-banner--error {
+  background: rgba(220, 38, 38, 0.14);
+  border: 1px solid rgba(220, 38, 38, 0.35);
+  color: #EF4444;
+}
+
+:root[data-theme='light'] .bubble-feedback-banner--error {
+  background: rgba(220, 38, 38, 0.08);
+  color: #B91C1C;
+  border-color: rgba(220, 38, 38, 0.3);
+}
+
+.bubble-feedback-banner--success {
+  background: rgba(46, 139, 87, 0.15);
+  border: 1px solid rgba(46, 139, 87, 0.35);
+  color: #10B981;
+}
+
+:root[data-theme='light'] .bubble-feedback-banner--success {
+  background: rgba(46, 139, 87, 0.1);
+  color: #047857;
+  border-color: rgba(46, 139, 87, 0.3);
+}
+
+/* --- In-Bubble Form Viewport --- */
+.bubble-form-viewport {
+  position: relative;
+  width: 100%;
+}
+
+.bubble-form-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 1.15rem;
+}
+
+.bubble-panel-title {
+  text-align: center;
+  margin-bottom: 0.25rem;
+}
+
+.bubble-panel-title h3 {
+  font-family: var(--font-display);
+  font-size: clamp(1.6rem, 2.5vw, 2rem);
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+  margin: 0 0 4px;
+}
+
+.bubble-panel-title p {
+  font-size: 0.88rem;
+  color: var(--muted);
+  margin: 0;
+  line-height: 1.45;
+}
+
+.bubble-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.bubble-field-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.bubble-field-group label {
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--muted);
+}
+
+.bubble-label-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.bubble-text-btn {
+  background: none;
+  border: none;
+  color: var(--gold);
+  font-size: 0.8rem;
+  font-weight: 500;
+  cursor: pointer;
+  padding: 0;
+  transition: color 0.2s ease;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.bubble-text-btn:hover {
+  color: var(--gold-hover);
+}
+
+.bubble-input-wrapper {
   position: relative;
   display: flex;
   align-items: center;
   width: 100%;
 }
 
-.auth-input-wrapper input,
-.auth-select {
+.bubble-input-icon {
+  position: absolute;
+  left: 14px;
+  color: var(--muted);
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+}
+
+.bubble-input {
   width: 100%;
-  background: var(--canvas-secondary);
-  border: 1px solid var(--border);
-  color: var(--ink);
-  font-family: var(--font-sans);
-  font-size: 0.98rem;
-  line-height: 1.4;
-  padding: 13px 16px;
+  background: var(--bubble-input-bg);
+  border: 1px solid var(--bubble-input-border);
   border-radius: var(--radius-md);
-  transition: border-color 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease;
+  color: var(--ink);
+  font-family: var(--font-ui);
+  font-size: 0.95rem;
+  padding: 12px 16px 12px 40px;
+  transition: all 0.2s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-.auth-input-wrapper input:focus,
-.auth-select:focus {
+.bubble-input:focus {
   outline: none;
-  border-color: var(--gold);
+  border-color: var(--bubble-input-border-focus);
+  box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.18);
   background: var(--canvas);
-  box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.15);
 }
 
-.auth-input-wrapper input:disabled {
+.bubble-input::placeholder {
+  color: var(--muted);
+  opacity: 0.65;
+}
+
+.bubble-input:disabled {
   opacity: 0.5;
   cursor: not-allowed;
 }
 
-.password-toggle {
+.bubble-pw-toggle {
   position: absolute;
   right: 12px;
   background: transparent;
@@ -103,84 +671,265 @@
   cursor: pointer;
   display: flex;
   align-items: center;
-  justify-content: center;
   padding: 6px;
+  border-radius: 4px;
   transition: color 0.2s ease;
 }
 
-.password-toggle:hover {
+.bubble-pw-toggle:hover {
   color: var(--gold);
 }
 
-.auth-options {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-size: 0.9rem;
-  flex-wrap: wrap;
-  gap: 8px;
+.bubble-field-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
 }
 
-.checkbox-label {
+.bubble-field-row .bubble-input {
+  padding-left: 14px;
+}
+
+.bubble-aux-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.86rem;
+}
+
+.bubble-checkbox-label {
   display: inline-flex;
   align-items: center;
   gap: 10px;
   cursor: pointer;
-  font-size: 0.9rem;
   color: var(--ink);
+  user-select: none;
 }
 
-.checkbox-label input[type="checkbox"] {
-  width: 18px;
-  height: 18px;
+.bubble-checkbox-label input[type="checkbox"] {
+  width: 17px;
+  height: 17px;
   accent-color: var(--gold);
   cursor: pointer;
   flex-shrink: 0;
 }
 
-.auth-link {
-  color: var(--gold);
-  text-decoration: underline;
-  text-underline-offset: 4px;
-  font-weight: 500;
-  transition: color 0.2s ease;
-}
-
-.auth-link:hover {
-  color: var(--gold-hover);
-}
-
-.auth-error {
-  background: rgba(211, 47, 47, 0.08);
-  color: #c5221f;
-  padding: 12px 16px;
-  border-radius: var(--radius-md);
-  font-size: 0.9rem;
-  border: 1px solid rgba(211, 47, 47, 0.25);
+.bubble-terms-copy {
+  color: var(--muted);
+  font-size: 0.82rem;
   line-height: 1.4;
 }
 
-:root[data-theme='dark'] .auth-error {
-  background: rgba(255, 60, 60, 0.12);
-  color: #ff6b6b;
-  border-color: rgba(255, 60, 60, 0.3);
+.bubble-legal-link {
+  color: var(--gold);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  font-weight: 500;
 }
 
-.auth-footer {
-  margin-top: var(--spacing-lg);
-  text-align: center;
-  font-size: 0.92rem;
+/* Submit Button & Animations */
+.bubble-submit-btn {
+  width: 100%;
+  margin-top: 6px;
+  min-height: 48px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: var(--brand);
+  color: var(--brand-ink, #0A0908);
+  font-weight: 700;
+  border-radius: var(--radius-md);
+  box-shadow: 0 4px 18px rgba(212, 175, 55, 0.25);
+  transition: all 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.bubble-submit-btn:hover:not(:disabled) {
+  background: var(--brand-deep);
+  color: #FFFFFF;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 24px rgba(212, 175, 55, 0.4);
+}
+
+.btn-label-wrap,
+.btn-spinner-wrap {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.btn-spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid currentColor;
+  border-top-color: transparent;
+  border-radius: 50%;
+  animation: bubbleSpin 0.75s linear infinite;
+}
+
+@keyframes bubbleSpin {
+  to { transform: rotate(360deg); }
+}
+
+.bubble-footer-prompt {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  font-size: 0.88rem;
   color: var(--muted);
-  line-height: 1.5;
+  margin-top: 0.25rem;
 }
 
-.auth-footer a {
+.bubble-inline-switch-btn {
+  background: none;
+  border: none;
   color: var(--gold);
   font-weight: 600;
-  margin-left: 4px;
+  cursor: pointer;
   text-decoration: underline;
-  text-underline-offset: 4px;
+  text-underline-offset: 3px;
+  padding: 0;
+  transition: color 0.2s ease;
 }
+
+.bubble-inline-switch-btn:hover {
+  color: var(--gold-hover);
+}
+
+/* Reset Password Success Box */
+.bubble-reset-success-box {
+  text-align: center;
+  padding: 1.5rem 1rem;
+}
+
+.reset-success-icon-wrap {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: rgba(46, 139, 87, 0.15);
+  border: 1px solid rgba(46, 139, 87, 0.35);
+  color: #10B981;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1rem;
+}
+
+.bubble-reset-success-box h4 {
+  font-family: var(--font-display);
+  font-size: 1.6rem;
+  margin: 0 0 0.5rem;
+  color: var(--ink);
+}
+
+.bubble-reset-success-box p {
+  color: var(--muted);
+  font-size: 0.92rem;
+  line-height: 1.5;
+  margin: 0;
+}
+
+/* Bottom Direct Trade Seal */
+.bubble-bottom-seal {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--gold);
+  opacity: 0.85;
+  text-align: center;
+  padding-top: 0.5rem;
+  border-top: 1px dashed var(--bubble-card-border);
+}
+
+.seal-emblem {
+  font-size: 0.8rem;
+}
+
+/* ==========================================================================
+   RESPONSIVE DESIGN BREAKPOINTS
+   ========================================================================== */
+@media (max-width: 1024px) {
+  .auth-experience-root {
+    grid-template-columns: 1fr 1fr;
+  }
+  .storytelling-auth-panel {
+    padding: clamp(24px, 3.5vw, 40px);
+  }
+  .storytelling-headline {
+    font-size: 2.2rem;
+  }
+}
+
+@media (max-width: 860px) {
+  .auth-experience-root {
+    grid-template-columns: 1fr;
+    min-height: auto;
+  }
+
+  .auth-column--story {
+    min-height: 480px;
+    border-right: none;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .storytelling-auth-panel {
+    min-height: 480px;
+    padding: 28px 20px;
+  }
+
+  .storytelling-headline {
+    font-size: 2rem;
+  }
+
+  .storytelling-narrative {
+    max-width: 100%;
+  }
+
+  .auth-column--interactive {
+    padding: 32px 16px 64px;
+  }
+
+  .interactive-bubble-wrapper {
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 520px) {
+  .bubble-field-row {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .bubble-content-container {
+    padding: 24px 18px;
+  }
+
+  .storytelling-stats-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .storytelling-stat-divider {
+    display: none;
+  }
+}
+
+/* Reduced Motion Mode */
+@media (prefers-reduced-motion: reduce) {
+  .interactive-bubble-wrapper,
+  .bubble-sparkle,
+  .btn-spinner {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
 
 /* Profile Page */
 .profile-page {
