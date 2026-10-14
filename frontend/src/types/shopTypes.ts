@@ -1,6 +1,5 @@
 /* ─── Shop Domain Types ──────────────────────────────────────────────
-   Designed so mock data can be replaced by Express/MySQL API responses
-   without changing component interfaces.
+   Defines the types and interfaces for the Marketplace shop domain.
 ──────────────────────────────────────────────────────────────────── */
 
 export interface ShopArtisan {

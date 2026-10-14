@@ -497,7 +497,7 @@ export function ArtisanStoryPage() {
                 color: 'var(--muted)'
               }}
             >
-              🔒 <strong>Strict Provenance Guarantee:</strong> All details shown above represent verified application records stored in the authoritative MySQL database. No unverified historical claims, fabricated awards, or external inferences are displayed.
+              🔒 <strong>Strict Provenance Guarantee:</strong> All details shown above represent verified application records stored in the authoritative database. No unverified historical claims, fabricated awards, or external inferences are displayed.
             </div>
           </div>
 
@@ -604,7 +604,7 @@ export function ArtisanStoryPage() {
           </div>
         </div>
 
-        {/* Associated Handloom Products from MySQL */}
+        {/* Associated Handloom Products from Catalog */}
         <div>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: '20px', flexWrap: 'wrap', gap: '10px' }}>
             <div>
