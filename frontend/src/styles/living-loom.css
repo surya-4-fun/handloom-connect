@@ -11,19 +11,20 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  overflow: hidden;
+  overflow-x: hidden;
+  overflow-y: auto;
   background-color: #0E0308; /* Deep obsidian cherry base before WebGL */
   color: #FBF9F5;
-  padding: clamp(96px, 12vw, 136px) clamp(16px, 4vw, 36px) clamp(48px, 6vw, 72px);
+  padding: clamp(124px, 14vw, 150px) clamp(16px, 4vw, 36px) clamp(48px, 6vw, 72px);
   box-sizing: border-box;
 }
 
 /* Three.js Canvas Container */
 .living-loom-canvas-host {
-  position: absolute;
+  position: fixed;
   inset: 0;
-  width: 100%;
-  height: 100%;
+  width: 100vw;
+  height: 100vh;
   z-index: 1;
   pointer-events: none;
   overflow: hidden;
@@ -66,7 +67,7 @@
 
 /* Cinematic Atmospheric Vignette */
 .living-loom-vignette {
-  position: absolute;
+  position: fixed;
   inset: 0;
   z-index: 2;
   pointer-events: none;

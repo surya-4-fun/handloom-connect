@@ -26,13 +26,29 @@ export function SiteHeader() {
   const [menuOpen, setMenuOpen] = useState(false)
   const [megaOpen, setMegaOpen] = useState(false)
   const [searchOpen, setSearchOpen] = useState(false)
-  const [dark, setDark] = useState(() => localStorage.getItem('hc-theme') !== 'light')
+  const [dark, setDark] = useState(() => {
+    const params = new URLSearchParams(window.location.search)
+    const urlTheme = params.get('theme')
+    if (urlTheme === 'light') return false
+    if (urlTheme === 'dark') return true
+    return localStorage.getItem('hc-theme') !== 'light'
+  })
   const [activeSection, setActiveSection] = useState('home')
   const location = useLocation()
   const navigate = useNavigate()
   
   const { user, isAuthenticated } = useAuth()
   const { cartCount } = useCart()
+
+  useEffect(() => {
+    const params = new URLSearchParams(location.search)
+    const urlTheme = params.get('theme')
+    if (urlTheme === 'light') {
+      setDark(false)
+    } else if (urlTheme === 'dark') {
+      setDark(true)
+    }
+  }, [location.search])
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 48)
@@ -109,8 +125,10 @@ export function SiteHeader() {
     }
   }
 
+  const isAuthRoute = location.pathname === '/login' || location.pathname === '/register' || location.pathname === '/signup'
+
   return (
-    <header className={`site-header ${scrolled ? 'site-header--solid' : ''}`}>
+    <header className={`site-header ${scrolled || isAuthRoute ? 'site-header--solid' : ''} ${isAuthRoute ? 'site-header--auth' : ''}`}>
       <div className="announcement">
         <span>Handloom Direct Trade: 100% Guaranteed Living Wages for Master Weavers</span>
         <i></i>

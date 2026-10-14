@@ -7,7 +7,7 @@ const SESSION_KEY = 'hc-cinematic-intro-v2-seen'
 export function CinematicIntro() {
   const { pathname } = useLocation()
   const scope = useRef<HTMLDivElement>(null)
-  const [shouldPlay] = useState(() => pathname === '/' && sessionStorage.getItem(SESSION_KEY) !== 'true')
+  const [shouldPlay] = useState(() => pathname === '/' && sessionStorage.getItem(SESSION_KEY) !== 'true' && !window.location.search.includes('skipIntro'))
   const [isMounted, setIsMounted] = useState(shouldPlay)
 
   const removeOverlay = useCallback(() => {

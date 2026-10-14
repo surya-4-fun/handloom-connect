@@ -92,7 +92,7 @@ export function FloatingChatbot() {
           position: 'fixed',
           bottom: '30px',
           right: '30px',
-          zIndex: 999,
+          zIndex: 90,
           width: '60px',
           height: '60px',
           borderRadius: '50%',
