@@ -111,8 +111,8 @@ export function LivingLoomCanvas({ className = '' }: LivingLoomCanvasProps) {
 
     // 5. Grand Flowing Silk Drape (Primary Mesh)
     // Deep burgundy / rich plum / black cherry with champagne sheen
-    const silkCols = isMobile ? 64 : 110
-    const silkRows = isMobile ? 48 : 80
+    const silkCols = 110
+    const silkRows = 80
     const silkGeo = new THREE.PlaneGeometry(26, 17, silkCols, silkRows)
     const silkOrigPos = silkGeo.attributes.position.clone()
 
@@ -137,7 +137,7 @@ export function LivingLoomCanvas({ className = '' }: LivingLoomCanvasProps) {
 
     // 6. Banarasi Zari Accent Ribbon (Secondary Weave)
     // Winding golden silk ribbon undulating through the space
-    const ribbonCols = isMobile ? 50 : 90
+    const ribbonCols = 90
     const ribbonRows = 16
     const ribbonGeo = new THREE.PlaneGeometry(22, 2.6, ribbonCols, ribbonRows)
     const ribbonOrigPos = ribbonGeo.attributes.position.clone()
@@ -178,7 +178,7 @@ export function LivingLoomCanvas({ className = '' }: LivingLoomCanvasProps) {
 
     // 8. Floating Golden Motes (Atmospheric Loom Embers)
     const particleTexture = createParticleTexture()
-    const particleCount = isMobile ? 65 : 180
+    const particleCount = 180
     const particleGeo = new THREE.BufferGeometry()
     const particlePositions = new Float32Array(particleCount * 3)
     const particleVelocities: { x: number; y: number; z: number; phase: number }[] = []

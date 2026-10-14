@@ -339,6 +339,15 @@ const grainFragmentShader = `
 const lerp = (start: number, end: number, amt: number) => start + (end - start) * amt;
 const clampVal = (val: number, min: number, max: number) => Math.min(max, Math.max(min, val));
 
+// Reusable corner offsets to eliminate per-frame object allocation
+const CORNER_OFFSETS: readonly [number, number][] = [
+  [-0.5, -0.5],
+  [0.5, -0.5],
+  [-0.5, 0.5],
+  [0.5, 0.5],
+  [0.0, 0.0]
+];
+
 class SpiralEngine {
   gl: WebGLRenderingContext | WebGL2RenderingContext;
   renderer: Renderer;
@@ -713,15 +722,8 @@ class SpiralEngine {
 
       // Project vertices to screen-space coordinates for pixel hover/click tests
       let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
-      const cornerOffsets = [
-        [-0.5, -0.5],
-        [0.5, -0.5],
-        [-0.5, 0.5],
-        [0.5, 0.5],
-        [0.0, 0.0]
-      ];
 
-      for (const [ox, oy] of cornerOffsets) {
+      for (const [ox, oy] of CORNER_OFFSETS) {
         const dx = ox * 1.6;
         const dy = oy * 1.05;
         const pz = 0.25 * Math.sin((ox + 0.5) * Math.PI);
@@ -820,17 +822,24 @@ export function SpiralHero() {
   const containerRef = useRef<HTMLDivElement>(null);
 
   const [activeIndex, setActiveIndex] = useState(0);
-  const [scrollPct, setScrollPct] = useState(0);
   const [hoveredCard, setHoveredCard] = useState<CardData | null>(null);
   const [selectedProject, setSelectedProject] = useState<CardData | null>(null);
   const [isMobile, setIsMobile] = useState(false);
 
   const engineRef = useRef<SpiralEngine | null>(null);
   const pointerPos = useRef({ x: 0, y: 0, active: false });
+  const progressRef = useRef<HTMLDivElement>(null);
+  const activeRef = useRef<number>(0);
+  const hoveredCardRef = useRef<CardData | null>(null);
 
   useEffect(() => {
     setIsMobile(window.matchMedia('(pointer: coarse)').matches);
   }, []);
+
+  // Sync hoveredCardRef to eliminate cursor effect re-subscription on hover change
+  useEffect(() => {
+    hoveredCardRef.current = hoveredCard;
+  }, [hoveredCard]);
 
   // Load custom lens refraction overlay and configure scroll trigger pinning
   useEffect(() => {
@@ -840,15 +849,47 @@ export function SpiralHero() {
 
     const engine = new SpiralEngine(canvas, CARDS_DATA, {
       onState: (state: { active: number; scrollOffset: number }) => {
-        setActiveIndex(state.active);
-        // Calculate scroll scrub pct
-        const total = CARDS_DATA.length;
-        const normScroll = ((state.scrollOffset % total) + total) % total;
-        setScrollPct(normScroll / (total - 1 || 1));
+        // Direct DOM update for smooth 60fps scrub without component rerendering
+        if (progressRef.current) {
+          const total = CARDS_DATA.length;
+          const normScroll = ((state.scrollOffset % total) + total) % total;
+          const pct = normScroll / (total - 1 || 1);
+          progressRef.current.style.left = `${pct * 100}%`;
+        }
+        if (activeRef.current !== state.active) {
+          activeRef.current = state.active;
+          setActiveIndex(state.active);
+          if (progressRef.current) {
+            progressRef.current.style.background = `rgb(${CARDS_DATA[state.active].accent.map(v => Math.round(v * 255)).join(',')})`;
+          }
+        }
       }
     });
     engineRef.current = engine;
     engine.start();
+
+    // IntersectionObserver to pause rendering when hero is offscreen
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          engine.start();
+        } else {
+          engine.stop();
+        }
+      },
+      { threshold: 0.05 }
+    );
+    observer.observe(container);
+
+    // Pause on tab visibility change
+    const handleVisibility = () => {
+      if (document.hidden) {
+        engine.stop();
+      } else {
+        engine.start();
+      }
+    };
+    document.addEventListener('visibilitychange', handleVisibility);
 
     const handleResize = () => engine.resize();
     const handleHeroWheel = (e: WheelEvent) => {
@@ -858,12 +899,40 @@ export function SpiralHero() {
       }
     };
 
+    // Mobile touch swipe interaction
+    let touchStartY = 0;
+    let touchStartX = 0;
+
+    const handleTouchStart = (e: TouchEvent) => {
+      if (e.touches.length === 1) {
+        touchStartY = e.touches[0].clientY;
+        touchStartX = e.touches[0].clientX;
+      }
+    };
+
+    const handleTouchMove = (e: TouchEvent) => {
+      if (e.touches.length === 1 && window.scrollY < 50) {
+        const dy = touchStartY - e.touches[0].clientY;
+        const dx = touchStartX - e.touches[0].clientX;
+        touchStartY = e.touches[0].clientY;
+        touchStartX = e.touches[0].clientX;
+        const delta = Math.abs(dy) > Math.abs(dx) ? dy * 3 : dx * 3;
+        engine.addScroll(delta, true);
+      }
+    };
+
     window.addEventListener('resize', handleResize);
     window.addEventListener('wheel', handleHeroWheel, { passive: false });
+    container.addEventListener('touchstart', handleTouchStart, { passive: true });
+    container.addEventListener('touchmove', handleTouchMove, { passive: true });
 
     return () => {
+      observer.disconnect();
+      document.removeEventListener('visibilitychange', handleVisibility);
       window.removeEventListener('resize', handleResize);
       window.removeEventListener('wheel', handleHeroWheel);
+      container.removeEventListener('touchstart', handleTouchStart);
+      container.removeEventListener('touchmove', handleTouchMove);
       engine.dispose();
       engineRef.current = null;
     };
@@ -890,7 +959,7 @@ export function SpiralHero() {
       const targetOpacity = pointerPos.current.active ? 1 : 0;
       opacity += (targetOpacity - opacity) * 0.12;
 
-      const targetScale = hoveredCard ? 1.05 : 0.85;
+      const targetScale = hoveredCardRef.current ? 1.05 : 0.85;
       scale += (targetScale - scale) * 0.15;
 
       cursor.style.transform = `translate3d(${cx}px, ${cy}px, 0) scale(${scale})`;
@@ -899,10 +968,19 @@ export function SpiralHero() {
       requestAnimationFrame(updatePosition);
     };
 
-    const handleMouseMove = (e: MouseEvent) => {
-      // Bounds check: Only activate cursor lens when mouse is strictly inside hero container
+    let cachedRect = containerRef.current?.getBoundingClientRect() || null;
+    const updateRect = () => {
       if (containerRef.current) {
-        const rect = containerRef.current.getBoundingClientRect();
+        cachedRect = containerRef.current.getBoundingClientRect();
+      }
+    };
+    window.addEventListener('resize', updateRect);
+    window.addEventListener('scroll', updateRect, { passive: true });
+
+    const handleMouseMove = (e: MouseEvent) => {
+      // Bounds check using cachedRect to avoid forced reflow
+      const rect = cachedRect;
+      if (rect) {
         if (e.clientY < rect.top || e.clientY > rect.bottom || e.clientX < rect.left || e.clientX > rect.right) {
           pointerPos.current.active = false;
           setHoveredCard(null);
@@ -935,7 +1013,7 @@ export function SpiralHero() {
     };
 
     const handleMouseDown = () => {
-      if (hoveredCard) {
+      if (hoveredCardRef.current) {
         // Shrink cursor lens slightly on press
         scale = 0.95;
       }
@@ -958,6 +1036,8 @@ export function SpiralHero() {
     const animId = requestAnimationFrame(updatePosition);
 
     return () => {
+      window.removeEventListener('resize', updateRect);
+      window.removeEventListener('scroll', updateRect);
       window.removeEventListener('mousemove', handleMouseMove);
       window.removeEventListener('mousedown', handleMouseDown);
       document.removeEventListener('mouseleave', handleMouseLeave);
@@ -968,7 +1048,7 @@ export function SpiralHero() {
       document.body.style.cursor = '';
       document.body.style.removeProperty('cursor');
     };
-  }, [hoveredCard]);
+  }, []);
 
 
 
@@ -1053,9 +1133,10 @@ export function SpiralHero() {
             />
           ))}
           <div
+            ref={progressRef}
             className="slide-counter-progress"
             style={{
-              left: `${scrollPct * 100}%`,
+              left: '0%',
               background: `rgb(${CARDS_DATA[activeIndex].accent.map(v => Math.round(v * 255)).join(',')})`
             }}
           />

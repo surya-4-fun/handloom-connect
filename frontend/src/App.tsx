@@ -4,17 +4,16 @@ import { AppLayout } from './layouts/AppLayout'
 import { AuthProvider } from './context/AuthContext'
 import { ProtectedRoute } from './components/navigation/ProtectedRoute'
 import { HomePage } from './pages/HomePage'
-import { MarketplacePage } from './pages/MarketplacePage'
-import { ProductDetailPage } from './pages/ProductDetailPage'
-import { ArtisansPage } from './pages/ArtisansPage'
 
-import { AIAssistantPage } from './pages/AIAssistantPage'
-import { CartWishlistPage } from './pages/CartWishlistPage'
-import { AboutPage } from './pages/AboutPage'
-
-import { ARStudioPage } from './pages/ARStudioPage'
-import { OrderTrackingPage } from './pages/OrderTrackingPage'
-import { OriginMapPage } from './pages/OriginMapPage'
+const MarketplacePage = lazy(() => import('./pages/MarketplacePage').then(m => ({ default: m.MarketplacePage })))
+const ProductDetailPage = lazy(() => import('./pages/ProductDetailPage').then(m => ({ default: m.ProductDetailPage })))
+const ArtisansPage = lazy(() => import('./pages/ArtisansPage').then(m => ({ default: m.ArtisansPage })))
+const AIAssistantPage = lazy(() => import('./pages/AIAssistantPage').then(m => ({ default: m.AIAssistantPage })))
+const CartWishlistPage = lazy(() => import('./pages/CartWishlistPage').then(m => ({ default: m.CartWishlistPage })))
+const AboutPage = lazy(() => import('./pages/AboutPage').then(m => ({ default: m.AboutPage })))
+const ARStudioPage = lazy(() => import('./pages/ARStudioPage').then(m => ({ default: m.ARStudioPage })))
+const OrderTrackingPage = lazy(() => import('./pages/OrderTrackingPage').then(m => ({ default: m.OrderTrackingPage })))
+const OriginMapPage = lazy(() => import('./pages/OriginMapPage').then(m => ({ default: m.OriginMapPage })))
 
 const NotFoundPage = lazy(() => import('./pages/NotFoundPage').then((module) => ({ default: module.NotFoundPage })))
 const LoginPage = lazy(() => import('./pages/LoginPage').then(m => ({ default: m.LoginPage })))
