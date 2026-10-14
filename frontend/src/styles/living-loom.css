@@ -1,0 +1,693 @@
+/* ==========================================================================
+   HANDLOOM CONNECT — THE LIVING LOOM 3D AUTHENTICATION EXPERIENCE
+   Cinematic Indian silk atelier atmosphere, real-time 3D, and restrained glass
+   ========================================================================== */
+
+/* Full Viewport Ambient Canvas Wrapper */
+.living-loom-page {
+  position: relative;
+  min-height: 100vh;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background-color: #0E0308; /* Deep obsidian cherry base before WebGL */
+  color: #FBF9F5;
+  padding: clamp(96px, 12vw, 136px) clamp(16px, 4vw, 36px) clamp(48px, 6vw, 72px);
+  box-sizing: border-box;
+}
+
+/* Three.js Canvas Container */
+.living-loom-canvas-host {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  pointer-events: none;
+  overflow: hidden;
+  animation: livingLoomFadeIn 1.4s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+.living-loom-canvas-host canvas {
+  display: block;
+  width: 100% !important;
+  height: 100% !important;
+}
+
+@keyframes livingLoomFadeIn {
+  from {
+    opacity: 0;
+    transform: scale(1.02);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Fallback Animated Gradient Silk (Only active if WebGL is unavailable) */
+.living-loom-fallback-silk {
+  position: absolute;
+  inset: 0;
+  background: 
+    radial-gradient(ellipse at 25% 35%, rgba(163, 24, 83, 0.45) 0%, transparent 55%),
+    radial-gradient(ellipse at 75% 65%, rgba(212, 175, 55, 0.22) 0%, transparent 60%),
+    radial-gradient(circle at 50% 50%, #200412 0%, #0E0308 100%);
+  background-size: 150% 150%;
+  animation: livingLoomFallbackShift 14s ease-in-out infinite alternate;
+}
+
+@keyframes livingLoomFallbackShift {
+  0% { background-position: 0% 50%; }
+  100% { background-position: 100% 50%; }
+}
+
+/* Cinematic Atmospheric Vignette */
+.living-loom-vignette {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  background: radial-gradient(
+    circle at 65% 50%,
+    rgba(14, 3, 8, 0.22) 0%,
+    rgba(14, 3, 8, 0.58) 65%,
+    rgba(10, 2, 6, 0.92) 100%
+  );
+}
+
+/* Master Composition Container */
+.living-loom-container {
+  position: relative;
+  z-index: 3;
+  width: 100%;
+  max-width: 1220px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1.15fr 0.92fr;
+  gap: clamp(36px, 5vw, 68px);
+  align-items: center;
+}
+
+@media (max-width: 1024px) {
+  .living-loom-container {
+    grid-template-columns: 1fr;
+    max-width: 520px;
+    gap: 32px;
+  }
+}
+
+/* ==========================================================================
+   LEFT COLUMN: BRAND HERITAGE & EDITORIAL STORYTELLING
+   ========================================================================== */
+.living-loom-story {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding-right: clamp(0px, 2vw, 24px);
+}
+
+@media (max-width: 1024px) {
+  .living-loom-story {
+    display: none; /* Collapses to card header on tablet/mobile for focus */
+  }
+}
+
+.living-loom-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(212, 175, 55, 0.08);
+  border: 1px solid rgba(212, 175, 55, 0.28);
+  padding: 6px 14px;
+  border-radius: 999px;
+  width: fit-content;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+}
+
+.living-loom-badge__emblem {
+  width: 22px;
+  height: 22px;
+  object-fit: contain;
+  filter: drop-shadow(0 2px 8px rgba(212, 175, 55, 0.45));
+}
+
+.living-loom-badge__text {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: #EAC665;
+}
+
+.living-loom-heading {
+  font-family: var(--font-display, 'Cormorant Garamond', Georgia, serif);
+  font-size: clamp(2.6rem, 4.4vw, 3.85rem);
+  font-weight: 500;
+  line-height: 1.08;
+  letter-spacing: -0.02em;
+  margin: 0;
+  color: #FBF9F5;
+  text-shadow: 0 4px 24px rgba(0, 0, 0, 0.65);
+}
+
+.living-loom-heading em {
+  font-style: italic;
+  font-weight: 400;
+  background: linear-gradient(135deg, #FFE8AB 10%, #D4AF37 70%, #B88A24 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.living-loom-narrative {
+  font-size: 1.05rem;
+  line-height: 1.68;
+  color: #D6CBC1;
+  margin: 0;
+  max-width: 520px;
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.5);
+}
+
+/* Heritage Pillars */
+.living-loom-pillars {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 6px;
+}
+
+.living-loom-pillar-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 0.92rem;
+  color: #EDE4D8;
+  letter-spacing: 0.01em;
+}
+
+.living-loom-pillar-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #D4AF37;
+  box-shadow: 0 0 10px rgba(212, 175, 55, 0.8);
+  flex-shrink: 0;
+}
+
+/* Master Weaver Quote Vignette */
+.living-loom-quote-box {
+  border-left: 2px solid rgba(212, 175, 55, 0.5);
+  padding: 12px 18px;
+  margin-top: 14px;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 0 12px 12px 0;
+  backdrop-filter: blur(10px);
+}
+
+.living-loom-quote-text {
+  font-family: var(--font-display, 'Cormorant Garamond', Georgia, serif);
+  font-style: italic;
+  font-size: 1.15rem;
+  line-height: 1.45;
+  color: #F3E5AB;
+  margin: 0 0 4px;
+}
+
+.living-loom-quote-author {
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #A89F91;
+  margin: 0;
+}
+
+/* ==========================================================================
+   RIGHT COLUMN: THE RESTRAINED GLASSMORPHISM ATELIER LOGIN PANEL
+   ========================================================================== */
+.living-loom-card {
+  width: 100%;
+  background: rgba(18, 9, 15, 0.78);
+  border: 1px solid rgba(212, 175, 55, 0.26);
+  border-radius: 24px;
+  padding: clamp(28px, 4.5vw, 40px);
+  box-shadow: 
+    0 24px 70px rgba(0, 0, 0, 0.72),
+    0 0 35px rgba(212, 175, 55, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(28px) saturate(180%);
+  -webkit-backdrop-filter: blur(28px) saturate(180%);
+  box-sizing: border-box;
+  position: relative;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.living-loom-card:hover {
+  border-color: rgba(212, 175, 55, 0.4);
+  box-shadow: 
+    0 28px 75px rgba(0, 0, 0, 0.76),
+    0 0 45px rgba(212, 175, 55, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.16);
+}
+
+/* Card Header (Shown on desktop & tablet) */
+.living-loom-card__header {
+  text-align: center;
+  margin-bottom: 22px;
+}
+
+/* Mobile-only brand banner */
+.living-loom-mobile-brand {
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+  text-decoration: none;
+  color: inherit;
+}
+
+@media (max-width: 1024px) {
+  .living-loom-mobile-brand {
+    display: inline-flex;
+  }
+}
+
+.living-loom-mobile-brand__emblem {
+  width: 44px;
+  height: 44px;
+  object-fit: contain;
+  filter: drop-shadow(0 3px 12px rgba(212, 175, 55, 0.45));
+}
+
+.living-loom-card__title {
+  font-family: var(--font-display, 'Cormorant Garamond', Georgia, serif);
+  font-size: clamp(1.9rem, 3.2vw, 2.3rem);
+  font-weight: 500;
+  color: #FBF9F5;
+  letter-spacing: -0.015em;
+  margin: 4px 0 6px;
+  line-height: 1.15;
+}
+
+.living-loom-card__subtitle {
+  font-size: 0.9rem;
+  color: #C2B6A9;
+  line-height: 1.5;
+  margin: 0;
+}
+
+/* Mode Tabs */
+.living-loom-tabs {
+  display: flex;
+  background: rgba(10, 3, 7, 0.6);
+  border: 1px solid rgba(212, 175, 55, 0.18);
+  border-radius: 999px;
+  padding: 4px;
+  gap: 4px;
+  margin-bottom: 22px;
+}
+
+.living-loom-tab {
+  flex: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 14px;
+  border-radius: 999px;
+  border: 1px solid transparent;
+  background: transparent;
+  color: #A89F91;
+  font-family: var(--font-sans, inherit);
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  cursor: pointer;
+  transition: all 0.22s ease;
+}
+
+.living-loom-tab:hover {
+  color: #FBF9F5;
+}
+
+.living-loom-tab--active {
+  background: rgba(212, 175, 55, 0.14);
+  color: #FFE699;
+  border-color: rgba(212, 175, 55, 0.42);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  font-weight: 700;
+}
+
+/* Feedback Notifications */
+.living-loom-alert {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 12px 16px;
+  border-radius: 10px;
+  font-size: 0.88rem;
+  line-height: 1.45;
+  margin-bottom: 18px;
+  animation: livingLoomAlertIn 0.22s ease-out;
+}
+
+@keyframes livingLoomAlertIn {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.living-loom-alert--error {
+  background: rgba(239, 68, 68, 0.16);
+  border: 1px solid rgba(239, 68, 68, 0.42);
+  color: #FFA5A5;
+}
+
+.living-loom-alert--success {
+  background: rgba(46, 139, 87, 0.2);
+  border: 1px solid rgba(46, 139, 87, 0.45);
+  color: #6EE7B7;
+}
+
+/* Authentication Forms */
+.living-loom-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  animation: livingLoomPanelFade 0.22s ease-out;
+}
+
+@keyframes livingLoomPanelFade {
+  from {
+    opacity: 0.4;
+    transform: translateY(3px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.living-loom-form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+@media (max-width: 520px) {
+  .living-loom-form-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+.living-loom-form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.living-loom-form-group label {
+  font-size: 0.74rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+  color: #BDB0A3;
+  line-height: 1.2;
+}
+
+.living-loom-form-group__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.living-loom-input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.living-loom-input-wrapper input {
+  width: 100%;
+  background: rgba(10, 3, 7, 0.65);
+  border: 1px solid rgba(212, 175, 55, 0.25);
+  color: #FBF9F5;
+  font-family: var(--font-sans, inherit);
+  font-size: 0.94rem;
+  line-height: 1.4;
+  padding: 13px 16px;
+  border-radius: 10px;
+  transition: border-color 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease;
+  box-sizing: border-box;
+}
+
+.living-loom-input-wrapper input::placeholder {
+  color: rgba(251, 249, 245, 0.35);
+}
+
+.living-loom-input-wrapper input:focus {
+  outline: none;
+  border-color: #EAC665;
+  background: rgba(15, 5, 11, 0.85);
+  box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.2);
+}
+
+.living-loom-input-wrapper input:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.living-loom-input-wrapper input[type="password"],
+.living-loom-input-wrapper input[type="text"]:has(~ .living-loom-password-toggle) {
+  padding-right: 44px;
+}
+
+/* Password Toggle */
+.living-loom-password-toggle {
+  position: absolute;
+  right: 8px;
+  background: transparent;
+  border: none;
+  color: #A89F91;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px;
+  border-radius: 6px;
+  transition: color 0.2s ease;
+}
+
+.living-loom-password-toggle:hover {
+  color: #FFE699;
+}
+
+/* Options & Checkboxes */
+.living-loom-options-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  font-size: 0.86rem;
+}
+
+.living-loom-checkbox-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  cursor: pointer;
+  color: #D6CBC1;
+  font-size: 0.86rem;
+  user-select: none;
+}
+
+.living-loom-checkbox-label input[type="checkbox"] {
+  width: 17px;
+  height: 17px;
+  accent-color: #D4AF37;
+  cursor: pointer;
+  flex-shrink: 0;
+  margin: 0;
+}
+
+.living-loom-terms-text {
+  font-size: 0.8rem;
+  color: #BDB0A3;
+  line-height: 1.4;
+}
+
+.living-loom-inline-link {
+  color: #EAC665;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  transition: color 0.2s ease;
+}
+
+.living-loom-inline-link:hover {
+  color: #FFF0B5;
+}
+
+.living-loom-link-btn {
+  background: none;
+  border: none;
+  color: #EAC665;
+  font-size: 0.76rem;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  padding: 0;
+  transition: color 0.2s ease;
+}
+
+.living-loom-link-btn:hover {
+  color: #FFF0B5;
+}
+
+/* Primary Submit Button */
+.living-loom-submit-btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  background: linear-gradient(135deg, #EAC665 0%, #B88A24 100%);
+  color: #0A0805;
+  font-family: var(--font-sans, inherit);
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  padding: 14px 24px;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  box-shadow: 0 4px 20px rgba(212, 175, 55, 0.28);
+  transition: all 0.24s cubic-bezier(0.22, 1, 0.36, 1);
+  margin-top: 4px;
+}
+
+.living-loom-submit-btn:hover:not(:disabled) {
+  transform: translateY(-1.5px);
+  box-shadow: 0 7px 26px rgba(212, 175, 55, 0.42);
+  filter: brightness(1.06);
+}
+
+.living-loom-submit-btn:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.living-loom-submit-btn:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.living-loom-btn-loading {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.living-loom-spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(10, 8, 5, 0.3);
+  border-top-color: #0A0805;
+  border-radius: 50%;
+  animation: livingLoomSpin 0.75s linear infinite;
+}
+
+@keyframes livingLoomSpin {
+  to { transform: rotate(360deg); }
+}
+
+
+/* Reset Sent Message State */
+.living-loom-reset-sent-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 12px;
+  padding: 20px 16px;
+  background: rgba(10, 3, 7, 0.6);
+  border: 1px solid rgba(212, 175, 55, 0.22);
+  border-radius: 12px;
+  color: #EAC665;
+}
+
+.living-loom-reset-sent-box p {
+  color: #EDE4D8;
+  font-size: 0.92rem;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.living-loom-footer-nav {
+  display: flex;
+  justify-content: center;
+  margin-top: 8px;
+}
+
+.living-loom-back-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: none;
+  border: none;
+  color: #EAC665;
+  font-size: 0.88rem;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 6px 12px;
+  border-radius: 6px;
+  transition: color 0.2s ease;
+}
+
+.living-loom-back-btn:hover {
+  color: #FFF0B5;
+}
+
+/* Card Bottom Footer */
+.living-loom-card__footer {
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid rgba(212, 175, 55, 0.18);
+  text-align: center;
+  font-size: 0.86rem;
+  color: #BDB0A3;
+}
+
+.living-loom-card__footer p {
+  margin: 0;
+}
+
+.living-loom-inline-switch {
+  background: none;
+  border: none;
+  color: #EAC665;
+  font-weight: 700;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  padding: 0;
+  font-size: inherit;
+  margin-left: 4px;
+  transition: color 0.2s ease;
+}
+
+.living-loom-inline-switch:hover {
+  color: #FFF0B5;
+}

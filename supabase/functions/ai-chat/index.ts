@@ -1,3 +1,4 @@
+/// <reference path="../deno.d.ts" />
 import { serve } from "https://deno.land/std@0.177.0/http/server.ts"
 import { corsHeaders } from "../_shared/cors.ts"
 
@@ -711,7 +712,7 @@ function generateDomainFallback(
   }
 }
 
-serve(async (req) => {
+serve(async (req: Request) => {
   if (req.method === 'OPTIONS') {
     return new Response('ok', { headers: corsHeaders })
   }

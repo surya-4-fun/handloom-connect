@@ -1,5 +1,6 @@
-import { AuthExperience } from '../components/auth/AuthExperience'
+import { LivingLoomAuth } from '../components/auth/LivingLoomAuth'
 
 export function RegisterPage() {
-  return <AuthExperience initialMode="register" />
+  return <LivingLoomAuth initialMode="register" />
 }
+
